@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.easehub" path="/org/gnome/shell/extensions/easehub/">
+    <key name="confirm-dangerous" type="b">
+      <default>true</default>
+      <summary>Ask confirmation for logout, reboot, and power off</summary>
+    </key>
+    <key name="enabled-actions" type="as">
+      <default>['lock','logout','reboot','poweroff','suspend','dnd','darkmode','settings','extensions','tweaks','open-terminal','clipboard-clear','screenshot','apt-update','apt-upgrade','flatpak-update']</default>
+      <summary>Which actions to show in the menu</summary>
+    </key>
+  </schema>
+</schemalist>
