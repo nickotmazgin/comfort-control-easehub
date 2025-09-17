@@ -50,7 +50,7 @@ function _which(name) {
 }
 
 function _openTerminal(cmd /* string or null */) {
-  const c = cmd ? cmd.replace(/"/g, '\\"') : null;
+  const c = cmd ? cmd.replace(/\\/g, '\\\\').replace(/"/g, '\\"') : null;
   if (_which('kgx'))                { _spawn(c ? 'kgx -e bash -lc "' + c + '"'               : 'kgx'); return; }
   if (_which('gnome-terminal'))     { _spawn(c ? 'gnome-terminal -- bash -lc "' + c + '"'    : 'gnome-terminal'); return; }
   if (_which('tilix'))              { _spawn(c ? 'tilix -e bash -lc "' + c + '"'             : 'tilix'); return; }
