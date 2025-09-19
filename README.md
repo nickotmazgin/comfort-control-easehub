@@ -1,6 +1,6 @@
 # Comfort Control (EaseHub)
 
-[![GNOME Shell Extension](https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true)](https://extensions.gnome.org/extension/8599/comfort-control-easehub/)
+[![GNOME Shell Extension](https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true)](https://extensions.gnome.org/extension/8603/comfort-control-easehub/)
 
 ![EaseHub Screenshot](screenshots/easehub_showcase_final.png)
 
@@ -44,7 +44,7 @@ A **GNOME Shell extension** that brings **comfort and control to your desktop** 
 
 Install directly from the official GNOME Extensions website:
 
-**➤ [Install from extensions.gnome.org](https://extensions.gnome.org/extension/8599/comfort-control-easehub/)**
+**➤ [Install from extensions.gnome.org](https://extensions.gnome.org/extension/8603/comfort-control-easehub/)**
 
 ### 📁 **From GitHub Release**
 
