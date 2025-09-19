@@ -32,7 +32,7 @@ A **GNOME Shell extension** that brings **comfort and control to your desktop** 
   - **Secure authentication** using `pkexec` for graphical password prompts
 
 ### 🎯 **Compatibility**
-* **Officially supports** GNOME Shell versions **42, 43, 44, 45, 46, and 47**
+* **Officially supports** GNOME Shell versions **42, 43, and 44**
 * **Cross-platform** - Works on Wayland and Xorg
 * **Lightweight** - Minimal resource usage
 
