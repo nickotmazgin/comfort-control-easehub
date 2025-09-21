@@ -18,7 +18,7 @@ We take the security of Comfort Control (EaseHub) seriously. If you discover a s
 **Please do NOT create a public GitHub issue for security vulnerabilities.**
 
 Instead, please email us directly at:
-- **Email**: [nickotmazgin@gmail.com](mailto:nickotmazgin.dev@gmail.com)
+- **Email**: [nickotmazgin.dev@gmail.com](mailto:nickotmazgin.dev@gmail.com)
 - **Subject**: `[SECURITY] Comfort Control EaseHub - Vulnerability Report`
 
 ### What to Include
@@ -92,7 +92,7 @@ We appreciate security researchers who help make Comfort Control (EaseHub) safer
 ## Contact
 
 For security-related questions or concerns:
-- **Security Issues**: [nickotmazgin@gmail.com](mailto:nickotmazgin.dev@gmail.com)
+- **Security Issues**: [nickotmazgin.dev@gmail.com](mailto:nickotmazgin.dev@gmail.com)
 - **General Support**: [GitHub Issues](https://github.com/nickotmazgin/comfort-control-easehub/issues)
 
 ---
