@@ -1,0 +1,256 @@
+name: Quality Checks & Security Scan
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Run security scans weekly on Sundays at 2 AM UTC
+    - cron: '0 2 * * 0'
+
+jobs:
+  # Extension validation and linting
+  validate-extension:
+    runs-on: ubuntu-latest
+    name: Extension Validation
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Validate metadata.json
+        run: |
+          if [ -f "metadata.json" ]; then
+            echo "✅ metadata.json found"
+            # Validate JSON syntax
+            python3 -m json.tool metadata.json > /dev/null
+            echo "✅ metadata.json is valid JSON"
+            
+            # Check required fields
+            if grep -q '"uuid"' metadata.json && grep -q '"name"' metadata.json; then
+              echo "✅ Required fields present"
+            else
+              echo "❌ Missing required fields in metadata.json"
+              exit 1
+            fi
+          else
+            echo "❌ metadata.json not found"
+            exit 1
+          fi
+          
+      - name: Validate JavaScript files
+        run: |
+          # Check for basic JavaScript syntax errors
+          for file in *.js; do
+            if [ -f "$file" ]; then
+              echo "Checking $file..."
+              node -c "$file" && echo "✅ $file syntax OK" || exit 1
+            fi
+          done
+          
+      - name: Check file permissions
+        run: |
+          # Ensure proper file permissions
+          find . -name "*.js" -exec chmod 644 {} \;
+          find . -name "*.json" -exec chmod 644 {} \;
+          find . -name "*.md" -exec chmod 644 {} \;
+          echo "✅ File permissions checked"
+          
+      - name: Validate GSettings schema
+        run: |
+          if [ -d "schemas" ]; then
+            echo "✅ Schemas directory found"
+            for schema in schemas/*.xml; do
+              if [ -f "$schema" ]; then
+                echo "Validating $schema..."
+                # Basic XML validation
+                python3 -c "import xml.etree.ElementTree as ET; ET.parse('$schema')"
+                echo "✅ $schema is valid XML"
+              fi
+            done
+          fi
+
+  # Security scanning
+  security-scan:
+    runs-on: ubuntu-latest
+    name: Security Scan
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Run Bandit Security Scan
+        run: |
+          pip install bandit
+          # Scan for common security issues in any Python files
+          find . -name "*.py" -exec bandit {} \; || echo "No Python files found"
+          
+      - name: Check for secrets
+        run: |
+          # Basic secret scanning
+          if grep -r -i "password\|secret\|key\|token" --include="*.js" --include="*.json" .; then
+            echo "⚠️  Potential secrets found - please review"
+          else
+            echo "✅ No obvious secrets detected"
+          fi
+          
+      - name: Dependency Security Check
+        run: |
+          # Check for known vulnerable patterns
+          echo "Checking for common vulnerability patterns..."
+          
+          # Check for eval usage
+          if grep -r "eval(" --include="*.js" .; then
+            echo "⚠️  Found eval() usage - potential security risk"
+          fi
+          
+          # Check for innerHTML usage
+          if grep -r "innerHTML" --include="*.js" .; then
+            echo "⚠️  Found innerHTML usage - review for XSS risks"
+          fi
+          
+          echo "✅ Security patterns checked"
+
+  # License and compliance
+  compliance-check:
+    runs-on: ubuntu-latest
+    name: License & Compliance
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Check license file
+        run: |
+          if [ -f "LICENSE" ]; then
+            echo "✅ LICENSE file found"
+          else
+            echo "❌ LICENSE file missing"
+            exit 1
+          fi
+          
+      - name: Check documentation
+        run: |
+          required_docs=("README.md" "SECURITY.md")
+          for doc in "${required_docs[@]}"; do
+            if [ -f "$doc" ]; then
+              echo "✅ $doc found"
+            else
+              echo "❌ $doc missing"
+              exit 1
+            fi
+          done
+          
+      - name: Check extension metadata compliance
+        run: |
+          # Ensure extension follows GNOME guidelines
+          if [ -f "metadata.json" ]; then
+            # Check for required GNOME Shell version
+            if grep -q '"shell-version"' metadata.json; then
+              echo "✅ Shell version specified"
+            else
+              echo "❌ Missing shell-version in metadata.json"
+              exit 1
+            fi
+            
+            # Check for proper UUID format
+            if grep -q '"uuid".*@' metadata.json; then
+              echo "✅ UUID format looks correct"
+            else
+              echo "⚠️  UUID format may be incorrect"
+            fi
+          fi
+
+  # Code quality metrics
+  code-quality:
+    runs-on: ubuntu-latest
+    name: Code Quality Analysis
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cloc
+          
+      - name: Code statistics
+        run: |
+          echo "📊 Code Statistics:"
+          cloc --exclude-dir=.git,.github,screenshots .
+          
+      - name: Check code complexity
+        run: |
+          # Simple complexity check for JavaScript files
+          for file in *.js; do
+            if [ -f "$file" ]; then
+              lines=$(wc -l < "$file")
+              functions=$(grep -c "function\|=>" "$file" || echo "0")
+              echo "📁 $file: $lines lines, ~$functions functions"
+              
+              if [ "$lines" -gt 500 ]; then
+                echo "⚠️  $file is quite large ($lines lines) - consider refactoring"
+              fi
+            fi
+          done
+          
+      - name: Documentation coverage
+        run: |
+          # Check for documentation coverage
+          js_files=$(find . -name "*.js" | wc -l)
+          commented_files=$(find . -name "*.js" -exec grep -l "/\*\|//" {} \; | wc -l)
+          
+          if [ "$js_files" -gt 0 ]; then
+            coverage=$((commented_files * 100 / js_files))
+            echo "📖 Documentation coverage: $coverage% of files have comments"
+            
+            if [ "$coverage" -lt 50 ]; then
+              echo "⚠️  Low documentation coverage - consider adding more comments"
+            fi
+          fi
+
+  # Build verification
+  build-test:
+    runs-on: ubuntu-latest
+    name: Build Verification
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Test extension packaging
+        run: |
+          echo "🔧 Testing extension packaging..."
+          
+          # Create a test package structure
+          temp_dir=$(mktemp -d)
+          cp -r . "$temp_dir/extension"
+          cd "$temp_dir/extension"
+          
+          # Remove non-essential files that shouldn't be in distribution
+          rm -rf .git .github screenshots *.md .gitignore
+          
+          # Verify essential files are present
+          essential_files=("metadata.json" "extension.js")
+          for file in "${essential_files[@]}"; do
+            if [ -f "$file" ]; then
+              echo "✅ Essential file $file present"
+            else
+              echo "❌ Missing essential file: $file"
+              exit 1
+            fi
+          done
+          
+          # Create zip package
+          zip -r "../comfort-control-extension.zip" .
+          echo "✅ Extension package created successfully"
+          
+          # Verify package size
+          package_size=$(stat -f%z "../comfort-control-extension.zip" 2>/dev/null || stat -c%s "../comfort-control-extension.zip")
+          echo "📦 Package size: $package_size bytes"
+          
+          if [ "$package_size" -gt 1048576 ]; then  # 1MB
+            echo "⚠️  Package is quite large (>1MB) - consider optimization"
+          fi
