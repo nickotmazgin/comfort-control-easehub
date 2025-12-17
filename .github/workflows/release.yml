@@ -1,0 +1,42 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+  attestations: write
+  id-token: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+
+      - name: Install build deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zip libglib2.0-bin
+
+      - name: Prepare build
+        run: |
+          set -e
+          if [ -d schemas ]; then glib-compile-schemas schemas; fi
+          ZIP="comfort-control-github-${GITHUB_REF_NAME}.zip"
+          echo "ZIP_NAME=$ZIP" >> $GITHUB_ENV
+          zip -r "$ZIP" . \
+            -x '.git/*' '.github/*' 'screenshots/*'
+
+      - name: Attach provenance
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-path: ${{ env.ZIP_NAME }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@de2c0eb2d6b4e54f5a75a42c46b67f7b9a6c0c4b
+        with:
+          files: ${{ env.ZIP_NAME }}

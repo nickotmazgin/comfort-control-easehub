@@ -1,0 +1,37 @@
+name: Bug report
+description: Report a problem with the extension
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill this out!
+  - type: input
+    id: gnome
+    attributes:
+      label: GNOME Shell version
+      placeholder: 44, 45, etc
+    validations:
+      required: true
+  - type: dropdown
+    id: session
+    attributes:
+      label: Session
+      options:
+        - Wayland
+        - Xorg
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: What happened?
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: Output of `journalctl --user -b 0 -o cat | grep -i comfort-control`
+      render: shell
