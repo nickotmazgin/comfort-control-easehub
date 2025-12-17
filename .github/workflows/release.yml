@@ -32,7 +32,7 @@ jobs:
             -x '.git/*' '.github/*' 'screenshots/*'
 
       - name: Attach provenance
-        uses: actions/attest-build-provenance@v1
+        uses: actions/attest-build-provenance@v3
         with:
           subject-path: ${{ env.ZIP_NAME }}
 
