@@ -72,7 +72,6 @@ We appreciate security researchers who help make Comfort Control (EaseHub) safer
 ### Installation Security
 
 - Always install from official sources:
-  - [GNOME Extensions website](https://extensions.gnome.org/extension/8603/comfort-control-easehub/)
   - [Official GitHub releases](https://github.com/nickotmazgin/comfort-control-easehub/releases)
 - Verify extension UUID: `comfort-control@nickotmazgin`
 
