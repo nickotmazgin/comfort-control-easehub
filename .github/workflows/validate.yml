@@ -1,0 +1,24 @@
+name: Validate
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libglib2.0-bin jq
+      - name: Validate metadata.json
+        run: |
+          jq . metadata.json > /dev/null
+      - name: Compile GSettings schemas
+        run: |
+          if [ -d schemas ]; then glib-compile-schemas schemas; fi

@@ -1,0 +1,6 @@
+# Default code owners
+*       @nickotmazgin
+
+# Workflows and docs
+.github/ @nickotmazgin
+docs/    @nickotmazgin
