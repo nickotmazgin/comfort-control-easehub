@@ -34,13 +34,10 @@ jobs:
             p{print}
           ' CHANGELOG.md > RELEASE_NOTES.md
 
-      - name: Prepare zip
+      - name: Build dual release zips (42–44 and 45–47)
         run: |
-          UUID=$(python3 -c 'import json;print(json.load(open("metadata.json"))["uuid"])')
-          echo "UUID=$UUID" >> $GITHUB_ENV
-          mkdir -p dist
-          zip -r "dist/${UUID}.shell-extension.zip" \
-            extension.js prefs.js metadata.json stylesheet.css schemas screenshots README.md LICENSE CODE_OF_CONDUCT.md SECURITY.md || true
+          chmod +x ./create-release-zips.sh
+          ./create-release-zips.sh
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4

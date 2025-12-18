@@ -4,3 +4,4 @@
 
 *.bak
 schemas/gschemas.compiled
+.release-build/
