@@ -70,6 +70,11 @@ function _which(name) {
 function _runCommandInTerminal(command, title) {
     // If no command, just open a terminal.
     if (!command) {
+        try {
+            const s = ExtensionUtils.getSettings('org.gnome.shell.extensions.easehub');
+            const pref = (s.get_string('preferred-terminal') || '').trim();
+            if (pref && _which(pref)) { _spawn(pref); return; }
+        } catch (_) {}
         if (_which('kgx'))                { _spawn('kgx'); return; }
         if (_which('gnome-terminal'))     { _spawn('gnome-terminal'); return; }
         // Add other terminals if needed
@@ -80,6 +85,30 @@ function _runCommandInTerminal(command, title) {
     const holdOpenFragment = "; echo; echo 'Process finished. Press ENTER to close.'; read";
     const escapedCommand = command.replace(/'/g, "'\\''");
     const fullCommand = `'${escapedCommand}'${holdOpenFragment}`;
+
+    // Honor preferred terminal if configured
+    try {
+        const s = ExtensionUtils.getSettings('org.gnome.shell.extensions.easehub');
+        const pref = (s.get_string('preferred-terminal') || '').trim();
+        if (pref) {
+            if (pref === 'gnome-terminal' && _which('gnome-terminal')) {
+                _spawn(`gnome-terminal --title=\"${title}\" -- bash -c ${fullCommand}`);
+                return;
+            }
+            if (pref === 'kgx' && _which('kgx')) {
+                _spawn(`kgx --title=\"${title}\" --hold -e bash -c '${escapedCommand}'`);
+                return;
+            }
+            if (pref === 'tilix' && _which('tilix')) {
+                _spawn(`tilix -t \"${title}\" -e bash -c ${fullCommand}`);
+                return;
+            }
+            if (_which(pref)) {
+                _spawn(`${pref} -e bash -c ${fullCommand}`);
+                return;
+            }
+        }
+    } catch (_) {}
 
     if (_which('gnome-terminal')) {
         _spawn(`gnome-terminal --title="${title}" -- bash -c ${fullCommand}`);
@@ -170,38 +199,48 @@ class EaseHubIndicator extends PanelMenu.Button {
 
         // Utilities
         add('Clear Clipboard','clipboard-clear', () => this._clearClipboard(), 'edit-clear-all-symbolic');
+        add('Clear Primary Selection','clipboard-clear-primary', () => this._clearPrimary(), 'edit-clear-symbolic');
         add('Screenshot',     'screenshot',      () => _openScreenshot(), 'camera-photo-symbolic');
 
         // Updates
-        add('Check Updates (APT: update)', 'apt-update', () => {
-            _runCommandInTerminal('pkexec apt update', 'Checking for Updates...');
+        add('Check System Updates', 'apt-update', () => {
+            let cmd = null;
+            if (_which('apt'))    cmd = 'pkexec apt update';
+            else if (_which('dnf'))    cmd = 'pkexec dnf check-update';
+            else if (_which('zypper')) cmd = 'pkexec zypper refresh';
+            else if (_which('pacman')) cmd = 'pkexec pacman -Sy';
+            _runCommandInTerminal(cmd || 'echo "No supported package manager found."', 'Checking for Updates...');
         }, 'software-update-available-symbolic');
 
-        add('Upgrade Packages (APT: upgrade)', 'apt-upgrade', () => {
-            _runCommandInTerminal('pkexec apt upgrade -y', 'Upgrading Packages...');
+        add('Upgrade System Packages', 'apt-upgrade', () => {
+            let cmd = null;
+            if (_which('apt'))    cmd = 'pkexec apt upgrade -y';
+            else if (_which('dnf'))    cmd = 'pkexec dnf upgrade -y';
+            else if (_which('zypper')) cmd = 'pkexec zypper update -y';
+            else if (_which('pacman')) cmd = 'pkexec pacman -Syu --noconfirm';
+            _runCommandInTerminal(cmd || 'echo "No supported package manager found."', 'Upgrading Packages...');
         }, 'system-software-update-symbolic');
 
         add('Update Flatpaks', 'flatpak-update', () => {
             _runCommandInTerminal('flatpak update -y', 'Updating Flatpaks...');
         }, 'system-software-update-symbolic');
 
-        // About & Donate
-        const aboutItem = new PopupMenu.PopupMenuItem('About & README…');
-        aboutItem.insert_child_at_index(new St.Icon({ icon_name: 'help-about-symbolic', style_class: 'popup-menu-icon' }), 0);
-        aboutItem.connect('activate', () => _openUrl('https://github.com/nickotmazgin/comfort-control-easehub#readme'));
-        this.menu.addMenuItem(aboutItem);
-
-        const donateItem = new PopupMenu.PopupMenuItem('Donate (PayPal)…');
-        donateItem.insert_child_at_index(new St.Icon({ icon_name: 'emblem-favorite-symbolic', style_class: 'popup-menu-icon' }), 0);
-        donateItem.connect('activate', () => _openUrl('https://www.paypal.me/NickOtmazgin'));
-        this.menu.addMenuItem(donateItem);
+        // About & Donate (toggleable)
+        add('About & README…', 'about-readme', () => _openUrl('https://github.com/nickotmazgin/comfort-control-easehub#readme'), 'help-about-symbolic');
+        add('Donate (PayPal)…', 'donate', () => _openUrl('https://www.paypal.com/donate/?hosted_button_id=4HM44VH47LSMW'), 'emblem-favorite-symbolic');
     }
 
     _sessionCall(method, arg) {
         try {
-            const proxy = new Gio.DBusProxy.sync(
-                Gio.DBus.session, Gio.DBusProxyFlags.NONE, null,
-                BUS_NAME, BUS_PATH, BUS_IFACE, null);
+            const proxy = Gio.DBusProxy.new_for_bus_sync(
+                Gio.BusType.SESSION,
+                Gio.DBusProxyFlags.NONE,
+                null,
+                BUS_NAME,
+                BUS_PATH,
+                BUS_IFACE,
+                null
+            );
             if (arg === undefined)
                 proxy.call_sync(method, null, Gio.DBusCallFlags.NONE, -1, null);
             else
@@ -214,9 +253,15 @@ class EaseHubIndicator extends PanelMenu.Button {
 
     _lock() {
         try {
-            const proxy = new Gio.DBusProxy.sync(
-                Gio.DBus.session, Gio.DBusProxyFlags.NONE, null,
-                'org.gnome.ScreenSaver', '/org/gnome/ScreenSaver', 'org.gnome.ScreenSaver', null);
+            const proxy = Gio.DBusProxy.new_for_bus_sync(
+                Gio.BusType.SESSION,
+                Gio.DBusProxyFlags.NONE,
+                null,
+                'org.gnome.ScreenSaver',
+                '/org/gnome/ScreenSaver',
+                'org.gnome.ScreenSaver',
+                null
+            );
             proxy.call_sync('Lock', null, Gio.DBusCallFlags.NONE, -1, null);
         } catch (e) {
             log('[EaseHub] Lock error: ' + e);
@@ -228,8 +273,9 @@ class EaseHubIndicator extends PanelMenu.Button {
         try {
             const s = new Gio.Settings({ schema_id: 'org.gnome.desktop.notifications' });
             const show = s.get_boolean('show-banners');
-            s.set_boolean('show-banners', !show);
-            _notify('Do Not Disturb: ' + (show ? 'ON' : 'OFF'));
+            const newShow = !show;
+            s.set_boolean('show-banners', newShow);
+            _notify('Do Not Disturb: ' + (newShow ? 'Disabled' : 'Enabled'));
         } catch (e) {
             log('[EaseHub] DND error: ' + e);
         }
@@ -252,6 +298,16 @@ class EaseHubIndicator extends PanelMenu.Button {
             _notify('Clipboard cleared');
         } catch (e) {
             log('[EaseHub] Clipboard clear error: ' + e);
+        }
+    }
+
+    _clearPrimary() {
+        try {
+            const clip = St.Clipboard.get_default();
+            clip.set_text(St.ClipboardType.PRIMARY, '');
+            _notify('Primary selection cleared');
+        } catch (e) {
+            log('[EaseHub] Primary clear error: ' + e);
         }
     }
 });

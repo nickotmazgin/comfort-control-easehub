@@ -1,42 +1,59 @@
 name: Release
 
+permissions:
+  contents: write
+
 on:
   push:
     tags:
-      - 'v*'
-
-permissions:
-  contents: write
-  attestations: write
-  id-token: write
+      - "v*"
 
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        uses: actions/checkout@v4
 
-      - name: Install build deps
+      - name: Show metadata
         run: |
-          sudo apt-get update
-          sudo apt-get install -y zip libglib2.0-bin
+          python3 -m json.tool metadata.json
 
-      - name: Prepare build
+      - name: Compile schemas
         run: |
-          set -e
-          if [ -d schemas ]; then glib-compile-schemas schemas; fi
-          ZIP="comfort-control-github-${GITHUB_REF_NAME}.zip"
-          echo "ZIP_NAME=$ZIP" >> $GITHUB_ENV
-          zip -r "$ZIP" . \
-            -x '.git/*' '.github/*' 'screenshots/*'
+          glib-compile-schemas schemas
 
-      - name: Attach provenance
-        uses: actions/attest-build-provenance@v1
+      - name: Extract release notes
+        run: |
+          VERSION=$(python3 -c 'import json;print(json.load(open("metadata.json"))["version-name"])')
+          echo "REL_TITLE=EaseHub ${VERSION}" >> $GITHUB_ENV
+          awk -v ver="$VERSION" '
+            BEGIN{p=0}
+            $0 ~ "^## " ver {p=1; print; next}
+            p && $0 ~ /^## / {exit}
+            p{print}
+          ' CHANGELOG.md > RELEASE_NOTES.md
+
+      - name: Prepare zip
+        run: |
+          UUID=$(python3 -c 'import json;print(json.load(open("metadata.json"))["uuid"])')
+          echo "UUID=$UUID" >> $GITHUB_ENV
+          mkdir -p dist
+          zip -r "dist/${UUID}.shell-extension.zip" \
+            extension.js prefs.js metadata.json stylesheet.css schemas screenshots README.md LICENSE CODE_OF_CONDUCT.md SECURITY.md || true
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
         with:
-          subject-path: ${{ env.ZIP_NAME }}
+          name: extension-zips
+          path: dist/*.zip
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@de2c0eb2d6b4e54f5a75a42c46b67f7b9a6c0c4b
+        uses: softprops/action-gh-release@v2
         with:
-          files: ${{ env.ZIP_NAME }}
+          files: |
+            dist/*.zip
+          name: ${{ env.REL_TITLE }}
+          body_path: RELEASE_NOTES.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
