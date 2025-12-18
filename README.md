@@ -29,8 +29,12 @@ A **GNOME Shell extension** that brings **comfort and control to your desktop** 
   - **Terminal integration** - updates run in your terminal for full visibility
   - **Secure authentication** using `pkexec` for graphical password prompts
 
+### 🧩 **Configurable Actions & Terminal**
+* Enable/disable any menu item from Preferences → Actions
+* Set a preferred terminal (kgx, gnome-terminal, tilix, etc.) in Preferences
+
 ### 🎯 **Compatibility**
-* **Officially supports** GNOME Shell versions **42, 43, and 44**
+* **Officially supports** GNOME Shell versions **42–47**
 * **Cross-platform** - Works on Wayland and Xorg
 * **Lightweight** - Minimal resource usage
 
@@ -71,6 +75,10 @@ gnome-extensions enable "$uuid"
 
 **Note**: On Wayland, you may need to log out/in for changes to take effect.
 
+### 🧪 Packaging (CI)
+
+On tag push (`v*`), GitHub Actions builds `comfort-control@nickotmazgin.shell-extension.zip` and publishes a release automatically.
+
 ---
 
 ## 🖼️ **Screenshots & Visuals**
@@ -87,6 +95,8 @@ We welcome contributions! Please feel free to:
 - 🔧 **Submit pull requests** with enhancements
 - 🌐 **Help with translations**
 
+See CHANGELOG.md for notable changes.
+
 ---
 
 ## 📄 **License**
@@ -99,9 +109,17 @@ This project is licensed under the [**MIT License**](LICENSE) © **Nick Otmazgin
 
 If **EaseHub** enhances your GNOME experience, consider supporting its continued development:
 
-💝 **[Support via PayPal](https://www.paypal.me/NickOtmazgin)** 
+[![GitHub Sponsors](https://img.shields.io/badge/Sponsor-GitHub%20Sponsors-ff5c93?logo=github-sponsors&logoColor=white)](https://github.com/sponsors/nickotmazgin)
+[![PayPal](https://img.shields.io/badge/Donate-PayPal-blue.svg)](https://www.paypal.com/donate/?hosted_button_id=4HM44VH47LSMW)
 
 Your support helps maintain and improve this extension for the entire GNOME community! 💙
+
+---
+
+## 👤 **About**
+
+- Author: **Nick Otmazgin**
+- Contact: **nickotmazgin.dev@gmail.com**
 
 ---
 

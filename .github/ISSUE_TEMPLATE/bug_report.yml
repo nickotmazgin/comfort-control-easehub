@@ -1,37 +1,22 @@
 name: Bug report
-description: Report a problem with the extension
+description: File a bug report
 labels: [bug]
 body:
-  - type: markdown
+  - type: textarea
     attributes:
-      value: |
-        Thanks for taking the time to fill this out!
+      label: Describe the bug
+      description: What happened and what did you expect?
+    validations:
+      required: true
   - type: input
-    id: gnome
     attributes:
       label: GNOME Shell version
-      placeholder: 44, 45, etc
-    validations:
-      required: true
-  - type: dropdown
-    id: session
-    attributes:
-      label: Session
-      options:
-        - Wayland
-        - Xorg
+      placeholder: e.g., 42.9 / 43.8 / 44.5
     validations:
       required: true
   - type: textarea
-    id: steps
     attributes:
-      label: Steps to reproduce
-      placeholder: What happened?
-    validations:
-      required: true
-  - type: textarea
-    id: logs
-    attributes:
-      label: Relevant logs
-      description: Output of `journalctl --user -b 0 -o cat | grep -i comfort-control`
-      render: shell
+      label: Logs
+      description: Paste errors from Looking Glass (Alt+F2 → lg) or journalctl -b | grep gnome-shell
+      render: text
+

@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Discussions (questions, ideas)
+    url: https://github.com/nickotmazgin/comfort-control-easehub/discussions
+    about: Use Discussions for Q&A and proposals

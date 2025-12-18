@@ -5,8 +5,12 @@
       <default>true</default>
       <summary>Ask confirmation for logout, reboot, and power off</summary>
     </key>
+    <key name="preferred-terminal" type="s">
+      <default>''</default>
+      <summary>Preferred terminal command (kgx, gnome-terminal, tilix, etc.)</summary>
+    </key>
     <key name="enabled-actions" type="as">
-      <default>['lock','logout','reboot','poweroff','suspend','dnd','darkmode','settings','extensions','tweaks','open-terminal','clipboard-clear','screenshot','apt-update','apt-upgrade','flatpak-update']</default>
+      <default>['lock','logout','reboot','poweroff','suspend','dnd','darkmode','settings','extensions','tweaks','open-terminal','clipboard-clear','clipboard-clear-primary','screenshot','apt-update','apt-upgrade','flatpak-update','about-readme','donate']</default>
       <summary>Which actions to show in the menu</summary>
     </key>
   </schema>
