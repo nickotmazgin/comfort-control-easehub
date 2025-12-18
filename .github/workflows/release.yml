@@ -23,6 +23,17 @@ jobs:
         run: |
           glib-compile-schemas schemas
 
+      - name: Extract release notes
+        run: |
+          VERSION=$(python3 -c 'import json;print(json.load(open("metadata.json"))["version-name"])')
+          echo "REL_TITLE=EaseHub ${VERSION}" >> $GITHUB_ENV
+          awk -v ver="$VERSION" '
+            BEGIN{p=0}
+            $0 ~ "^## " ver {p=1; print; next}
+            p && $0 ~ /^## / {exit}
+            p{print}
+          ' CHANGELOG.md > RELEASE_NOTES.md
+
       - name: Prepare zip
         run: |
           UUID=$(python3 -c 'import json;print(json.load(open("metadata.json"))["uuid"])')
@@ -42,6 +53,7 @@ jobs:
         with:
           files: |
             dist/*.zip
-          generate_release_notes: true
+          name: ${{ env.REL_TITLE }}
+          body_path: RELEASE_NOTES.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

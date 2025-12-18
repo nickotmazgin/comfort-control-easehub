@@ -12,7 +12,7 @@ function fillPreferencesWindow(window) {
     const metadata = ExtensionUtils.getCurrentExtension().metadata || {};
 
     // General page
-    const pageGeneral = new Adw.PreferencesPage({ title: 'General' });
+    const pageGeneral = new Adw.PreferencesPage({ title: 'General', icon_name: 'preferences-system-symbolic' });
     const groupGeneral = new Adw.PreferencesGroup({ title: 'Safety' });
 
     const rowConfirm = new Adw.ActionRow({ title: 'Confirm dangerous actions' });
@@ -41,7 +41,7 @@ function fillPreferencesWindow(window) {
     pageGeneral.add(groupGeneral);
 
     // Actions page
-    const pageActions = new Adw.PreferencesPage({ title: 'Actions' });
+    const pageActions = new Adw.PreferencesPage({ title: 'Actions', icon_name: 'view-list-symbolic' });
     const groups = [
         { title: 'System', ids: [
             ['lock', 'Lock Screen'],
@@ -100,7 +100,7 @@ function fillPreferencesWindow(window) {
     }
 
     // About page
-    const pageAbout = new Adw.PreferencesPage({ title: 'About' });
+    const pageAbout = new Adw.PreferencesPage({ title: 'About', icon_name: 'help-about-symbolic' });
 
     const groupInfo = new Adw.PreferencesGroup({ title: 'Extension' });
     groupInfo.add(new Adw.ActionRow({ title: 'Name', subtitle: metadata.name || 'EaseHub' }));
