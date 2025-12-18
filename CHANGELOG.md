@@ -1,3 +1,10 @@
+## 1.0.2 (2025-12-18)
+
+Fixes
+- Release workflow compiles schemas before packaging so `schemas/gschemas.compiled` ships inside the zip. This resolves "GLib.FileError: Failed to open gschemas.compiled" on GNOME 42–44 when installing from GitHub zip.
+
+---
+
 ## 1.0.1 (2025-12-17)
 
 Highlights
