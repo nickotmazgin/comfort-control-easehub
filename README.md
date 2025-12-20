@@ -97,6 +97,12 @@ On tag push (`v*`), GitHub Actions builds `comfort-control@nickotmazgin.shell-ex
 
 Explore more screenshots and visual examples in our [**screenshots/**](screenshots/) directory.
 
+### Tri‑color Collage
+
+Single collage with a subtle blue → green → orange gradient overlay for visual harmony and readability:
+
+![EaseHub Tri‑color Collage](screenshots/collages/easehub_collage_tricolor.png)
+
 ### Collages
 
 Below are curated collages built from the latest screenshots. Choose a theme you like:
