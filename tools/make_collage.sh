@@ -39,21 +39,54 @@ COLS=3
 if [ $N -le 4 ]; then COLS=2; fi
 ROWS=$(( (N + COLS - 1) / COLS ))
 
-# Tile size: 560x320 is a balanced 16:9 for readability
-TW=560
-TH=320
+# Tile size: strict 16:9 for natural proportions
+# 576x324 keeps output moderate while matching 16:9 precisely
+TW=576
+TH=324
 GAP=16
 BORDER=6
 
-# Prepare tiles (crop/center into uniform aspect)
+# Prepare tiles (smart fit):
+# - If source AR ~ 16:9 (within 15%), use cover crop (fill tile, center crop)
+# - Otherwise, fit inside with padding (no crop)
 idx=0
 for f in "${files[@]}"; do
   printf -v of "%s/tile_%03d.png" "$WORK" "$idx"
-  # Fit inside (no cropping), then pad to exact tile size with transparent background
-  convert "$f" -auto-orient \
-    -thumbnail ${TW}x${TH} -gravity center -background none -extent ${TW}x${TH} \
-    -unsharp 0x1 \
-    "$of"
+  # Read original dimensions (robust; avoid set -e aborts)
+  read -r W H <<< "$(identify -format '%w %h' "$f" 2>/dev/null || echo '0 0')"
+  if [ "$W" -eq 0 ] || [ "$H" -eq 0 ]; then
+    # Fallback to contain if identify failed
+    convert "$f" -auto-orient \
+      -thumbnail ${TW}x${TH} -gravity center -background none -extent ${TW}x${TH} \
+      -unsharp 0x1 "$of"
+  else
+    # Compare aspect ratios
+    # bash bc: compute |(W/H) - (TW/TH)| / (TW/TH)
+    DIFF=$(python3 - << PY
+W=${W}; H=${H}; TW=${TW}; TH=${TH}
+ar_src=W/H
+ar_tile=TW/TH
+diff=abs(ar_src-ar_tile)/ar_tile
+print(f"{diff:.4f}")
+PY
+)
+    # Threshold 0.15 (~15%)
+    if python3 - << PY
+d=float("$DIFF");
+import sys; sys.exit(0 if d<0.15 else 1)
+PY
+    then
+      # Close to 16:9 → cover crop
+      convert "$f" -auto-orient \
+        -thumbnail ${TW}x${TH}^ -gravity center -extent ${TW}x${TH} \
+        -unsharp 0x1 "$of"
+    else
+      # Very tall/wide → contain (no crop)
+      convert "$f" -auto-orient \
+        -thumbnail ${TW}x${TH} -gravity center -background none -extent ${TW}x${TH} \
+        -unsharp 0x1 "$of"
+    fi
+  fi
   idx=$((idx+1))
 done
 
@@ -72,17 +105,9 @@ W=${WH% *}
 H=${WH#* }
 HALF=$((W/2))
 
-# Tri‑color gradient background (not affecting tile colors)
-G1="$WORK/grad_l.png"
-G2="$WORK/grad_r.png"
-GRAD="$WORK/grad.png"
-convert -size ${HALF}x${H} gradient:#1565c0-#43a047 "$G1"
-convert -size ${HALF}x${H} gradient:#43a047-#fb8c00 "$G2"
-convert "$G1" "$G2" +append "$GRAD"
-
-# Compose: gradient as background, montage over it (no color blending)
+# Prepare initial composite (start from montage only; background added after shadow so sizing matches)
 OUT_TMP="$WORK/collage.png"
-convert "$GRAD" "$BASE" -compose over -composite "$OUT_TMP"
+cp "$BASE" "$OUT_TMP"
 
 # Rounded corners + light stroke
 MASK="$WORK/mask.png"
@@ -95,7 +120,17 @@ convert "$OUT_TMP" -stroke '#2a2f3f' -strokewidth 1 -fill none -draw "roundrecta
 convert "$OUT_TMP" \( +clone -background '#000000' -shadow 30x8+0+8 \) +swap \
   -background none -layers merge +repage "$OUT_PATH"
 
-# Flatten onto the gradient background so viewers don't show checkerboard (no transparency)
+# Build gradient background sized to final card (includes shadow extents)
+WH2=$(identify -format "%w %h" "$OUT_PATH")
+W2=${WH2% *}
+H2=${WH2#* }
+HALF2=$((W2/2))
+G1="$WORK/grad_l.png"; G2="$WORK/grad_r.png"; GRAD="$WORK/grad.png"
+convert -size ${HALF2}x${H2} gradient:#1565c0-#43a047 "$G1"
+convert -size ${HALF2}x${H2} gradient:#43a047-#fb8c00 "$G2"
+convert "$G1" "$G2" +append "$GRAD"
+
+# Flatten onto the gradient background so there is no transparency and edges are intact
 convert "$GRAD" "$OUT_PATH" -compose over -composite -alpha off "$OUT_PATH"
 
 echo "Saved collage: $OUT_PATH (${W}x${H})"

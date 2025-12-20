@@ -1,9 +1,8 @@
 # Comfort Control (EaseHub)
-
 [![Release](https://img.shields.io/github/v/release/nickotmazgin/comfort-control-easehub)](https://github.com/nickotmazgin/comfort-control-easehub/releases)
 [![Downloads](https://img.shields.io/github/downloads/nickotmazgin/comfort-control-easehub/total?label=downloads)](https://github.com/nickotmazgin/comfort-control-easehub/releases)
 
-![EaseHub Screenshot](screenshots/easehub_showcase_final.png)
+![EaseHub Collage](screenshots/collages/easehub_collage_tricolor.png)
 
 A **GNOME Shell extension** that brings **comfort and control to your desktop** — providing quick access to power actions, seamless screenshot helpers, and intelligent system update prompts.
 
