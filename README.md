@@ -97,6 +97,17 @@ On tag push (`v*`), GitHub Actions builds `comfort-control@nickotmazgin.shell-ex
 
 Explore more screenshots and visual examples in our [**screenshots/**](screenshots/) directory.
 
+### Collages
+
+Below are curated collages built from the latest screenshots. Choose a theme you like:
+
+![EaseHub Collage (Blue)](screenshots/collages/easehub_collage_blue.png)
+
+![EaseHub Collage (Green)](screenshots/collages/easehub_collage_green.png)
+
+![EaseHub Collage (Orange)](screenshots/collages/easehub_collage_orange.png)
+
+
 ---
 
 ## 🤝 **Contributing**
