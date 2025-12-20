@@ -27,16 +27,68 @@ function fillPreferencesWindow(window) {
     });
     groupGeneral.add(rowConfirm);
 
-    // Preferred terminal selector
-    const rowTerminal = new Adw.ActionRow({ title: 'Preferred terminal (optional)' });
-    const entry = new Gtk.Entry({ placeholder_text: 'kgx, gnome-terminal, tilix, x-terminal-emulator…' });
-    try { entry.set_text(settings.get_string('preferred-terminal') || ''); } catch (_) {}
+    // Preferred terminal selector (DropDown + optional custom entry)
+    const choices = [
+        { label: 'Auto (detect best)', value: '' },
+        { label: 'GNOME Console (kgx)', value: 'kgx' },
+        { label: 'GNOME Terminal', value: 'gnome-terminal' },
+        { label: 'Kitty', value: 'kitty' },
+        { label: 'Tilix', value: 'tilix' },
+        { label: 'x-terminal-emulator', value: 'x-terminal-emulator' },
+        { label: 'Custom…', value: '__custom__' },
+    ];
+
+    const rowTerminal = new Adw.ActionRow({ title: 'Preferred terminal' });
+    const dd = Gtk.DropDown.new_from_strings(choices.map(c => c.label));
+
+    const rowCustom = new Adw.ActionRow({ title: 'Custom terminal command' });
+    const entry = new Gtk.Entry({ placeholder_text: 'e.g., kitty, alacritty, foot, wezterm…' });
+    rowCustom.add_suffix(entry);
+    rowCustom.activatable_widget = entry;
+
+    const findIndexByValue = (v) => {
+        const idx = choices.findIndex(c => c.value === v);
+        return idx >= 0 ? idx : choices.length - 1; // Custom…
+    };
+
+    // Initialize selection from settings
+    let currentPref = '';
+    try { currentPref = settings.get_string('preferred-terminal') || ''; } catch (_) {}
+    const initIndex = findIndexByValue(currentPref);
+    dd.set_selected(initIndex);
+    if (initIndex === choices.length - 1) {
+        entry.set_text(currentPref);
+        rowCustom.set_visible(true);
+    } else {
+        rowCustom.set_visible(false);
+    }
+
+    const applySelection = () => {
+        const idx = dd.get_selected();
+        const sel = choices[idx];
+        if (!sel)
+            return;
+        if (sel.value === '__custom__') {
+            rowCustom.set_visible(true);
+            settings.set_string('preferred-terminal', entry.get_text());
+        } else {
+            rowCustom.set_visible(false);
+            settings.set_string('preferred-terminal', sel.value);
+        }
+    };
+
+    dd.connect('notify::selected', applySelection);
     entry.connect('changed', () => {
-        settings.set_string('preferred-terminal', entry.get_text());
+        const idx = dd.get_selected();
+        const sel = choices[idx];
+        if (sel && sel.value === '__custom__')
+            settings.set_string('preferred-terminal', entry.get_text());
     });
-    rowTerminal.add_suffix(entry);
-    rowTerminal.activatable_widget = entry;
+
+    rowTerminal.add_suffix(dd);
+    rowTerminal.activatable_widget = dd;
     groupGeneral.add(rowTerminal);
+    groupGeneral.add(rowCustom);
 
     pageGeneral.add(groupGeneral);
 

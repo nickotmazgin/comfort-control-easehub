@@ -96,7 +96,7 @@ function _runCommandInTerminal(command, title) {
                 return;
             }
             if (pref === 'kgx' && _which('kgx')) {
-                _spawn(`kgx --title=\"${title}\" --hold -e bash -c '${escapedCommand}'`);
+                _spawn(`kgx --title="${title}" --hold -e bash -c '${escapedCommand}'`);
                 return;
             }
             if (pref === 'tilix' && _which('tilix')) {
@@ -117,6 +117,10 @@ function _runCommandInTerminal(command, title) {
     if (_which('kgx')) {
         // Console (kgx) has a --hold option which is cleaner
         _spawn(`kgx --title="${title}" --hold -e bash -c '${escapedCommand}'`);
+        return;
+    }
+    if (_which('kitty')) {
+        _spawn(`kitty --title="${title}" bash -c ${fullCommand}`);
         return;
     }
     // Fallback for other terminals
