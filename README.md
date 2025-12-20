@@ -102,20 +102,6 @@ Single collage with a subtle blue → green → orange gradient overlay for visu
 
 ![EaseHub Tri‑color Collage](screenshots/collages/easehub_collage_tricolor.png)
 
-### Collages
-
-Below are curated collages built from the latest screenshots. Choose a theme you like:
-
-![EaseHub Collage (Blue)](screenshots/collages/easehub_collage_blue.png)
-
-![EaseHub Collage (Green)](screenshots/collages/easehub_collage_green.png)
-
-![EaseHub Collage (Orange)](screenshots/collages/easehub_collage_orange.png)
-
-
----
-
-## 🤝 **Contributing**
 
 We welcome contributions! Please feel free to:
 - 🐛 **Report bugs** via [GitHub Issues](https://github.com/nickotmazgin/comfort-control-easehub/issues)
