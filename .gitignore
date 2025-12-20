@@ -6,3 +6,4 @@
 schemas/gschemas.compiled
 .release-build/
 screenshots/source/
+.collage_tmp/
