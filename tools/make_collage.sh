@@ -95,4 +95,7 @@ convert "$OUT_TMP" -stroke '#2a2f3f' -strokewidth 1 -fill none -draw "roundrecta
 convert "$OUT_TMP" \( +clone -background '#000000' -shadow 30x8+0+8 \) +swap \
   -background none -layers merge +repage "$OUT_PATH"
 
+# Flatten onto the gradient background so viewers don't show checkerboard (no transparency)
+convert "$GRAD" "$OUT_PATH" -compose over -composite -alpha off "$OUT_PATH"
+
 echo "Saved collage: $OUT_PATH (${W}x${H})"
