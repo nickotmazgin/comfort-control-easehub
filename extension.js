@@ -77,6 +77,7 @@ function _runCommandInTerminal(command, title) {
         } catch (_) {}
         if (_which('kgx'))                { _spawn('kgx'); return; }
         if (_which('gnome-terminal'))     { _spawn('gnome-terminal'); return; }
+        if (_which('kitty'))              { _spawn('kitty'); return; }
         // Add other terminals if needed
         _notify('Could not find a terminal to open.');
         return;
@@ -96,7 +97,11 @@ function _runCommandInTerminal(command, title) {
                 return;
             }
             if (pref === 'kgx' && _which('kgx')) {
-                _spawn(`kgx --title=\"${title}\" --hold -e bash -c '${escapedCommand}'`);
+                _spawn(`kgx --title=\\\"${title}\\\" --hold -e bash -c '${escapedCommand}'`);
+                return;
+            }
+            if (pref === 'kitty' && _which('kitty')) {
+                _spawn(`kitty --title=\\\"${title}\\\" bash -c ${fullCommand}`);
                 return;
             }
             if (pref === 'tilix' && _which('tilix')) {
@@ -116,7 +121,11 @@ function _runCommandInTerminal(command, title) {
     }
     if (_which('kgx')) {
         // Console (kgx) has a --hold option which is cleaner
-        _spawn(`kgx --title="${title}" --hold -e bash -c '${escapedCommand}'`);
+        _spawn(`kgx --title=\"${title}\" --hold -e bash -c '${escapedCommand}'`);
+        return;
+    }
+    if (_which('kitty')) {
+        _spawn(`kitty --title=\"${title}\" bash -c ${fullCommand}`);
         return;
     }
     // Fallback for other terminals

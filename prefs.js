@@ -29,7 +29,7 @@ function fillPreferencesWindow(window) {
 
     // Preferred terminal selector
     const rowTerminal = new Adw.ActionRow({ title: 'Preferred terminal (optional)' });
-    const entry = new Gtk.Entry({ placeholder_text: 'kgx, gnome-terminal, tilix, x-terminal-emulator…' });
+    const entry = new Gtk.Entry({ placeholder_text: 'kgx, gnome-terminal, kitty, tilix, x-terminal-emulator…' });
     try { entry.set_text(settings.get_string('preferred-terminal') || ''); } catch (_) {}
     entry.connect('changed', () => {
         settings.set_string('preferred-terminal', entry.get_text());

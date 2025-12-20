@@ -34,7 +34,7 @@ A **GNOME Shell extension** that brings **comfort and control to your desktop** 
 
 ### 🧩 **Configurable Actions & Terminal**
 * Enable/disable any menu item from Preferences → Actions
-* Set a preferred terminal (kgx, gnome-terminal, tilix, etc.) in Preferences
+* Set a preferred terminal in Preferences (kgx, gnome-terminal, kitty, tilix, etc.)
 
 ### 🎯 **Compatibility**
 * **Officially supports** GNOME Shell versions **42–47**

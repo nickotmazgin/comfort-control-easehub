@@ -1,3 +1,15 @@
+## 1.0.3 (2025-12-18)
+
+Improvements
+- Terminal support: add Kitty (`kitty`) to preferred terminal and fallbacks.
+- Release: dual artifacts (42–44 and 45–47) with compiled schemas, checksums in notes.
+- Governance: branch protection refined; discussions announcement updated.
+
+Notes
+- v1.0.2 resolved the `gschemas.compiled` packaging error; 1.0.3 adds polish.
+
+---
+
 ## 1.0.2 (2025-12-18)
 
 Fixes
