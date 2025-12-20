@@ -1,3 +1,15 @@
+## 1.0.3 (2025-12-20)
+
+Improvements
+- Terminal support: add Kitty (`kitty`) to preferred/fallback terminals.
+- Dual artifacts per GNOME version (42–44 and 45–47), both ship compiled schemas.
+- Governance: branch protections refined; release pipeline improvements.
+
+Notes
+- Prefer these zips; they include compiled schemas to avoid GLib.FileError on prefs.
+
+---
+
 ## 1.0.2 (2025-12-18)
 
 Fixes
