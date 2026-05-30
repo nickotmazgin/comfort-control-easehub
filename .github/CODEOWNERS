@@ -1,1 +1,11 @@
+# CODEOWNERS: auto-request reviews on changes (non-blocking)
+# Branch protection uses CI checks only — no required human approval (solo maintainer)
+
 * @nickotmazgin
+
+/extension.js @nickotmazgin
+/prefs.js @nickotmazgin
+/metadata.json @nickotmazgin
+/schemas/** @nickotmazgin
+/.github/workflows/** @nickotmazgin
+/create-release-zips.sh @nickotmazgin
