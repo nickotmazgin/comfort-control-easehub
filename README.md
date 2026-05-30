@@ -149,6 +149,11 @@ Your support helps maintain and improve this extension for the entire GNOME comm
 
 **Search for:** GNOME panel menu extension, Linux power menu, EaseHub GNOME, system utilities tray, screenshot extension GNOME
 
+## More GNOME extensions by Nick Otmazgin
+
+- [ClipFlow Pro](https://github.com/nickotmazgin/clipflow-pro) — clipboard history manager with pins, stars & privacy
+- [Numeric Clock](https://github.com/nickotmazgin/Linux-Numeric-Date-And-Clock) — DD/MM/YYYY 24-hour top-bar clock with seconds
+
 ---
 
 *Made with ❤️ for the GNOME community*
