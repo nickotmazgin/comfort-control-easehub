@@ -36,7 +36,7 @@ A **GNOME Shell extension** that brings **comfort and control to your desktop** 
 * Set a preferred terminal (kgx, gnome-terminal, tilix, etc.) in Preferences
 
 ### 🎯 **Compatibility**
-* **Officially supports** GNOME Shell versions **42–47**
+* **Officially supports** GNOME Shell versions **42–50**
 * **Cross-platform** - Works on Wayland and Xorg
 * **Lightweight** - Minimal resource usage
 
@@ -77,11 +77,13 @@ gnome-extensions enable "$uuid"
 
 **Note**: On Wayland, you may need to log out/in for changes to take effect.
 
+**Latest:** v1.0.4 — GNOME 45–50 build (Shell 46 tested on Zorin OS 18.1)
+
 ### 📥 Which Zip Should I Download?
 
 Every release publishes two artifacts; choose based on your GNOME Shell version:
-- GNOME 42–44 → download the file named `comfort-control@nickotmazgin-42-44.shell-extension.zip`
-- GNOME 45–47 → download the file named `comfort-control@nickotmazgin-45-47.shell-extension.zip`
+- GNOME 42–44 → `comfort-control@nickotmazgin-42-44.shell-extension.zip`
+- GNOME 45–50 → `comfort-control@nickotmazgin-45-50.shell-extension.zip`
 
 Both zips include compiled schemas to ensure Preferences open correctly.
 Find them on the Releases page: https://github.com/nickotmazgin/comfort-control-easehub/releases

@@ -2,15 +2,18 @@
   "uuid": "comfort-control@nickotmazgin",
   "name": "Comfort Control (EaseHub)",
   "description": "Panel actions: Lock/Logout/Reboot/Power/Suspend, DND, Dark/Light, Settings, Extensions, Tweaks, Open Terminal, Clear Clipboard, Screenshot, and APT/Flatpak updates with consent.\n\nCreated by Nick Otmazgin.",
-  "version": 4,
-  "version-name": "1.0.3",
+  "version": 5,
+  "version-name": "1.0.4 45.50",
   "shell-version": [
     "42",
     "43",
     "44",
     "45",
     "46",
-    "47"
+    "47",
+    "48",
+    "49",
+    "50"
   ],
   "settings-schema": "org.gnome.shell.extensions.easehub",
   "gettext-domain": "easehub",

@@ -1,3 +1,13 @@
+## 1.0.4 (2026-05-30)
+
+Improvements
+- Add GNOME Shell **45–50 ESM build** for GNOME Shell 46+ compatibility (classic build remains for 42–44).
+- Release artifacts renamed to `comfort-control@nickotmazgin-45-50.shell-extension.zip`.
+- Align branch protection with solo-maintainer CI-only workflow.
+- README and CHANGELOG refreshed for latest release.
+
+---
+
 ## 1.0.3 (2025-12-20)
 
 Improvements

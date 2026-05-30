@@ -23,9 +23,14 @@ jobs:
         run: |
           glib-compile-schemas schemas
 
+      - name: Build dual release zips (42–44 and 45–50)
+        run: |
+          chmod +x ./create-release-zips.sh
+          ./create-release-zips.sh
+
       - name: Extract release notes
         run: |
-          VERSION=$(python3 -c 'import json;print(json.load(open("metadata.json"))["version-name"])')
+          VERSION=$(python3 -c 'import json;print(json.load(open("metadata.json"))["version-name"].split()[0])')
           echo "REL_TITLE=EaseHub ${VERSION}" >> $GITHUB_ENV
           awk -v ver="$VERSION" '
             BEGIN{p=0}
@@ -33,11 +38,6 @@ jobs:
             p && $0 ~ /^## / {exit}
             p{print}
           ' CHANGELOG.md > RELEASE_NOTES.md
-
-      - name: Build dual release zips (42–44 and 45–47)
-        run: |
-          chmod +x ./create-release-zips.sh
-          ./create-release-zips.sh
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v6
