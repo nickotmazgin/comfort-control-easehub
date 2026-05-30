@@ -4,7 +4,11 @@
 
 ![EaseHub Collage](screenshots/collages/easehub_collage_tricolor.png)
 
-A **GNOME Shell extension** that brings **comfort and control to your desktop** — providing quick access to power actions, seamless screenshot helpers, and intelligent system update prompts.
+A **GNOME Shell extension** that brings **comfort and control to your desktop** — quick access to power actions, Wayland screenshots, system updates, and everyday utilities from one panel menu.
+
+> **Keywords:** GNOME panel menu · power management · screenshots · dark mode · DND · terminal · Flatpak · APT · Linux utilities · open source
+
+**Latest:** v1.0.4 — GNOME 45–50 ESM + legacy 42–44
 
 ---
 
@@ -46,11 +50,11 @@ A **GNOME Shell extension** that brings **comfort and control to your desktop** 
 
 ### 📁 **From GitHub Release**
 
-1. **Download** the latest `gnome-shell-easehub-v*.zip` from our [**Releases Page**](https://github.com/nickotmazgin/comfort-control-easehub/releases)
+1. **Download** the latest release ZIP from the [**Releases Page**](https://github.com/nickotmazgin/comfort-control-easehub/releases/latest)
 
 2. **Install** via GNOME Extensions app or terminal:
    ```bash
-   gnome-extensions install --force gnome-shell-easehub-v*.zip
+   gnome-extensions install --force comfort-control@nickotmazgin-45-50.shell-extension.zip
    gnome-extensions enable comfort-control@nickotmazgin
    ```
 
@@ -136,6 +140,14 @@ Your support helps maintain and improve this extension for the entire GNOME comm
 
 - Author: **Nick Otmazgin**
 - Contact: **nickotmazgin.dev@gmail.com**
+
+---
+
+## Find this project
+
+**GitHub topics:** `gnome-shell-extension` · `panel-menu` · `power-management` · `screenshot` · `flatpak` · `wayland` · `linux` · `productivity` · `open-source`
+
+**Search for:** GNOME panel menu extension, Linux power menu, EaseHub GNOME, system utilities tray, screenshot extension GNOME
 
 ---
 
