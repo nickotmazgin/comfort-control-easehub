@@ -43,8 +43,8 @@ import json, sys
 path = sys.argv[1]
 with open(path, 'r+', encoding='utf-8') as f:
     m = json.load(f)
-    m['version'] = 5
-    m['version-name'] = '1.0.4 42.44'
+    m['version'] = 6
+    m['version-name'] = '1.0.5 42.44'
     f.seek(0)
     json.dump(m, f, indent=2)
     f.write('\n')
@@ -62,8 +62,8 @@ import json, sys
 path = sys.argv[1]
 with open(path, 'r+', encoding='utf-8') as f:
     m = json.load(f)
-    m['version'] = 5
-    m['version-name'] = '1.0.4 45.50'
+    m['version'] = 6
+    m['version-name'] = '1.0.5 45.50'
     f.seek(0)
     json.dump(m, f, indent=2)
     f.write('\n')

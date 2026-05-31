@@ -115,10 +115,6 @@ export default class EaseHubPreferences extends ExtensionPreferences {
                 ['apt-upgrade', 'Upgrade Packages (APT: upgrade)'],
                 ['flatpak-update', 'Update Flatpaks'],
             ]},
-            { title: 'Links', ids: [
-                ['about-readme', 'About & README…'],
-                ['donate', 'Donate (PayPal)…'],
-            ]},
         ];
 
         const current = () => new Set(settings.get_strv('enabled-actions'));
@@ -148,31 +144,29 @@ export default class EaseHubPreferences extends ExtensionPreferences {
         const groupInfo = new Adw.PreferencesGroup({ title: 'Extension' });
         groupInfo.add(new Adw.ActionRow({ title: 'Name', subtitle: metadata.name || 'EaseHub' }));
         groupInfo.add(new Adw.ActionRow({ title: 'Version', subtitle: metadata['version-name'] || String(metadata.version ?? '') }));
-        groupInfo.add(new Adw.ActionRow({ title: 'Author', subtitle: 'Nick Otmazgin' }));
+        groupInfo.add(new Adw.ActionRow({ title: 'Developer', subtitle: 'Nick Otmazgin' }));
         groupInfo.add(new Adw.ActionRow({ title: 'Contact', subtitle: 'nickotmazgin.dev@gmail.com' }));
+        groupInfo.add(new Adw.ActionRow({
+            title: 'Description',
+            subtitle: 'Panel menu for power actions, screenshots, updates, and everyday utilities.',
+        }));
         pageAbout.add(groupInfo);
 
         const groupLinks = new Adw.PreferencesGroup({ title: 'Links' });
-        const rowReadme = new Adw.ActionRow({ title: 'Open README' });
-        rowReadme.activatable = true;
-        rowReadme.connect('activated', () => {
-            Gio.AppInfo.launch_default_for_uri('https://github.com/nickotmazgin/comfort-control-easehub#readme', null);
-        });
-        groupLinks.add(rowReadme);
-
-        const rowDonate = new Adw.ActionRow({ title: 'Donate via PayPal' });
-        rowDonate.activatable = true;
-        rowDonate.connect('activated', () => {
-            Gio.AppInfo.launch_default_for_uri('https://www.paypal.com/donate/?hosted_button_id=4HM44VH47LSMW', null);
-        });
-        groupLinks.add(rowDonate);
-
-        const rowEmail = new Adw.ActionRow({ title: 'Email: nickotmazgin.dev@gmail.com' });
-        rowEmail.activatable = true;
-        rowEmail.connect('activated', () => {
-            Gio.AppInfo.launch_default_for_uri('mailto:nickotmazgin.dev@gmail.com', null);
-        });
-        groupLinks.add(rowEmail);
+        const addLinkRow = (title, uri) => {
+            const row = new Adw.ActionRow({ title });
+            row.activatable = true;
+            row.connect('activated', () => {
+                Gio.AppInfo.launch_default_for_uri(uri, null);
+            });
+            groupLinks.add(row);
+        };
+        addLinkRow('GitHub repository', 'https://github.com/nickotmazgin/comfort-control-easehub');
+        addLinkRow('README and documentation', 'https://github.com/nickotmazgin/comfort-control-easehub#readme');
+        addLinkRow('Report an issue', 'https://github.com/nickotmazgin/comfort-control-easehub/issues');
+        addLinkRow('Latest release', 'https://github.com/nickotmazgin/comfort-control-easehub/releases/latest');
+        addLinkRow('Donate via PayPal', 'https://www.paypal.com/donate/?hosted_button_id=4HM44VH47LSMW');
+        addLinkRow('Email: nickotmazgin.dev@gmail.com', 'mailto:nickotmazgin.dev@gmail.com');
         pageAbout.add(groupLinks);
 
         window.add(pageGeneral);
