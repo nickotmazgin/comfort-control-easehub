@@ -8,7 +8,7 @@ A **GNOME Shell extension** that brings **comfort and control to your desktop** 
 
 > **Keywords:** GNOME panel menu · power management · screenshots · dark mode · DND · terminal · Flatpak · APT · Linux utilities · open source
 
-**Latest:** v1.0.4 — GNOME 45–50 ESM + legacy 42–44
+**Latest:** v1.0.5 — GNOME 45–50 ESM + legacy 42–44
 
 ---
 

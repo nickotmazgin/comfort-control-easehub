@@ -229,9 +229,8 @@ class EaseHubIndicator extends PanelMenu.Button {
             _runCommandInTerminal('flatpak update -y', 'Updating Flatpaks...');
         }, 'system-software-update-symbolic');
 
-        // About & Donate (toggleable)
-        add('About & README…', 'about-readme', () => _openUrl('https://github.com/nickotmazgin/comfort-control-easehub#readme'), 'help-about-symbolic');
-        add('Donate (PayPal)…', 'donate', () => _openUrl('https://www.paypal.com/donate/?hosted_button_id=4HM44VH47LSMW'), 'emblem-favorite-symbolic');
+        add('About and README', 'about-readme', () => _openUrl('https://github.com/nickotmazgin/comfort-control-easehub#readme'), 'help-about-symbolic');
+        add('Donate (PayPal)', 'donate', () => _openUrl('https://www.paypal.com/donate/?hosted_button_id=4HM44VH47LSMW'), 'emblem-favorite-symbolic');
     }
 
     _sessionCall(method, arg) {

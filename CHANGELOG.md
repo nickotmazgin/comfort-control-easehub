@@ -1,43 +1,17 @@
-## 1.0.4 (2026-05-30)
+## 1.0.5 (2026-05-31)
 
-Improvements
-- Add GNOME Shell **45–50 ESM build** for GNOME Shell 46+ compatibility (classic build remains for 42–44).
-- Release artifacts renamed to `comfort-control@nickotmazgin-45-50.shell-extension.zip`.
-- Align branch protection with solo-maintainer CI-only workflow.
-- README and CHANGELOG refreshed for latest release.
+**Current release for GNOME Shell 45–50 (ESM) and legacy 42–44.**
 
----
+### Fixes
+- **Actions prefs:** removed blank toggle row in Links (GTK treated `About & README` as a mnemonic)
+- Panel menu labels: **About and README**, **Donate (PayPal)** — no special characters
 
-## 1.0.3 (2025-12-20)
+### About tab
+- Developer, version, description, and full link set (repo, README, issues, releases, PayPal, email)
 
-Improvements
-- Terminal support: add Kitty (`kitty`) to preferred/fallback terminals.
-- Dual artifacts per GNOME version (42–44 and 45–47), both ship compiled schemas.
-- Governance: branch protections refined; release pipeline improvements.
+### Included from 1.0.4
+- GNOME 45–50 ESM build for Shell 46+
+- Dual release zips: `comfort-control@nickotmazgin-42-44` and `-45-50`
+- Compiled GSettings schemas in both artifacts
 
-Notes
-- Prefer these zips; they include compiled schemas to avoid GLib.FileError on prefs.
-
----
-
-## 1.0.2 (2025-12-18)
-
-Fixes
-- Release workflow compiles schemas before packaging so `schemas/gschemas.compiled` ships inside the zip. This resolves "GLib.FileError: Failed to open gschemas.compiled" on GNOME 42–44 when installing from GitHub zip.
-
----
-
-## 1.0.1 (2025-12-17)
-
-Highlights
-- Added About & Donate in Preferences, plus README and PayPal links.
-- New toggleable actions with granular control (About, Donate, Clear Primary).
-- Preferred terminal setting used for commands and Open Terminal.
-- Cross-distro update helpers (APT, DNF, Zypper, Pacman) with pkexec.
-- Fixed D-Bus proxy usage (SessionManager + ScreenSaver) for stability.
-- Expanded GNOME compatibility to 42–47.
-- README: Support links (GitHub Sponsors + PayPal), contact info.
-
-Notes
-- Schema changed: new keys `preferred-terminal`, and defaults include new actions.
-- Run `glib-compile-schemas schemas` after updating.
+Download only from [latest release](https://github.com/nickotmazgin/comfort-control-easehub/releases/latest).
