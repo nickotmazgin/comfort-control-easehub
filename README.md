@@ -2,7 +2,7 @@
 [![Release](https://img.shields.io/github/v/release/nickotmazgin/comfort-control-easehub)](https://github.com/nickotmazgin/comfort-control-easehub/releases)
 [![Downloads](https://img.shields.io/github/downloads/nickotmazgin/comfort-control-easehub/total?label=downloads)](https://github.com/nickotmazgin/comfort-control-easehub/releases)
 
-![EaseHub — panel menu and preferences (2026)](screenshots/collage-2026.png)
+![EaseHub — panel menu and preferences (2026)](screenshots/collage-2026.jpg)
 
 A **GNOME Shell extension** that brings **comfort and control to your desktop** — quick access to power actions, Wayland screenshots, system updates, and everyday utilities from one panel menu.
 
@@ -103,9 +103,9 @@ On tag push (`v*`), GitHub Actions runs `create-release-zips.sh` and publishes b
 
 ## 🖼️ **Screenshots**
 
-![EaseHub collage 2026](screenshots/collage-2026.png)
+![EaseHub collage 2026](screenshots/collage-2026.jpg)
 
-Share-ready preview: [social-preview-2026.png](screenshots/social-preview-2026.png)
+Share-ready preview: [social-preview-2026.jpg](screenshots/social-preview-2026.jpg)
 
 We welcome contributions! Please feel free to:
 - 🐛 **Report bugs** via [GitHub Issues](https://github.com/nickotmazgin/comfort-control-easehub/issues)
