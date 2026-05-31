@@ -94,7 +94,10 @@ Find them on the Releases page: https://github.com/nickotmazgin/comfort-control-
 
 ### 🧪 Packaging (CI)
 
-On tag push (`v*`), GitHub Actions builds `comfort-control@nickotmazgin.shell-extension.zip` and publishes a release automatically.
+On tag push (`v*`), GitHub Actions runs `create-release-zips.sh` and publishes both artifacts automatically:
+
+- `comfort-control@nickotmazgin-42-44.shell-extension.zip`
+- `comfort-control@nickotmazgin-45-50.shell-extension.zip`
 
 ---
 
