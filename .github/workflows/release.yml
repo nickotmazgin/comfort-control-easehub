@@ -23,7 +23,7 @@ jobs:
         run: |
           glib-compile-schemas schemas
 
-      - name: Build dual release zips (42–44 and 45–50)
+      - name: Build release zip (45–50)
         run: |
           chmod +x ./create-release-zips.sh
           ./create-release-zips.sh

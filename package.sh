@@ -6,17 +6,26 @@ cd "$ROOT_DIR"
 
 UUID=$(python3 -c 'import json; print(json.load(open("metadata.json"))["uuid"])')
 OUT_DIR="$ROOT_DIR/dist"
+WORK="$ROOT_DIR/.package-build"
 mkdir -p "$OUT_DIR"
+rm -rf "$WORK"
+mkdir -p "$WORK"
+
+cp extension-esm.js "$WORK/extension.js"
+cp prefs-esm.js "$WORK/prefs.js"
+cp metadata.json stylesheet.css "$WORK/"
+cp -r schemas "$WORK/"
 
 ZIP="${OUT_DIR}/${UUID}.shell-extension.zip"
 rm -f "$ZIP"
 
 echo "Compiling schemas…"
-glib-compile-schemas schemas
+glib-compile-schemas "$WORK/schemas"
 
 echo "Packing -> $ZIP"
-zip -r "$ZIP" \
-  extension.js prefs.js metadata.json stylesheet.css schemas screenshots README.md LICENSE CODE_OF_CONDUCT.md SECURITY.md >/dev/null
+(cd "$WORK" && zip -r "$ZIP" \
+  extension.js prefs.js metadata.json stylesheet.css schemas \
+  >/dev/null)
 
+rm -rf "$WORK"
 echo "Done: $ZIP"
-
