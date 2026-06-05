@@ -8,7 +8,9 @@ A **GNOME Shell extension** that brings **comfort and control to your desktop** 
 
 > **Keywords:** GNOME panel menu · power management · screenshots · dark mode · DND · terminal · Flatpak · APT · Linux utilities · open source
 
-**Latest:** v1.0.5 — GNOME 45–50 ESM + legacy 42–44
+**Latest:** v1.0.5 — GNOME 45–50 ESM
+
+> **GNOME Shell 42–44 is no longer supported.** EaseHub requires **GNOME 45–50**.
 
 ---
 
@@ -40,9 +42,10 @@ A **GNOME Shell extension** that brings **comfort and control to your desktop** 
 * Set a preferred terminal (kgx, gnome-terminal, tilix, etc.) in Preferences
 
 ### 🎯 **Compatibility**
-* **Officially supports** GNOME Shell versions **42–50**
-* **Cross-platform** - Works on Wayland and Xorg
-* **Lightweight** - Minimal resource usage
+* **Supports** GNOME Shell **45–50** (ESM)
+* GNOME **42–44** support is **discontinued**
+* **Cross-platform** — Works on Wayland and Xorg
+* **Lightweight** — Minimal resource usage
 
 ---
 
@@ -81,22 +84,14 @@ gnome-extensions enable "$uuid"
 
 **Note**: On Wayland, you may need to log out/in for changes to take effect.
 
-**Latest:** v1.0.4 — GNOME 45–50 build (Shell 46 tested on Zorin OS 18.1)
-
 ### 📥 Which Zip Should I Download?
 
-Every release publishes two artifacts; choose based on your GNOME Shell version:
-- GNOME 42–44 → `comfort-control@nickotmazgin-42-44.shell-extension.zip`
-- GNOME 45–50 → `comfort-control@nickotmazgin-45-50.shell-extension.zip`
-
-Both zips include compiled schemas to ensure Preferences open correctly.
-Find them on the Releases page: https://github.com/nickotmazgin/comfort-control-easehub/releases
+Download **`comfort-control@nickotmazgin-45-50.shell-extension.zip`** from the [Releases page](https://github.com/nickotmazgin/comfort-control-easehub/releases/latest) (GNOME Shell **45–50** only).
 
 ### 🧪 Packaging (CI)
 
-On tag push (`v*`), GitHub Actions runs `create-release-zips.sh` and publishes both artifacts automatically:
+On tag push (`v*`), GitHub Actions runs `create-release-zips.sh` and publishes:
 
-- `comfort-control@nickotmazgin-42-44.shell-extension.zip`
 - `comfort-control@nickotmazgin-45-50.shell-extension.zip`
 
 ---

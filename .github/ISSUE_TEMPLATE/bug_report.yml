@@ -11,7 +11,7 @@ body:
   - type: input
     attributes:
       label: GNOME Shell version
-      placeholder: e.g., 42.9 / 43.8 / 44.5
+      placeholder: e.g., 45.4 / 46.2 (Wayland)
     validations:
       required: true
   - type: textarea
