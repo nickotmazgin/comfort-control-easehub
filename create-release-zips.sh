@@ -38,13 +38,15 @@ copy_core "$WORK/45-50"
 cp extension-esm.js "$WORK/45-50/extension.js"
 cp prefs-esm.js "$WORK/45-50/prefs.js"
 patch_metadata_shell_versions "$WORK/45-50/metadata.json" 45 46 47 48 49 50
-python3 - "$WORK/45-50/metadata.json" << 'PY'
+python3 - "$WORK/45-50/metadata.json" metadata.json << 'PY'
 import json, sys
-path = sys.argv[1]
+path, src = sys.argv[1], sys.argv[2]
+with open(src, encoding='utf-8') as f:
+    root = json.load(f)
 with open(path, 'r+', encoding='utf-8') as f:
     m = json.load(f)
-    m['version'] = 6
-    m['version-name'] = '1.0.5 45.50'
+    m['version'] = root['version']
+    m['version-name'] = root['version-name']
     f.seek(0)
     json.dump(m, f, indent=2)
     f.write('\n')

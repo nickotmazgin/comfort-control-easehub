@@ -4,6 +4,7 @@ import Clutter from 'gi://Clutter';
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
+import Meta from 'gi://Meta';
 import St from 'gi://St';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
@@ -55,6 +56,41 @@ function _which(name) {
     } catch {
         return false;
     }
+}
+
+function _resolveSudoExtend(settings) {
+    try {
+        const custom = (settings.get_string('sudo-extend-command') || '').trim();
+        if (custom)
+            return custom;
+    } catch {}
+    const local = GLib.build_filenamev([GLib.get_home_dir(), '.local', 'bin', 'sudo-extend']);
+    if (GLib.file_test(local, GLib.FileTest.IS_EXECUTABLE))
+        return local;
+    if (_which('sudo-extend'))
+        return 'sudo-extend';
+    return null;
+}
+
+function _runSudoExtend(arg, title, settings) {
+    const bin = _resolveSudoExtend(settings);
+    if (!bin) {
+        _notify('sudo-extend not found. Install to ~/.local/bin or set its path in EaseHub Preferences.');
+        return;
+    }
+    const cmd = arg ? `${bin} ${arg}` : `${bin} menu`;
+    _runCommandInTerminal(cmd, title, settings);
+}
+
+function _restartShell(settings) {
+    _confirmIfNeeded('Restart GNOME Shell (like Alt+F2 → r)', () => {
+        try {
+            Meta.restart('Restarting…');
+        } catch (e) {
+            console.error('[EaseHub] Shell restart error:', e);
+            _notify('Failed to restart GNOME Shell');
+        }
+    }, settings);
 }
 
 function _runCommandInTerminal(command, title, settings) {
@@ -140,6 +176,7 @@ class EaseHubIndicator extends PanelMenu.Button {
         this._settings = settings;
         this.add_child(new St.Icon({ icon_name: 'system-run-symbolic', style_class: 'easehub-icon' }));
         this._buildMenu();
+        this._settings.connect('changed::enabled-actions', () => this._buildMenu());
     }
 
     _buildMenu() {
@@ -174,6 +211,27 @@ class EaseHubIndicator extends PanelMenu.Button {
         add('Extensions', 'extensions', () => _spawn('gnome-extensions-app'), 'application-x-addon-symbolic');
         add('Tweaks', 'tweaks', () => _spawn('gnome-tweaks'), 'emblem-system-symbolic');
         add('Open Terminal', 'open-terminal', () => _runCommandInTerminal(null, 'Terminal', settings), 'utilities-terminal-symbolic');
+        add('Restart GNOME Shell', 'shell-restart', () => _restartShell(settings), 'view-refresh-symbolic');
+
+        if (enabled.has('sudo-extend')) {
+            const sub = new PopupMenu.PopupSubMenuMenuItem('Sudo Timeout', true);
+            sub.insert_child_at_index(new St.Icon({
+                icon_name: 'security-high-symbolic',
+                style_class: 'popup-menu-icon',
+            }), 0);
+            const addSub = (label, arg) => {
+                const it = new PopupMenu.PopupMenuItem(label);
+                it.connect('activate', () => _runSudoExtend(arg, 'Sudo Timeout', settings));
+                sub.menu.addMenuItem(it);
+            };
+            addSub('Show status', 'show');
+            addSub('Interactive menu…', 'menu');
+            sub.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+            for (const mins of [15, 30, 60, 120]) {
+                addSub(`Extend ${mins} minutes`, String(mins));
+            }
+            this.menu.addMenuItem(sub);
+        }
 
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 

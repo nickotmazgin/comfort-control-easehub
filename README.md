@@ -59,6 +59,8 @@ A **GNOME Shell extension** that brings **comfort and control to your desktop** 
 ### 🧩 **Configurable Actions & Terminal**
 * Enable/disable any menu item from Preferences → Actions
 * Set a preferred terminal (kgx, gnome-terminal, tilix, etc.) in Preferences
+* **Restart GNOME Shell** (Alt+F2 → r) with optional confirmation
+* **Sudo Timeout** submenu — status, interactive menu, and 15/30/60/120 min presets (uses `sudo-extend` in terminal)
 
 ---
 
