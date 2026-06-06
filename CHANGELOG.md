@@ -1,32 +1,9 @@
-## 1.0.8 (2026-06-06)
+## 1.0.9 (2026-06-06)
 
-### Safety
-- **Restart GNOME Shell** is now a **guide only** (Alt+F2 → r) — removed `Meta.restart` / `reexec_self` which could log you out on Zorin/GNOME 46
+**Reverted experimental panel items — back to stable v1.0.5 menu.**
 
-### Sudo Timeout submenu
-- **Show status** uses login shell (`bash -lc`) so **sudo-show** alias works; falls back to `sudo-extend current`
-- **Refresh sudo cache (sudo -v)** — new item
-- Terminal stays open until you press Enter (fixed kgx path that closed in under a second)
-- gnome-terminal uses `--wait` so preset/status output is readable
-
-## 1.0.7 (2026-06-06)
-
-### Fix
-- **Restart GNOME Shell** — call `Meta.restart(message, global.context)` (GNOME 46 API); fallback to `global.reexec_self()`. Works on **X11**; shows a clear message on Wayland where restart is blocked.
-
-## 1.0.6 (2026-06-06)
-
-**Panel menu: Restart GNOME Shell + sudo-extend timeout submenu.**
-
-### New menu actions
-- **Restart GNOME Shell** — same as Alt+F2 → r; respects **Confirm dangerous actions**
-- **Sudo Timeout** submenu — Show status, interactive menu, and presets (15 / 30 / 60 / 120 min) via terminal
-- Auto-detects `~/.local/bin/sudo-extend` or PATH; optional custom path in Preferences → General
-
-### Preferences
-- **sudo-extend command** path field on General tab
-- Actions toggles for **Restart GNOME Shell** and **Sudo Timeout submenu**
-- Menu refreshes when Actions toggles change (no shell reload required)
+- Removed **Restart GNOME Shell** and **Sudo Timeout** submenu (v1.0.6–1.0.8)
+- Restores the proven Lock/Logout/Power, updates, screenshots, and utilities menu
 
 ## End of GNOME Shell 42–44 support — 2026-06-02
 
