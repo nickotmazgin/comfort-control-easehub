@@ -85,10 +85,20 @@ function _runSudoExtend(arg, title, settings) {
 function _restartShell(settings) {
     _confirmIfNeeded('Restart GNOME Shell (like Alt+F2 → r)', () => {
         try {
-            Meta.restart('Restarting…');
+            if (Meta.is_wayland_compositor()) {
+                _notify('GNOME Shell restart is not available on Wayland. Log out and back in instead.');
+                return;
+            }
+            // GNOME 46+: Meta.restart(message, context) — same as Alt+F2 → r
+            Meta.restart('Restarting…', global.context);
         } catch (e) {
-            console.error('[EaseHub] Shell restart error:', e);
-            _notify('Failed to restart GNOME Shell');
+            console.error('[EaseHub] Meta.restart failed:', e);
+            try {
+                global.reexec_self();
+            } catch (e2) {
+                console.error('[EaseHub] reexec_self failed:', e2);
+                _notify('Failed to restart GNOME Shell — try Alt+F2 → r');
+            }
         }
     }, settings);
 }

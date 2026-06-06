@@ -1,3 +1,8 @@
+## 1.0.7 (2026-06-06)
+
+### Fix
+- **Restart GNOME Shell** — call `Meta.restart(message, global.context)` (GNOME 46 API); fallback to `global.reexec_self()`. Works on **X11**; shows a clear message on Wayland where restart is blocked.
+
 ## 1.0.6 (2026-06-06)
 
 **Panel menu: Restart GNOME Shell + sudo-extend timeout submenu.**
