@@ -57,64 +57,6 @@ function _which(name) {
     }
 }
 
-function _resolveSudoExtend(settings) {
-    try {
-        const custom = (settings.get_string('sudo-extend-command') || '').trim();
-        if (custom)
-            return custom;
-    } catch {}
-    const local = GLib.build_filenamev([GLib.get_home_dir(), '.local', 'bin', 'sudo-extend']);
-    if (GLib.file_test(local, GLib.FileTest.IS_EXECUTABLE))
-        return local;
-    if (_which('sudo-extend'))
-        return 'sudo-extend';
-    return null;
-}
-
-function _runSudoExtend(mode, title, settings) {
-    const bin = _resolveSudoExtend(settings);
-    if (!bin) {
-        _notify('sudo-extend not found. Install to ~/.local/bin or set its path in EaseHub Preferences.');
-        return;
-    }
-    const qbin = bin.replace(/'/g, "'\\''");
-    let inner;
-    switch (mode) {
-    case 'status':
-        // sudo-show is a shell alias on many setups — login shell loads it
-        inner = `command -v sudo-show >/dev/null 2>&1 && sudo-show || '${qbin}' current`;
-        break;
-    case 'menu':
-        inner = `'${qbin}' menu`;
-        break;
-    case 'sudo-v':
-        inner = `echo 'Refreshing sudo credential cache (sudo -v)…'; echo; sudo -v && echo && echo 'OK — sudo cache refreshed.' || echo && echo 'Failed — enter password when prompted.'`;
-        break;
-    default:
-        inner = `'${qbin}' ${mode}`;
-        break;
-    }
-    // bash -lc: load user aliases (sudo-show) and keep terminal open until Enter
-    _runCommandInTerminal(`bash -lc '${inner.replace(/'/g, "'\\''")}'`, title, settings);
-}
-
-/** Safe guide only — never call Meta.restart/reexec_self (can log out on Zorin/GNOME 46). */
-function _showShellRestartGuide() {
-    const d = new ModalDialog.ModalDialog({ styleClass: 'prompt-dialog' });
-    const label = new St.Label({
-        text: 'Reload GNOME Shell safely (X11):\n\n' +
-            '1. Press Alt+F2\n' +
-            '2. Type: r\n' +
-            '3. Press Enter\n\n' +
-            'EaseHub does not auto-restart the shell — that can log you out or crash the session on some desktops (including Zorin).',
-        x_align: Clutter.ActorAlign.START,
-    });
-    label.clutter_text.line_wrap = true;
-    d.contentLayout.add_child(label);
-    d.addButton({ label: 'Got it', action: () => d.close(), default: true, key: Clutter.KEY_Escape });
-    d.open();
-}
-
 function _runCommandInTerminal(command, title, settings) {
     if (!command) {
         try {
@@ -127,7 +69,7 @@ function _runCommandInTerminal(command, title, settings) {
         return;
     }
 
-    const holdOpenFragment = "; echo; echo 'Press ENTER to close this window.'; read -r _";
+    const holdOpenFragment = "; echo; echo 'Process finished. Press ENTER to close.'; read";
     const escapedCommand = command.replace(/'/g, "'\\''");
     const fullCommand = `'${escapedCommand}'${holdOpenFragment}`;
 
@@ -135,11 +77,11 @@ function _runCommandInTerminal(command, title, settings) {
         const pref = (settings.get_string('preferred-terminal') || '').trim();
         if (pref) {
             if (pref === 'gnome-terminal' && _which('gnome-terminal')) {
-                _spawn(`gnome-terminal --title="${title}" --wait -- bash -c ${fullCommand}`);
+                _spawn(`gnome-terminal --title="${title}" -- bash -c ${fullCommand}`);
                 return;
             }
             if (pref === 'kgx' && _which('kgx')) {
-                _spawn(`kgx --title="${title}" -- bash -c ${fullCommand}`);
+                _spawn(`kgx --title="${title}" --hold -e bash -c '${escapedCommand}'`);
                 return;
             }
             if (pref === 'tilix' && _which('tilix')) {
@@ -154,11 +96,11 @@ function _runCommandInTerminal(command, title, settings) {
     } catch {}
 
     if (_which('gnome-terminal')) {
-        _spawn(`gnome-terminal --title="${title}" --wait -- bash -c ${fullCommand}`);
+        _spawn(`gnome-terminal --title="${title}" -- bash -c ${fullCommand}`);
         return;
     }
     if (_which('kgx')) {
-        _spawn(`kgx --title="${title}" -- bash -c ${fullCommand}`);
+        _spawn(`kgx --title="${title}" --hold -e bash -c '${escapedCommand}'`);
         return;
     }
     if (_which('kitty')) {
@@ -198,7 +140,6 @@ class EaseHubIndicator extends PanelMenu.Button {
         this._settings = settings;
         this.add_child(new St.Icon({ icon_name: 'system-run-symbolic', style_class: 'easehub-icon' }));
         this._buildMenu();
-        this._settings.connect('changed::enabled-actions', () => this._buildMenu());
     }
 
     _buildMenu() {
@@ -233,28 +174,6 @@ class EaseHubIndicator extends PanelMenu.Button {
         add('Extensions', 'extensions', () => _spawn('gnome-extensions-app'), 'application-x-addon-symbolic');
         add('Tweaks', 'tweaks', () => _spawn('gnome-tweaks'), 'emblem-system-symbolic');
         add('Open Terminal', 'open-terminal', () => _runCommandInTerminal(null, 'Terminal', settings), 'utilities-terminal-symbolic');
-        add('Restart GNOME Shell…', 'shell-restart', () => _showShellRestartGuide(), 'view-refresh-symbolic');
-
-        if (enabled.has('sudo-extend')) {
-            const sub = new PopupMenu.PopupSubMenuMenuItem('Sudo Timeout', true);
-            sub.insert_child_at_index(new St.Icon({
-                icon_name: 'security-high-symbolic',
-                style_class: 'popup-menu-icon',
-            }), 0);
-            const addSub = (label, mode) => {
-                const it = new PopupMenu.PopupMenuItem(label);
-                it.connect('activate', () => _runSudoExtend(mode, 'Sudo Timeout', settings));
-                sub.menu.addMenuItem(it);
-            };
-            addSub('Show status (sudo-show)', 'status');
-            addSub('Refresh sudo cache (sudo -v)', 'sudo-v');
-            addSub('Interactive menu…', 'menu');
-            sub.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
-            for (const mins of [15, 30, 60, 120]) {
-                addSub(`Extend ${mins} minutes`, String(mins));
-            }
-            this.menu.addMenuItem(sub);
-        }
 
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 

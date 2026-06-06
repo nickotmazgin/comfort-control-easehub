@@ -59,8 +59,6 @@ A **GNOME Shell extension** that brings **comfort and control to your desktop** 
 ### 🧩 **Configurable Actions & Terminal**
 * Enable/disable any menu item from Preferences → Actions
 * Set a preferred terminal (kgx, gnome-terminal, tilix, etc.) in Preferences
-* **Restart GNOME Shell…** — safe step-by-step guide (Alt+F2 → r); does not auto-restart (avoids session logout on Zorin)
-* **Sudo Timeout** submenu — status via **sudo-show**, **sudo -v**, interactive menu, and 15/30/60/120 min presets (terminal stays open)
 
 ---
 

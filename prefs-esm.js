@@ -17,30 +17,12 @@ export default class EaseHubPreferences extends ExtensionPreferences {
             active: settings.get_boolean('confirm-dangerous'),
             valign: Gtk.Align.CENTER,
         });
-        rowConfirm.set_subtitle('Logout, reboot, and power off');
         rowConfirm.add_suffix(swConfirm);
         rowConfirm.activatable_widget = swConfirm;
         swConfirm.connect('notify::active', () => {
             settings.set_boolean('confirm-dangerous', swConfirm.active);
         });
         groupGeneral.add(rowConfirm);
-
-        const rowSudoExtend = new Adw.ActionRow({
-            title: 'sudo-extend command',
-            subtitle: 'Leave empty to auto-detect ~/.local/bin/sudo-extend',
-        });
-        const entrySudoExtend = new Gtk.Entry({
-            placeholder_text: 'e.g. /home/you/.local/bin/sudo-extend',
-        });
-        try {
-            entrySudoExtend.set_text(settings.get_string('sudo-extend-command') || '');
-        } catch {}
-        rowSudoExtend.add_suffix(entrySudoExtend);
-        rowSudoExtend.activatable_widget = entrySudoExtend;
-        entrySudoExtend.connect('changed', () => {
-            settings.set_string('sudo-extend-command', entrySudoExtend.get_text());
-        });
-        groupGeneral.add(rowSudoExtend);
 
         const choices = [
             { label: 'Auto (detect best)', value: '' },
@@ -122,10 +104,6 @@ export default class EaseHubPreferences extends ExtensionPreferences {
                 ['extensions', 'Extensions'],
                 ['tweaks', 'Tweaks'],
                 ['open-terminal', 'Open Terminal'],
-                ['shell-restart', 'Restart GNOME Shell (guide only)'],
-            ]},
-            { title: 'Advanced', ids: [
-                ['sudo-extend', 'Sudo Timeout submenu'],
             ]},
             { title: 'Utilities', ids: [
                 ['clipboard-clear', 'Clear Clipboard'],
