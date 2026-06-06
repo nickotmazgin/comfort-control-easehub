@@ -1,8 +1,16 @@
 # Comfort Control (EaseHub)
-[![Release](https://img.shields.io/github/v/release/nickotmazgin/comfort-control-easehub)](https://github.com/nickotmazgin/comfort-control-easehub/releases)
-[![Downloads](https://img.shields.io/github/downloads/nickotmazgin/comfort-control-easehub/total?label=downloads)](https://github.com/nickotmazgin/comfort-control-easehub/releases)
 
-![EaseHub — panel menu and preferences (2026)](screenshots/collage-2026.png)
+[![Release](https://img.shields.io/github/v/release/nickotmazgin/comfort-control-easehub?include_prereleases=false&display_name=tag)](https://github.com/nickotmazgin/comfort-control-easehub/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/nickotmazgin/comfort-control-easehub/total?label=downloads&color=success)](https://github.com/nickotmazgin/comfort-control-easehub/releases)
+[![License: MIT](https://img.shields.io/github/license/nickotmazgin/comfort-control-easehub)](LICENSE)
+[![GNOME 45–50](https://img.shields.io/badge/GNOME-45%E2%80%9350-4A86CF?logo=gnome&logoColor=white)](#compatibility)
+[![ESM](https://img.shields.io/badge/ESM-GJS%20modules-orange)](#compatibility)
+[![Wayland](https://img.shields.io/badge/Wayland-ready-0078D4)](#compatibility)
+
+[![Issues](https://img.shields.io/github/issues/nickotmazgin/comfort-control-easehub)](https://github.com/nickotmazgin/comfort-control-easehub/issues)
+[![Discussions](https://img.shields.io/github/discussions/nickotmazgin/comfort-control-easehub?label=discussions&color=8B5CF6)](https://github.com/nickotmazgin/comfort-control-easehub/discussions)
+[![Sponsor](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ff5c93?logo=github-sponsors&logoColor=white)](https://github.com/sponsors/nickotmazgin)
+[![PayPal](https://img.shields.io/badge/Donate-PayPal-0070BA?logo=paypal&logoColor=white)](https://www.paypal.com/donate/?hosted_button_id=4HM44VH47LSMW)
 
 A **GNOME Shell extension** that brings **comfort and control to your desktop** — quick access to power actions, Wayland screenshots, system updates, and everyday utilities from one panel menu.
 
@@ -11,6 +19,17 @@ A **GNOME Shell extension** that brings **comfort and control to your desktop** 
 **Latest:** v1.0.5 — GNOME 45–50 ESM
 
 > **GNOME Shell 42–44 is no longer supported.** EaseHub requires **GNOME 45–50**.
+
+---
+
+## Compatibility
+
+| GNOME | Status | Notes |
+| ----- | ------ | ----- |
+| **45–50** | **Supported** | ESM build; zip `comfort-control@nickotmazgin-45-50` |
+| **42–44** | **Discontinued** | No longer built or maintained |
+
+**Minimum requirement:** GNOME Shell **45**.
 
 ---
 
@@ -40,12 +59,6 @@ A **GNOME Shell extension** that brings **comfort and control to your desktop** 
 ### 🧩 **Configurable Actions & Terminal**
 * Enable/disable any menu item from Preferences → Actions
 * Set a preferred terminal (kgx, gnome-terminal, tilix, etc.) in Preferences
-
-### 🎯 **Compatibility**
-* **Supports** GNOME Shell **45–50** (ESM)
-* GNOME **42–44** support is **discontinued**
-* **Cross-platform** — Works on Wayland and Xorg
-* **Lightweight** — Minimal resource usage
 
 ---
 
@@ -122,8 +135,8 @@ This project is licensed under the [**MIT License**](LICENSE) © **Nick Otmazgin
 
 If **EaseHub** enhances your GNOME experience, consider supporting its continued development:
 
-[![GitHub Sponsors](https://img.shields.io/badge/Sponsor-GitHub%20Sponsors-ff5c93?logo=github-sponsors&logoColor=white)](https://github.com/sponsors/nickotmazgin)
-[![PayPal](https://img.shields.io/badge/Donate-PayPal-blue.svg)](https://www.paypal.com/donate/?hosted_button_id=4HM44VH47LSMW)
+[![Sponsor](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ff5c93?logo=github-sponsors&logoColor=white)](https://github.com/sponsors/nickotmazgin)
+[![PayPal](https://img.shields.io/badge/Donate-PayPal-0070BA?logo=paypal&logoColor=white)](https://www.paypal.com/donate/?hosted_button_id=4HM44VH47LSMW)
 
 Your support helps maintain and improve this extension for the entire GNOME community! 💙
 
