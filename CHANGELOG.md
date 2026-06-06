@@ -1,3 +1,14 @@
+## 1.0.8 (2026-06-06)
+
+### Safety
+- **Restart GNOME Shell** is now a **guide only** (Alt+F2 → r) — removed `Meta.restart` / `reexec_self` which could log you out on Zorin/GNOME 46
+
+### Sudo Timeout submenu
+- **Show status** uses login shell (`bash -lc`) so **sudo-show** alias works; falls back to `sudo-extend current`
+- **Refresh sudo cache (sudo -v)** — new item
+- Terminal stays open until you press Enter (fixed kgx path that closed in under a second)
+- gnome-terminal uses `--wait` so preset/status output is readable
+
 ## 1.0.7 (2026-06-06)
 
 ### Fix

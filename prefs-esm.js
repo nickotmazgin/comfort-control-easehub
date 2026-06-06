@@ -17,7 +17,7 @@ export default class EaseHubPreferences extends ExtensionPreferences {
             active: settings.get_boolean('confirm-dangerous'),
             valign: Gtk.Align.CENTER,
         });
-        rowConfirm.set_subtitle('Logout, reboot, power off, and Restart GNOME Shell');
+        rowConfirm.set_subtitle('Logout, reboot, and power off');
         rowConfirm.add_suffix(swConfirm);
         rowConfirm.activatable_widget = swConfirm;
         swConfirm.connect('notify::active', () => {
@@ -122,7 +122,7 @@ export default class EaseHubPreferences extends ExtensionPreferences {
                 ['extensions', 'Extensions'],
                 ['tweaks', 'Tweaks'],
                 ['open-terminal', 'Open Terminal'],
-                ['shell-restart', 'Restart GNOME Shell'],
+                ['shell-restart', 'Restart GNOME Shell (guide only)'],
             ]},
             { title: 'Advanced', ids: [
                 ['sudo-extend', 'Sudo Timeout submenu'],
