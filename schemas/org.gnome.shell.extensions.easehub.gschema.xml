@@ -3,7 +3,7 @@
   <schema id="org.gnome.shell.extensions.easehub" path="/org/gnome/shell/extensions/easehub/">
     <key name="confirm-dangerous" type="b">
       <default>true</default>
-      <summary>Ask confirmation for logout, reboot, power off, and GNOME Shell restart</summary>
+      <summary>Ask confirmation for logout, reboot, and power off</summary>
     </key>
     <key name="preferred-terminal" type="s">
       <default>''</default>

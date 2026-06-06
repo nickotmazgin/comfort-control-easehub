@@ -4,7 +4,6 @@ import Clutter from 'gi://Clutter';
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
-import Meta from 'gi://Meta';
 import St from 'gi://St';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
@@ -72,35 +71,48 @@ function _resolveSudoExtend(settings) {
     return null;
 }
 
-function _runSudoExtend(arg, title, settings) {
+function _runSudoExtend(mode, title, settings) {
     const bin = _resolveSudoExtend(settings);
     if (!bin) {
         _notify('sudo-extend not found. Install to ~/.local/bin or set its path in EaseHub Preferences.');
         return;
     }
-    const cmd = arg ? `${bin} ${arg}` : `${bin} menu`;
-    _runCommandInTerminal(cmd, title, settings);
+    const qbin = bin.replace(/'/g, "'\\''");
+    let inner;
+    switch (mode) {
+    case 'status':
+        // sudo-show is a shell alias on many setups — login shell loads it
+        inner = `command -v sudo-show >/dev/null 2>&1 && sudo-show || '${qbin}' current`;
+        break;
+    case 'menu':
+        inner = `'${qbin}' menu`;
+        break;
+    case 'sudo-v':
+        inner = `echo 'Refreshing sudo credential cache (sudo -v)…'; echo; sudo -v && echo && echo 'OK — sudo cache refreshed.' || echo && echo 'Failed — enter password when prompted.'`;
+        break;
+    default:
+        inner = `'${qbin}' ${mode}`;
+        break;
+    }
+    // bash -lc: load user aliases (sudo-show) and keep terminal open until Enter
+    _runCommandInTerminal(`bash -lc '${inner.replace(/'/g, "'\\''")}'`, title, settings);
 }
 
-function _restartShell(settings) {
-    _confirmIfNeeded('Restart GNOME Shell (like Alt+F2 → r)', () => {
-        try {
-            if (Meta.is_wayland_compositor()) {
-                _notify('GNOME Shell restart is not available on Wayland. Log out and back in instead.');
-                return;
-            }
-            // GNOME 46+: Meta.restart(message, context) — same as Alt+F2 → r
-            Meta.restart('Restarting…', global.context);
-        } catch (e) {
-            console.error('[EaseHub] Meta.restart failed:', e);
-            try {
-                global.reexec_self();
-            } catch (e2) {
-                console.error('[EaseHub] reexec_self failed:', e2);
-                _notify('Failed to restart GNOME Shell — try Alt+F2 → r');
-            }
-        }
-    }, settings);
+/** Safe guide only — never call Meta.restart/reexec_self (can log out on Zorin/GNOME 46). */
+function _showShellRestartGuide() {
+    const d = new ModalDialog.ModalDialog({ styleClass: 'prompt-dialog' });
+    const label = new St.Label({
+        text: 'Reload GNOME Shell safely (X11):\n\n' +
+            '1. Press Alt+F2\n' +
+            '2. Type: r\n' +
+            '3. Press Enter\n\n' +
+            'EaseHub does not auto-restart the shell — that can log you out or crash the session on some desktops (including Zorin).',
+        x_align: Clutter.ActorAlign.START,
+    });
+    label.clutter_text.line_wrap = true;
+    d.contentLayout.add_child(label);
+    d.addButton({ label: 'Got it', action: () => d.close(), default: true, key: Clutter.KEY_Escape });
+    d.open();
 }
 
 function _runCommandInTerminal(command, title, settings) {
@@ -115,7 +127,7 @@ function _runCommandInTerminal(command, title, settings) {
         return;
     }
 
-    const holdOpenFragment = "; echo; echo 'Process finished. Press ENTER to close.'; read";
+    const holdOpenFragment = "; echo; echo 'Press ENTER to close this window.'; read -r _";
     const escapedCommand = command.replace(/'/g, "'\\''");
     const fullCommand = `'${escapedCommand}'${holdOpenFragment}`;
 
@@ -123,11 +135,11 @@ function _runCommandInTerminal(command, title, settings) {
         const pref = (settings.get_string('preferred-terminal') || '').trim();
         if (pref) {
             if (pref === 'gnome-terminal' && _which('gnome-terminal')) {
-                _spawn(`gnome-terminal --title="${title}" -- bash -c ${fullCommand}`);
+                _spawn(`gnome-terminal --title="${title}" --wait -- bash -c ${fullCommand}`);
                 return;
             }
             if (pref === 'kgx' && _which('kgx')) {
-                _spawn(`kgx --title="${title}" --hold -e bash -c '${escapedCommand}'`);
+                _spawn(`kgx --title="${title}" -- bash -c ${fullCommand}`);
                 return;
             }
             if (pref === 'tilix' && _which('tilix')) {
@@ -142,11 +154,11 @@ function _runCommandInTerminal(command, title, settings) {
     } catch {}
 
     if (_which('gnome-terminal')) {
-        _spawn(`gnome-terminal --title="${title}" -- bash -c ${fullCommand}`);
+        _spawn(`gnome-terminal --title="${title}" --wait -- bash -c ${fullCommand}`);
         return;
     }
     if (_which('kgx')) {
-        _spawn(`kgx --title="${title}" --hold -e bash -c '${escapedCommand}'`);
+        _spawn(`kgx --title="${title}" -- bash -c ${fullCommand}`);
         return;
     }
     if (_which('kitty')) {
@@ -221,7 +233,7 @@ class EaseHubIndicator extends PanelMenu.Button {
         add('Extensions', 'extensions', () => _spawn('gnome-extensions-app'), 'application-x-addon-symbolic');
         add('Tweaks', 'tweaks', () => _spawn('gnome-tweaks'), 'emblem-system-symbolic');
         add('Open Terminal', 'open-terminal', () => _runCommandInTerminal(null, 'Terminal', settings), 'utilities-terminal-symbolic');
-        add('Restart GNOME Shell', 'shell-restart', () => _restartShell(settings), 'view-refresh-symbolic');
+        add('Restart GNOME Shell…', 'shell-restart', () => _showShellRestartGuide(), 'view-refresh-symbolic');
 
         if (enabled.has('sudo-extend')) {
             const sub = new PopupMenu.PopupSubMenuMenuItem('Sudo Timeout', true);
@@ -229,12 +241,13 @@ class EaseHubIndicator extends PanelMenu.Button {
                 icon_name: 'security-high-symbolic',
                 style_class: 'popup-menu-icon',
             }), 0);
-            const addSub = (label, arg) => {
+            const addSub = (label, mode) => {
                 const it = new PopupMenu.PopupMenuItem(label);
-                it.connect('activate', () => _runSudoExtend(arg, 'Sudo Timeout', settings));
+                it.connect('activate', () => _runSudoExtend(mode, 'Sudo Timeout', settings));
                 sub.menu.addMenuItem(it);
             };
-            addSub('Show status', 'show');
+            addSub('Show status (sudo-show)', 'status');
+            addSub('Refresh sudo cache (sudo -v)', 'sudo-v');
             addSub('Interactive menu…', 'menu');
             sub.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
             for (const mins of [15, 30, 60, 120]) {
