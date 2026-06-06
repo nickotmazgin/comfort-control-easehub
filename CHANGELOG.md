@@ -1,3 +1,17 @@
+## 1.0.6 (2026-06-06)
+
+**Panel menu: Restart GNOME Shell + sudo-extend timeout submenu.**
+
+### New menu actions
+- **Restart GNOME Shell** — same as Alt+F2 → r; respects **Confirm dangerous actions**
+- **Sudo Timeout** submenu — Show status, interactive menu, and presets (15 / 30 / 60 / 120 min) via terminal
+- Auto-detects `~/.local/bin/sudo-extend` or PATH; optional custom path in Preferences → General
+
+### Preferences
+- **sudo-extend command** path field on General tab
+- Actions toggles for **Restart GNOME Shell** and **Sudo Timeout submenu**
+- Menu refreshes when Actions toggles change (no shell reload required)
+
 ## End of GNOME Shell 42–44 support — 2026-06-02
 
 **EaseHub no longer builds, tests, or maintains a GNOME Shell 42–44 package.**

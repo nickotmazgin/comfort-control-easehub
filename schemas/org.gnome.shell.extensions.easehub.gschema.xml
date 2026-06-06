@@ -3,14 +3,18 @@
   <schema id="org.gnome.shell.extensions.easehub" path="/org/gnome/shell/extensions/easehub/">
     <key name="confirm-dangerous" type="b">
       <default>true</default>
-      <summary>Ask confirmation for logout, reboot, and power off</summary>
+      <summary>Ask confirmation for logout, reboot, power off, and GNOME Shell restart</summary>
     </key>
     <key name="preferred-terminal" type="s">
       <default>''</default>
       <summary>Preferred terminal command (kgx, gnome-terminal, tilix, etc.)</summary>
     </key>
+    <key name="sudo-extend-command" type="s">
+      <default>''</default>
+      <summary>Optional path to sudo-extend (empty = ~/.local/bin/sudo-extend or PATH)</summary>
+    </key>
     <key name="enabled-actions" type="as">
-      <default>['lock','logout','reboot','poweroff','suspend','dnd','darkmode','settings','extensions','tweaks','open-terminal','clipboard-clear','clipboard-clear-primary','screenshot','apt-update','apt-upgrade','flatpak-update','about-readme','donate']</default>
+      <default>['lock','logout','reboot','poweroff','suspend','dnd','darkmode','settings','extensions','tweaks','open-terminal','shell-restart','sudo-extend','clipboard-clear','clipboard-clear-primary','screenshot','apt-update','apt-upgrade','flatpak-update','about-readme','donate']</default>
       <summary>Which actions to show in the menu</summary>
     </key>
   </schema>
