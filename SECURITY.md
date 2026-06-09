@@ -96,4 +96,4 @@ For security-related questions or concerns:
 
 ---
 
-*Last updated: September 2025*
+*Last updated: June 2026*

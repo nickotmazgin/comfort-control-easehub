@@ -5,8 +5,11 @@
 *.bak
 schemas/gschemas.compiled
 .release-build/
+.package-build/
 screenshots/source/
 .collage_tmp/
+__pycache__/
+*.py[co]
 
 # Security: Never commit secrets or credentials
 *.env

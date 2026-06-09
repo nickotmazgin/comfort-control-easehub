@@ -16,6 +16,7 @@ copy_core() {
   mkdir -p "$target"
   rsync -a --exclude ".git" --exclude ".release-build" --exclude "dist" ./ "$target/"
   (cd "$target/schemas" && glib-compile-schemas .)
+  rm -f "$target/schemas/gschemas.compiled"
 }
 
 patch_metadata_shell_versions() {
