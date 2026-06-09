@@ -21,6 +21,7 @@ rm -f "$ZIP"
 
 echo "Compiling schemas…"
 glib-compile-schemas "$WORK/schemas"
+rm -f "$WORK/schemas/gschemas.compiled"
 
 echo "Packing -> $ZIP"
 (cd "$WORK" && zip -r "$ZIP" \

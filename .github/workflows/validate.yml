@@ -15,10 +15,20 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libglib2.0-bin jq
+          sudo apt-get install -y libglib2.0-bin jq rsync unzip zip
       - name: Validate metadata.json
         run: |
           jq . metadata.json > /dev/null
       - name: Compile GSettings schemas
         run: |
           if [ -d schemas ]; then glib-compile-schemas schemas; fi
+      - name: Build and validate release zip
+        run: |
+          ./create-release-zips.sh
+          ZIP=dist/comfort-control@nickotmazgin-45-50.shell-extension.zip
+          test -f "$ZIP"
+          unzip -Z1 "$ZIP" | grep -qx metadata.json
+          unzip -Z1 "$ZIP" | grep -qx schemas/org.gnome.shell.extensions.easehub.gschema.xml
+          ! unzip -Z1 "$ZIP" | grep -qx schemas/gschemas.compiled
+          test "$(unzip -p "$ZIP" metadata.json | jq -r '.["shell-version"] | join(",")')" = "45,46,47,48,49,50"
+          test "$(unzip -p "$ZIP" metadata.json | jq -r '.["version-name"]')" = "$(jq -r '.["version-name"]' metadata.json)"
