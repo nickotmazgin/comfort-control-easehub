@@ -16,7 +16,7 @@ A **GNOME Shell extension** that brings **comfort and control to your desktop** 
 
 > **Keywords:** GNOME panel menu · power management · screenshots · dark mode · DND · terminal · Flatpak · APT · Linux utilities · open source
 
-**Latest:** v1.0.9 — GNOME 45–50 ESM (stable menu; reverted experimental shell-restart/sudo items)
+**Latest:** v1.1.0 — GNOME 45–50 ESM (Reload GNOME Shell on X11 + Sudo Timeout submenu, rebuilt the safe way)
 
 > **GNOME Shell 42–44 is no longer supported.** EaseHub requires **GNOME 45–50**.
 
@@ -56,8 +56,19 @@ A **GNOME Shell extension** that brings **comfort and control to your desktop** 
   - **Terminal integration** - updates run in your terminal for full visibility
   - **Secure authentication** using `pkexec` for graphical password prompts
 
+### 🔄 **Reload GNOME Shell (X11 only)** — new in v1.1.0
+* One click triggers GNOME's own **Alt+F2 → r** restart path (via `xdotool`) — the extension never calls `Meta.restart()` itself, so it can't crash your session
+* Verifies the restart from the **Shell journal and a live D-Bus ping**, then confirms with a notification
+* Automatically hidden on Wayland (an in-place shell restart is impossible there)
+* Requires `xdotool` (`sudo apt install xdotool` or your distro's equivalent)
+
+### 🔐 **Sudo Timeout** — new in v1.1.0
+* Control how long `sudo` remembers your password right from the panel: status, **15/30/60/120/180 minutes**, an interactive terminal menu, and reset to system default
+* Safe by design: every change is **`visudo`-validated** before install, written to one drop-in file (`/etc/sudoers.d/99-easehub-sudo-timeout-<user>`), backed up, and **rolled back automatically** if validation fails
+* Clear SUCCESS/ERROR terminal output plus desktop notifications
+
 ### 🧩 **Configurable Actions & Terminal**
-* Enable/disable any menu item from Preferences → Actions
+* Enable/disable any menu item from Preferences → Actions (menu updates live)
 * Set a preferred terminal (kgx, gnome-terminal, tilix, etc.) in Preferences
 
 ---

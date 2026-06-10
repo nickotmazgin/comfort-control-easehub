@@ -10,7 +10,7 @@
       <summary>Preferred terminal command (kgx, gnome-terminal, tilix, etc.)</summary>
     </key>
     <key name="enabled-actions" type="as">
-      <default>['lock','logout','reboot','poweroff','suspend','dnd','darkmode','settings','extensions','tweaks','open-terminal','clipboard-clear','clipboard-clear-primary','screenshot','apt-update','apt-upgrade','flatpak-update','about-readme','donate']</default>
+      <default>['lock','logout','reboot','poweroff','suspend','dnd','darkmode','settings','extensions','tweaks','open-terminal','shell-reload','sudo-extend','clipboard-clear','clipboard-clear-primary','screenshot','apt-update','apt-upgrade','flatpak-update','about-readme','donate']</default>
       <summary>Which actions to show in the menu</summary>
     </key>
   </schema>

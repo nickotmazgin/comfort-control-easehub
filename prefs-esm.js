@@ -105,6 +105,10 @@ export default class EaseHubPreferences extends ExtensionPreferences {
                 ['tweaks', 'Tweaks'],
                 ['open-terminal', 'Open Terminal'],
             ]},
+            { title: 'Power Tools', ids: [
+                ['shell-reload', 'Reload GNOME Shell (X11 only)'],
+                ['sudo-extend', 'Sudo Timeout submenu'],
+            ]},
             { title: 'Utilities', ids: [
                 ['clipboard-clear', 'Clear Clipboard'],
                 ['clipboard-clear-primary', 'Clear Primary Selection'],

@@ -53,7 +53,7 @@ with open(path, 'r+', encoding='utf-8') as f:
     f.write('\n')
     f.truncate()
 PY
-(cd "$WORK/45-50" && zip -r "../$NAME_45_50" extension.js prefs.js metadata.json stylesheet.css schemas README.md LICENSE CODE_OF_CONDUCT.md SECURITY.md CHANGELOG.md >/dev/null)
+(cd "$WORK/45-50" && chmod +x scripts/*.sh && zip -r "../$NAME_45_50" extension.js prefs.js metadata.json stylesheet.css schemas scripts README.md LICENSE CODE_OF_CONDUCT.md SECURITY.md CHANGELOG.md >/dev/null)
 
 mv "$WORK/$NAME_45_50" "$DIST/"
 
