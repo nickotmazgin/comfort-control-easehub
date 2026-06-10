@@ -136,11 +136,12 @@ function _openScreenshot() {
 
 const EaseHubIndicator = GObject.registerClass(
 class EaseHubIndicator extends PanelMenu.Button {
-    _init(settings, extensionPath) {
+    _init(settings, extensionPath, openPrefs) {
         super._init(0.0, 'EaseHub');
         this._settings = settings;
         this._extensionPath = extensionPath;
-        this.add_child(new St.Icon({ icon_name: 'system-run-symbolic', style_class: 'easehub-icon' }));
+        this._openPrefs = openPrefs;
+        this.add_child(new St.Icon({ icon_name: 'system-run-symbolic', style_class: 'system-status-icon easehub-icon' }));
         this._buildMenu();
         this._settingsChangedId = this._settings.connect('changed::enabled-actions', () => this._buildMenu());
     }
@@ -210,6 +211,7 @@ class EaseHubIndicator extends PanelMenu.Button {
 
         add('Do Not Disturb', 'dnd', () => this._toggleDND(), 'notifications-disabled-symbolic');
         add('Dark/Light Mode', 'darkmode', () => this._toggleDark(), 'weather-clear-night-symbolic');
+        add('Night Light', 'night-light', () => this._toggleNightLight(), 'night-light-symbolic');
 
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
@@ -273,6 +275,36 @@ class EaseHubIndicator extends PanelMenu.Button {
 
         add('About and README', 'about-readme', () => _openUrl('https://github.com/nickotmazgin/comfort-control-easehub#readme'), 'help-about-symbolic');
         add('Donate (PayPal)', 'donate', () => _openUrl('https://www.paypal.com/donate/?hosted_button_id=4HM44VH47LSMW'), 'emblem-favorite-symbolic');
+
+        // Always visible (not toggleable) so the settings window can never
+        // become unreachable from the panel.
+        this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+        const prefsItem = new PopupMenu.PopupMenuItem('EaseHub Settings…');
+        prefsItem.insert_child_at_index(new St.Icon({
+            icon_name: 'preferences-system-symbolic',
+            style_class: 'popup-menu-icon',
+        }), 0);
+        prefsItem.connect('activate', () => {
+            try {
+                this._openPrefs();
+            } catch (e) {
+                console.error('[EaseHub] open prefs error:', e);
+                _notify('Could not open EaseHub settings.');
+            }
+        });
+        this.menu.addMenuItem(prefsItem);
+    }
+
+    _toggleNightLight() {
+        try {
+            const s = new Gio.Settings({ schema_id: 'org.gnome.settings-daemon.plugins.color' });
+            const cur = s.get_boolean('night-light-enabled');
+            s.set_boolean('night-light-enabled', !cur);
+            _notify(`Night Light: ${!cur ? 'Enabled' : 'Disabled'}`);
+        } catch (e) {
+            console.error('[EaseHub] Night Light error:', e);
+            _notify('Failed to toggle Night Light');
+        }
     }
 
     _sessionCall(method, arg) {
@@ -359,7 +391,7 @@ class EaseHubIndicator extends PanelMenu.Button {
 
 export default class ComfortControlExtension extends Extension {
     enable() {
-        this._indicator = new EaseHubIndicator(this.getSettings(), this.path);
+        this._indicator = new EaseHubIndicator(this.getSettings(), this.path, () => this.openPreferences());
         Main.panel.addToStatusArea('easehub', this._indicator, 1, 'right');
     }
 

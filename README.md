@@ -70,6 +70,8 @@ A **GNOME Shell extension** that brings **comfort and control to your desktop** 
 ### 🧩 **Configurable Actions & Terminal**
 * Enable/disable any menu item from Preferences → Actions (menu updates live)
 * Set a preferred terminal (kgx, gnome-terminal, tilix, etc.) in Preferences
+* **EaseHub Settings…** always available at the bottom of the panel menu
+* Quick toggles: Do Not Disturb, Dark/Light Mode, and **Night Light**
 
 ---
 
