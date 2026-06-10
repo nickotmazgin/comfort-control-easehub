@@ -149,6 +149,24 @@ Your support helps maintain and improve this extension for the entire GNOME comm
 
 ---
 
+## Credits & Acknowledgements
+
+Comfort Control (EaseHub) is created, maintained, signed, and released by **[Nick Otmazgin](https://github.com/nickotmazgin)** — the project's sole administrator and solo developer, who authors and reviews all code that ships.
+
+[![AI assisted — OpenAI Codex](https://img.shields.io/badge/AI%20assisted-OpenAI%20Codex-10A37F)](https://openai.com/codex/)
+[![AI assisted — Cursor Agent](https://img.shields.io/badge/AI%20assisted-Cursor%20Agent-1A1A1A)](https://cursor.com)
+
+Recent releases were built with help from AI pair-programming agents, operated under the maintainer's direction and review:
+
+- **OpenAI Codex** — release engineering, signed-tag release workflows, packaging and validation hardening
+- **Cursor (Agent)** — code review, debugging, CI workflow hardening, documentation
+
+Every AI-assisted change is human-reviewed, tested on real GNOME sessions, and approved by the maintainer before release. See [CONTRIBUTORS.md](CONTRIBUTORS.md) for the full credits.
+
+> OpenAI and Codex are trademarks of OpenAI. Cursor is a trademark of Anysphere, Inc. These names are used here solely for factual attribution. EaseHub is an independent project and is **not** affiliated with, sponsored, or endorsed by OpenAI or Anysphere/Cursor.
+
+---
+
 ## Find this project
 
 **GitHub topics:** `gnome-shell-extension` · `panel-menu` · `power-management` · `screenshot` · `flatpak` · `wayland` · `linux` · `productivity` · `open-source`
