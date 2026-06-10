@@ -1,3 +1,32 @@
+## 1.1.0 (2026-06-10)
+
+**Reload GNOME Shell and Sudo Timeout return — rebuilt the safe way.**
+
+The v1.0.6–1.0.8 versions of these features were withdrawn because calling
+`Meta.restart()` from extension code could log out the session. v1.1.0 uses a
+completely different, field-proven design:
+
+### Reload GNOME Shell (X11 only)
+- Triggers GNOME's own **Alt+F2 → r** restart path via `xdotool` — identical to
+  doing it by hand, never calls `Meta.restart()` from the extension
+- Verifies success from the Shell journal **and** a live D-Bus ping, then
+  confirms with a desktop notification; reports failure without logging out
+- Hidden automatically on Wayland (where an in-place shell restart is impossible)
+- Requires `xdotool`; shows a friendly install hint if missing
+
+### Sudo Timeout submenu
+- Manage how long sudo remembers your password: status, 15/30/60/120/180 min,
+  interactive menu, and reset to system default
+- Runs in your preferred terminal with normal sudo authentication
+- Every change is `visudo`-validated before install, written to a single
+  drop-in (`/etc/sudoers.d/99-easehub-sudo-timeout-<user>`), backed up, and
+  rolled back automatically if validation fails — a typo can never lock sudo
+- Clear SUCCESS/ERROR output plus desktop notifications
+
+### Other
+- Menu now rebuilds live when actions are toggled in Preferences
+- New "Power Tools" group in Preferences to enable/disable both features
+
 ## 1.0.9 (2026-06-06)
 
 **Reverted experimental panel items — back to stable v1.0.5 menu.**

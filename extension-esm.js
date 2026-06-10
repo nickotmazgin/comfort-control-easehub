@@ -4,6 +4,7 @@ import Clutter from 'gi://Clutter';
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
+import Meta from 'gi://Meta';
 import St from 'gi://St';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
@@ -135,11 +136,53 @@ function _openScreenshot() {
 
 const EaseHubIndicator = GObject.registerClass(
 class EaseHubIndicator extends PanelMenu.Button {
-    _init(settings) {
+    _init(settings, extensionPath) {
         super._init(0.0, 'EaseHub');
         this._settings = settings;
+        this._extensionPath = extensionPath;
         this.add_child(new St.Icon({ icon_name: 'system-run-symbolic', style_class: 'easehub-icon' }));
         this._buildMenu();
+        this._settingsChangedId = this._settings.connect('changed::enabled-actions', () => this._buildMenu());
+    }
+
+    destroy() {
+        if (this._settingsChangedId) {
+            this._settings.disconnect(this._settingsChangedId);
+            this._settingsChangedId = null;
+        }
+        super.destroy();
+    }
+
+    _script(name) {
+        return GLib.build_filenamev([this._extensionPath, 'scripts', name]);
+    }
+
+    _reloadShell() {
+        if (Meta.is_wayland_compositor()) {
+            _notify('Reload is only available on X11. On Wayland, log out and back in instead.');
+            return;
+        }
+        const script = this._script('easehub-reload-shell.sh');
+        if (!GLib.file_test(script, GLib.FileTest.EXISTS)) {
+            _notify('Reload script is missing from the extension install.');
+            return;
+        }
+        if (!_which('xdotool')) {
+            _notify('xdotool is required for shell reload. Install it first (e.g. sudo apt install xdotool).');
+            return;
+        }
+        // The script triggers GNOME's own Alt+F2 "r" restart and verifies it
+        // from the journal and D-Bus. It never calls Meta.restart() directly.
+        _spawn(`bash ${GLib.shell_quote(script)}`);
+    }
+
+    _sudoTimeout(mode, settings) {
+        const script = this._script('easehub-sudo-extend.sh');
+        if (!GLib.file_test(script, GLib.FileTest.EXISTS)) {
+            _notify('Sudo timeout script is missing from the extension install.');
+            return;
+        }
+        _runCommandInTerminal(`bash ${GLib.shell_quote(script)} ${mode}`, 'Sudo Timeout', settings);
     }
 
     _buildMenu() {
@@ -174,6 +217,31 @@ class EaseHubIndicator extends PanelMenu.Button {
         add('Extensions', 'extensions', () => _spawn('gnome-extensions-app'), 'application-x-addon-symbolic');
         add('Tweaks', 'tweaks', () => _spawn('gnome-tweaks'), 'emblem-system-symbolic');
         add('Open Terminal', 'open-terminal', () => _runCommandInTerminal(null, 'Terminal', settings), 'utilities-terminal-symbolic');
+
+        if (enabled.has('shell-reload') && !Meta.is_wayland_compositor()) {
+            add('Reload GNOME Shell (X11)', 'shell-reload',
+                () => _confirmIfNeeded('Reload GNOME Shell', () => this._reloadShell(), settings),
+                'view-refresh-symbolic');
+        }
+
+        if (enabled.has('sudo-extend')) {
+            const sub = new PopupMenu.PopupSubMenuMenuItem('Sudo Timeout', true);
+            sub.icon.icon_name = 'security-high-symbolic';
+            const addSub = (label, mode) => {
+                const it = new PopupMenu.PopupMenuItem(label);
+                it.connect('activate', () => this._sudoTimeout(mode, settings));
+                sub.menu.addMenuItem(it);
+            };
+            addSub('Show Status', 'status');
+            addSub('15 minutes', 'set 15');
+            addSub('30 minutes', 'set 30');
+            addSub('60 minutes (1 hour)', 'set 60');
+            addSub('120 minutes (2 hours)', 'set 120');
+            addSub('180 minutes (3 hours)', 'set 180');
+            addSub('Interactive Menu…', 'menu');
+            addSub('Reset to System Default', 'reset');
+            this.menu.addMenuItem(sub);
+        }
 
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
@@ -291,7 +359,7 @@ class EaseHubIndicator extends PanelMenu.Button {
 
 export default class ComfortControlExtension extends Extension {
     enable() {
-        this._indicator = new EaseHubIndicator(this.getSettings());
+        this._indicator = new EaseHubIndicator(this.getSettings(), this.path);
         Main.panel.addToStatusArea('easehub', this._indicator, 1, 'right');
     }
 
