@@ -1,6 +1,7 @@
 # Comfort Control (EaseHub)
 
-[![Release](https://img.shields.io/github/v/release/nickotmazgin/comfort-control-easehub?include_prereleases=false&display_name=tag)](https://github.com/nickotmazgin/comfort-control-easehub/releases/latest)
+[![Release](https://img.shields.io/github/v/release/nickotmazgin/comfort-control-easehub?display_name=tag)](https://github.com/nickotmazgin/comfort-control-easehub/releases/latest)
+[![CI](https://img.shields.io/github/actions/workflow/status/nickotmazgin/comfort-control-easehub/validate.yml?branch=main&label=CI)](https://github.com/nickotmazgin/comfort-control-easehub/actions)
 [![Downloads](https://img.shields.io/github/downloads/nickotmazgin/comfort-control-easehub/total?label=downloads&color=success)](https://github.com/nickotmazgin/comfort-control-easehub/releases)
 [![License: MIT](https://img.shields.io/github/license/nickotmazgin/comfort-control-easehub)](LICENSE)
 [![GNOME 45–50](https://img.shields.io/badge/GNOME-45%E2%80%9350-4A86CF?logo=gnome&logoColor=white)](#compatibility)
@@ -9,7 +10,6 @@
 
 [![Issues](https://img.shields.io/github/issues/nickotmazgin/comfort-control-easehub)](https://github.com/nickotmazgin/comfort-control-easehub/issues)
 [![Discussions](https://img.shields.io/github/discussions/nickotmazgin/comfort-control-easehub?label=discussions&color=8B5CF6)](https://github.com/nickotmazgin/comfort-control-easehub/discussions)
-[![Sponsor](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ff5c93?logo=github-sponsors&logoColor=white)](https://github.com/sponsors/nickotmazgin)
 [![PayPal](https://img.shields.io/badge/Donate-PayPal-0070BA?logo=paypal&logoColor=white)](https://www.paypal.com/donate/?hosted_button_id=4HM44VH47LSMW)
 
 A **GNOME Shell extension** that brings **comfort and control to your desktop** — quick access to power actions, Wayland screenshots, system updates, and everyday utilities from one panel menu.
@@ -179,7 +179,6 @@ This project is licensed under the [**MIT License**](LICENSE) © **Nick Otmazgin
 
 If **EaseHub** enhances your GNOME experience, consider supporting its continued development:
 
-[![Sponsor](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ff5c93?logo=github-sponsors&logoColor=white)](https://github.com/sponsors/nickotmazgin)
 [![PayPal](https://img.shields.io/badge/Donate-PayPal-0070BA?logo=paypal&logoColor=white)](https://www.paypal.com/donate/?hosted_button_id=4HM44VH47LSMW)
 
 Your support helps maintain and improve this extension for the entire GNOME community! 💙
