@@ -16,7 +16,7 @@ A **GNOME Shell extension** that brings **comfort and control to your desktop** 
 
 > **Keywords:** GNOME panel menu · power management · screenshots · dark mode · DND · terminal · Flatpak · APT · Linux utilities · open source
 
-**Latest:** v1.1.0 — GNOME 45–50 ESM (Reload GNOME Shell on X11 + Sudo Timeout submenu, rebuilt the safe way)
+**Latest:** v1.1.1 — GNOME 45–50 ESM (Reload GNOME Shell on X11, Sudo Timeout submenu, Settings menu entry, Night Light)
 
 > **GNOME Shell 42–44 is no longer supported.** EaseHub requires **GNOME 45–50**.
 

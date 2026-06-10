@@ -1,6 +1,10 @@
-## 1.1.0 (2026-06-10)
+## 1.1.1 (2026-06-10)
 
 **Reload GNOME Shell and Sudo Timeout return — rebuilt the safe way.**
+
+*(Briefly published as v1.1.0 the same day; that release was withdrawn and
+replaced by v1.1.1, which adds the Settings menu entry, Night Light toggle,
+and preferences polish below.)*
 
 The v1.0.6–1.0.8 versions of these features were withdrawn because calling
 `Meta.restart()` from extension code could log out the session. v1.1.0 uses a
