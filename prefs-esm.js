@@ -34,6 +34,7 @@ export default class EaseHubPreferences extends ExtensionPreferences {
             { label: 'Custom…', value: '__custom__' },
         ];
 
+        const groupTerminal = new Adw.PreferencesGroup({ title: 'Terminal' });
         const rowTerminal = new Adw.ActionRow({ title: 'Preferred terminal' });
         const dd = Gtk.DropDown.new_from_strings(choices.map(c => c.label));
 
@@ -82,9 +83,10 @@ export default class EaseHubPreferences extends ExtensionPreferences {
 
         rowTerminal.add_suffix(dd);
         rowTerminal.activatable_widget = dd;
-        groupGeneral.add(rowTerminal);
-        groupGeneral.add(rowCustom);
+        groupTerminal.add(rowTerminal);
+        groupTerminal.add(rowCustom);
         pageGeneral.add(groupGeneral);
+        pageGeneral.add(groupTerminal);
 
         const pageActions = new Adw.PreferencesPage({ title: 'Actions', icon_name: 'view-list-symbolic' });
         const groups = [
@@ -98,6 +100,7 @@ export default class EaseHubPreferences extends ExtensionPreferences {
             { title: 'Toggles', ids: [
                 ['dnd', 'Do Not Disturb'],
                 ['darkmode', 'Dark/Light Mode'],
+                ['night-light', 'Night Light'],
             ]},
             { title: 'Apps', ids: [
                 ['settings', 'Open Settings'],
@@ -167,6 +170,7 @@ export default class EaseHubPreferences extends ExtensionPreferences {
         };
         addLinkRow('GitHub repository', 'https://github.com/nickotmazgin/comfort-control-easehub');
         addLinkRow('README and documentation', 'https://github.com/nickotmazgin/comfort-control-easehub#readme');
+        addLinkRow('Credits and contributors', 'https://github.com/nickotmazgin/comfort-control-easehub/blob/main/CONTRIBUTORS.md');
         addLinkRow('Report an issue', 'https://github.com/nickotmazgin/comfort-control-easehub/issues');
         addLinkRow('Latest release', 'https://github.com/nickotmazgin/comfort-control-easehub/releases/latest');
         addLinkRow('Donate via PayPal', 'https://www.paypal.com/donate/?hosted_button_id=4HM44VH47LSMW');

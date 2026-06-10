@@ -23,8 +23,15 @@ completely different, field-proven design:
   rolled back automatically if validation fails — a typo can never lock sudo
 - Clear SUCCESS/ERROR output plus desktop notifications
 
-### Other
-- Menu now rebuilds live when actions are toggled in Preferences
+### Menu & Preferences polish
+- **EaseHub Settings…** entry at the bottom of the panel menu — always visible,
+  so the settings window is reachable from the panel icon at all times
+- New **Night Light** toggle (panel menu + Preferences → Actions → Toggles)
+- Panel icon now uses GNOME's standard `system-status-icon` class for
+  theme-correct sizing and padding
+- Preferences: terminal picker moved to its own "Terminal" group (was
+  mislabeled under "Safety"); About tab links to the new credits page
+- Menu rebuilds live when actions are toggled in Preferences
 - New "Power Tools" group in Preferences to enable/disable both features
 
 ## 1.0.9 (2026-06-06)
