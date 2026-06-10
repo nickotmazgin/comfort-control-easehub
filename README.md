@@ -124,9 +124,40 @@ On tag push (`v*`), GitHub Actions runs `create-release-zips.sh` and publishes:
 
 ## 🖼️ **Screenshots**
 
-![EaseHub collage 2026](screenshots/collage-2026.png)
+*EaseHub v1.1.1 — click any image to view it full size.*
 
-Share-ready preview: [social-preview-2026.png](screenshots/social-preview-2026.png)
+[![EaseHub v1.1.1 collage](screenshots/collage.jpg)](screenshots/collage.jpg)
+
+<table>
+  <tr>
+    <td align="center">
+      <a href="screenshots/m1.jpg"><img src="screenshots/m1.jpg" width="260" alt="m1 — Full panel menu"></a><br>
+      <b>m1</b> — Panel menu (all actions)
+    </td>
+    <td align="center">
+      <a href="screenshots/m2.jpg"><img src="screenshots/m2.jpg" width="260" alt="m2 — Sudo Timeout submenu"></a><br>
+      <b>m2</b> — Sudo Timeout submenu
+    </td>
+    <td align="center">
+      <a href="screenshots/m3.jpg"><img src="screenshots/m3.jpg" width="260" alt="m3 — Preferences: General tab"></a><br>
+      <b>m3</b> — Preferences · General
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <a href="screenshots/m4.jpg"><img src="screenshots/m4.jpg" width="260" alt="m4 — Preferences: Actions tab (System, Toggles, Apps)"></a><br>
+      <b>m4</b> — Actions · System &amp; Toggles
+    </td>
+    <td align="center">
+      <a href="screenshots/m5.jpg"><img src="screenshots/m5.jpg" width="260" alt="m5 — Preferences: Actions tab (Power Tools, Utilities, Updates)"></a><br>
+      <b>m5</b> — Actions · Power Tools &amp; Updates
+    </td>
+    <td align="center">
+      <a href="screenshots/m6.jpg"><img src="screenshots/m6.jpg" width="260" alt="m6 — Preferences: About tab"></a><br>
+      <b>m6</b> — Preferences · About
+    </td>
+  </tr>
+</table>
 
 We welcome contributions! Please feel free to:
 - 🐛 **Report bugs** via [GitHub Issues](https://github.com/nickotmazgin/comfort-control-easehub/issues)
