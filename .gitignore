@@ -11,6 +11,9 @@ screenshots/source/
 __pycache__/
 *.py[co]
 
+# Playwright MCP local browser snapshots/logs (personal; never commit)
+.playwright-mcp/
+
 # Security: Never commit secrets or credentials
 *.env
 *.env.*
