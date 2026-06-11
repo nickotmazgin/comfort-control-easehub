@@ -10,11 +10,8 @@ import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 import * as ModalDialog from 'resource:///org/gnome/shell/ui/modalDialog.js';
+import * as SystemActions from 'resource:///org/gnome/shell/misc/systemActions.js';
 import { Extension } from 'resource:///org/gnome/shell/extensions/extension.js';
-
-const BUS_NAME = 'org.gnome.SessionManager';
-const BUS_PATH = '/org/gnome/SessionManager';
-const BUS_IFACE = 'org.gnome.SessionManager';
 
 function _spawn(cmdline) {
     try {
@@ -202,10 +199,10 @@ class EaseHubIndicator extends PanelMenu.Button {
         };
 
         add('Lock Screen', 'lock', () => this._lock(), 'changes-prevent-symbolic');
-        add('Log Out', 'logout', () => _confirmIfNeeded('Log out', () => this._sessionCall('Logout', 1), settings), 'system-log-out-symbolic');
-        add('Reboot', 'reboot', () => _confirmIfNeeded('Reboot', () => this._sessionCall('Reboot', true), settings), 'system-reboot-symbolic');
-        add('Power Off', 'poweroff', () => _confirmIfNeeded('Power off', () => this._sessionCall('PowerOff', true), settings), 'system-shutdown-symbolic');
-        add('Suspend', 'suspend', () => this._sessionCall('Suspend', true), 'media-playback-pause-symbolic');
+        add('Log Out', 'logout', () => _confirmIfNeeded('Log out', () => this._logout(), settings), 'system-log-out-symbolic');
+        add('Reboot', 'reboot', () => _confirmIfNeeded('Reboot', () => this._reboot(), settings), 'system-reboot-symbolic');
+        add('Power Off', 'poweroff', () => _confirmIfNeeded('Power off', () => this._powerOff(), settings), 'system-shutdown-symbolic');
+        add('Suspend', 'suspend', () => this._suspend(), 'media-playback-pause-symbolic');
 
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
@@ -307,43 +304,40 @@ class EaseHubIndicator extends PanelMenu.Button {
         }
     }
 
-    _sessionCall(method, arg) {
+    _systemActions() {
+        if (!this._actions)
+            this._actions = SystemActions.getDefault();
+        return this._actions;
+    }
+
+    _runSystemAction(label, fn) {
         try {
-            const proxy = Gio.DBusProxy.new_for_bus_sync(
-                Gio.BusType.SESSION,
-                Gio.DBusProxyFlags.NONE,
-                null,
-                BUS_NAME,
-                BUS_PATH,
-                BUS_IFACE,
-                null
-            );
-            if (arg === undefined)
-                proxy.call_sync(method, null, Gio.DBusCallFlags.NONE, -1, null);
-            else
-                proxy.call_sync(method, new GLib.Variant('(b)', [arg === true]), Gio.DBusCallFlags.NONE, -1, null);
+            this._systemActions().forceUpdate();
+            fn();
         } catch (e) {
-            console.error('[EaseHub] Session call error:', e);
-            _notify(`Failed to execute ${method}`);
+            console.error(`[EaseHub] ${label} error:`, e);
+            _notify(`Failed to ${label.toLowerCase()}`);
         }
     }
 
     _lock() {
-        try {
-            const proxy = Gio.DBusProxy.new_for_bus_sync(
-                Gio.BusType.SESSION,
-                Gio.DBusProxyFlags.NONE,
-                null,
-                'org.gnome.ScreenSaver',
-                '/org/gnome/ScreenSaver',
-                'org.gnome.ScreenSaver',
-                null
-            );
-            proxy.call_sync('Lock', null, Gio.DBusCallFlags.NONE, -1, null);
-        } catch (e) {
-            console.error('[EaseHub] Lock error:', e);
-            _notify('Failed to lock screen');
-        }
+        this._runSystemAction('Lock screen', () => this._systemActions().activateLockScreen());
+    }
+
+    _logout() {
+        this._runSystemAction('Log out', () => this._systemActions().activateLogout());
+    }
+
+    _reboot() {
+        this._runSystemAction('Reboot', () => this._systemActions().activateRestart());
+    }
+
+    _powerOff() {
+        this._runSystemAction('Power off', () => this._systemActions().activatePowerOff());
+    }
+
+    _suspend() {
+        this._runSystemAction('Suspend', () => this._systemActions().activateSuspend());
     }
 
     _toggleDND() {
