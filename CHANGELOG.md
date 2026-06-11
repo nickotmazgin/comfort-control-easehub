@@ -1,3 +1,16 @@
+## 1.1.2 (2026-06-11)
+
+**Fix power/session actions on GNOME 45–50.**
+
+The Lock / Log Out / Reboot / Power Off / Suspend items were calling removed or
+mismatched `org.gnome.SessionManager` D-Bus methods (`PowerOff`, `Suspend`, etc.)
+and coerced every argument to a boolean — so **Power Off**, **Reboot**, **Suspend**,
+and **Log Out** could fail on current GNOME (e.g. Shell 46 on Zorin OS 18.1).
+
+EaseHub now uses GNOME Shell's built-in **SystemActions** API (the same path as the
+official power menu and Zorin Menu): `activateLockScreen`, `activateLogout`,
+`activateRestart`, `activatePowerOff`, and `activateSuspend`.
+
 ## 1.1.1 (2026-06-10)
 
 **Reload GNOME Shell and Sudo Timeout return — rebuilt the safe way.**
