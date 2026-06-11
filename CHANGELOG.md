@@ -2,6 +2,9 @@
 
 **Fix power/session actions on GNOME 45–50.**
 
+> **Recommended upgrade** from v1.1.1 if Lock, Log Out, Reboot, Power Off, or
+> Suspend did not work on your system.
+
 The Lock / Log Out / Reboot / Power Off / Suspend items were calling removed or
 mismatched `org.gnome.SessionManager` D-Bus methods (`PowerOff`, `Suspend`, etc.)
 and coerced every argument to a boolean — so **Power Off**, **Reboot**, **Suspend**,
@@ -14,6 +17,13 @@ official power menu and Zorin Menu): `activateLockScreen`, `activateLogout`,
 ## 1.1.1 (2026-06-10)
 
 **Reload GNOME Shell and Sudo Timeout return — rebuilt the safe way.**
+
+> **Superseded by v1.1.2** (2026-06-11) for **Lock**, **Log Out**, **Reboot**,
+> **Power Off**, and **Suspend** on GNOME 45–50 — those items could fail on
+> current Shell (e.g. 46 on Zorin OS 18.1) due to outdated session D-Bus calls.
+> v1.1.1 stays on the Releases page for history and rollback; use
+> [v1.1.2](https://github.com/nickotmazgin/comfort-control-easehub/releases/tag/v1.1.2)
+> for power/session actions.
 
 *(Briefly published as v1.1.0 the same day; that release was withdrawn and
 replaced by v1.1.1, which adds the Settings menu entry, Night Light toggle,
