@@ -1,3 +1,15 @@
+## 1.1.3 (2026-06-11)
+
+**Security hardening and safer update prompts.**
+
+- Whitelist terminal emulators in preferences (blocks arbitrary command injection via
+  tampered `preferred-terminal` settings)
+- Add confirmation dialogs for **Upgrade System Packages** and **Update Flatpaks**
+- CI validates bundled `easehub-reload-shell.sh` and `easehub-sudo-extend.sh` in release zips
+- Expand `SECURITY.md` threat-model documentation
+
+> **Recommended upgrade** from v1.1.2 and earlier.
+
 ## 1.1.2 (2026-06-11)
 
 **Fix power/session actions on GNOME 45–50.**

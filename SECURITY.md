@@ -1,5 +1,16 @@
 # Security Policy
 
+## Threat model
+
+EaseHub is a trusted local GNOME Shell extension. It can spawn terminals, request polkit
+authentication for package updates, adjust per-user sudo timeout via `visudo`-validated
+drop-ins, and trigger an X11 shell reload through GNOME's own Alt+F2 path. Install only
+from official [GitHub releases](https://github.com/nickotmazgin/comfort-control-easehub/releases)
+with UUID `comfort-control@nickotmazgin`.
+
+Terminal emulator preferences are restricted to a known whitelist. Package upgrades and
+Flatpak updates require confirmation when `confirm-dangerous` is enabled (default).
+
 ## Supported Versions
 
 We actively support security updates for the following versions of Comfort Control (EaseHub):

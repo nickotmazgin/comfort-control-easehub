@@ -32,3 +32,7 @@ jobs:
           ! unzip -Z1 "$ZIP" | grep -qx schemas/gschemas.compiled
           test "$(unzip -p "$ZIP" metadata.json | jq -r '.["shell-version"] | join(",")')" = "45,46,47,48,49,50"
           test "$(unzip -p "$ZIP" metadata.json | jq -r '.["version-name"]')" = "$(jq -r '.["version-name"]' metadata.json)"
+          unzip -Z1 "$ZIP" | grep -qx scripts/easehub-reload-shell.sh
+          unzip -Z1 "$ZIP" | grep -qx scripts/easehub-sudo-extend.sh
+          test "$(unzip -p "$ZIP" scripts/easehub-reload-shell.sh | head -1)" = "#!/usr/bin/env bash"
+          test "$(unzip -p "$ZIP" scripts/easehub-sudo-extend.sh | head -1)" = "#!/usr/bin/env bash"

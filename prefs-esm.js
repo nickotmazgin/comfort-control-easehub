@@ -74,11 +74,20 @@ export default class EaseHubPreferences extends ExtensionPreferences {
         };
 
         dd.connect('notify::selected', applySelection);
+        const ALLOWED_CUSTOM = new Set([
+            'gnome-terminal', 'kgx', 'tilix', 'kitty', 'konsole', 'alacritty',
+            'wezterm', 'foot', 'ptyxis', 'x-terminal-emulator',
+        ]);
         entry.connect('changed', () => {
             const idx = dd.get_selected();
             const sel = choices[idx];
-            if (sel && sel.value === '__custom__')
-                settings.set_string('preferred-terminal', entry.get_text());
+            if (sel && sel.value === '__custom__') {
+                const custom = entry.get_text().trim();
+                settings.set_string(
+                    'preferred-terminal',
+                    ALLOWED_CUSTOM.has(custom) ? custom : ''
+                );
+            }
         });
 
         rowTerminal.add_suffix(dd);
