@@ -55,12 +55,37 @@ function _which(name) {
     }
 }
 
+const ALLOWED_TERMINALS = new Set([
+    'gnome-terminal',
+    'kgx',
+    'tilix',
+    'kitty',
+    'konsole',
+    'alacritty',
+    'wezterm',
+    'foot',
+    'ptyxis',
+    'x-terminal-emulator',
+]);
+
+function _resolveTerminal(settings) {
+    try {
+        const pref = (settings.get_string('preferred-terminal') || '').trim();
+        if (pref && ALLOWED_TERMINALS.has(pref) && _which(pref))
+            return pref;
+    } catch {}
+    if (_which('kgx')) return 'kgx';
+    if (_which('gnome-terminal')) return 'gnome-terminal';
+    if (_which('tilix')) return 'tilix';
+    if (_which('kitty')) return 'kitty';
+    if (_which('x-terminal-emulator')) return 'x-terminal-emulator';
+    return '';
+}
+
 function _runCommandInTerminal(command, title, settings) {
     if (!command) {
-        try {
-            const pref = (settings.get_string('preferred-terminal') || '').trim();
-            if (pref && _which(pref)) { _spawn(pref); return; }
-        } catch {}
+        const term = _resolveTerminal(settings);
+        if (term) { _spawn(term); return; }
         if (_which('kgx'))            { _spawn('kgx'); return; }
         if (_which('gnome-terminal')) { _spawn('gnome-terminal'); return; }
         _notify('Could not find a terminal to open.');
@@ -71,27 +96,29 @@ function _runCommandInTerminal(command, title, settings) {
     const escapedCommand = command.replace(/'/g, "'\\''");
     const fullCommand = `'${escapedCommand}'${holdOpenFragment}`;
 
-    try {
-        const pref = (settings.get_string('preferred-terminal') || '').trim();
-        if (pref) {
-            if (pref === 'gnome-terminal' && _which('gnome-terminal')) {
-                _spawn(`gnome-terminal --title="${title}" -- bash -c ${fullCommand}`);
-                return;
-            }
-            if (pref === 'kgx' && _which('kgx')) {
-                _spawn(`kgx --title="${title}" --hold -e bash -c '${escapedCommand}'`);
-                return;
-            }
-            if (pref === 'tilix' && _which('tilix')) {
-                _spawn(`tilix -t "${title}" -e bash -c ${fullCommand}`);
-                return;
-            }
-            if (_which(pref)) {
-                _spawn(`${pref} -e bash -c ${fullCommand}`);
-                return;
-            }
+    const pref = _resolveTerminal(settings);
+    if (pref) {
+        if (pref === 'gnome-terminal') {
+            _spawn(`gnome-terminal --title="${title}" -- bash -c ${fullCommand}`);
+            return;
         }
-    } catch {}
+        if (pref === 'kgx') {
+            _spawn(`kgx --title="${title}" --hold -e bash -c '${escapedCommand}'`);
+            return;
+        }
+        if (pref === 'tilix') {
+            _spawn(`tilix -t "${title}" -e bash -c ${fullCommand}`);
+            return;
+        }
+        if (pref === 'kitty') {
+            _spawn(`kitty --title="${title}" bash -c ${fullCommand}`);
+            return;
+        }
+        if (pref === 'x-terminal-emulator') {
+            _spawn(`x-terminal-emulator -T "${title}" -e bash -c ${fullCommand}`);
+            return;
+        }
+    }
 
     if (_which('gnome-terminal')) {
         _spawn(`gnome-terminal --title="${title}" -- bash -c ${fullCommand}`);
@@ -258,16 +285,20 @@ class EaseHubIndicator extends PanelMenu.Button {
         }, 'software-update-available-symbolic');
 
         add('Upgrade System Packages', 'apt-upgrade', () => {
-            let cmd = null;
-            if (_which('apt'))         cmd = 'pkexec apt upgrade -y';
-            else if (_which('dnf'))    cmd = 'pkexec dnf upgrade -y';
-            else if (_which('zypper')) cmd = 'pkexec zypper update -y';
-            else if (_which('pacman')) cmd = 'pkexec pacman -Syu --noconfirm';
-            _runCommandInTerminal(cmd || 'echo "No supported package manager found."', 'Upgrading Packages...', settings);
+            _confirmIfNeeded('Upgrade system packages', () => {
+                let cmd = null;
+                if (_which('apt'))         cmd = 'pkexec apt upgrade -y';
+                else if (_which('dnf'))    cmd = 'pkexec dnf upgrade -y';
+                else if (_which('zypper')) cmd = 'pkexec zypper update -y';
+                else if (_which('pacman')) cmd = 'pkexec pacman -Syu --noconfirm';
+                _runCommandInTerminal(cmd || 'echo "No supported package manager found."', 'Upgrading Packages...', settings);
+            }, settings);
         }, 'system-software-update-symbolic');
 
         add('Update Flatpaks', 'flatpak-update', () => {
-            _runCommandInTerminal('flatpak update -y', 'Updating Flatpaks...', settings);
+            _confirmIfNeeded('Update Flatpaks', () => {
+                _runCommandInTerminal('flatpak update -y', 'Updating Flatpaks...', settings);
+            }, settings);
         }, 'system-software-update-symbolic');
 
         add('About and README', 'about-readme', () => _openUrl('https://github.com/nickotmazgin/comfort-control-easehub#readme'), 'help-about-symbolic');

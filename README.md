@@ -16,7 +16,7 @@ A **GNOME Shell extension** that brings **comfort and control to your desktop** 
 
 > **Keywords:** GNOME panel menu · power management · screenshots · dark mode · DND · terminal · Flatpak · APT · Linux utilities · open source
 
-**Latest:** v1.1.2 — GNOME 45–50 ESM (fixes Lock/Log Out/Reboot/Power Off/Suspend via GNOME SystemActions; plus v1.1.1 features below)
+**Latest:** v1.1.3 — GNOME 45–50 ESM (security hardening + v1.1.2 power/session SystemActions fix; plus v1.1.1 features below)
 
 > **Upgrade from v1.1.1:** Install [v1.1.2](https://github.com/nickotmazgin/comfort-control-easehub/releases/latest) if power/session menu items failed on GNOME 46+. Older releases (including v1.1.1) remain available for history and rollback — we do not delete prior tags.
 
