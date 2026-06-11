@@ -18,6 +18,8 @@ A **GNOME Shell extension** that brings **comfort and control to your desktop** 
 
 **Latest:** v1.1.2 — GNOME 45–50 ESM (fixes Lock/Log Out/Reboot/Power Off/Suspend via GNOME SystemActions; plus v1.1.1 features below)
 
+> **Upgrade from v1.1.1:** Install [v1.1.2](https://github.com/nickotmazgin/comfort-control-easehub/releases/latest) if power/session menu items failed on GNOME 46+. Older releases (including v1.1.1) remain available for history and rollback — we do not delete prior tags.
+
 > **GNOME Shell 42–44 is no longer supported.** EaseHub requires **GNOME 45–50**.
 
 ---
@@ -112,7 +114,13 @@ gnome-extensions enable "$uuid"
 
 ### 📥 Which Zip Should I Download?
 
-Download **`comfort-control@nickotmazgin-45-50.shell-extension.zip`** from the [Releases page](https://github.com/nickotmazgin/comfort-control-easehub/releases/latest) (GNOME Shell **45–50** only).
+Download **`comfort-control@nickotmazgin-45-50.shell-extension.zip`** from the [Releases page](https://github.com/nickotmazgin/comfort-control-easehub/releases/latest) (GNOME Shell **45–50** only). That is **v1.1.2** today.
+
+| Release | Status |
+| ------- | ------ |
+| **v1.1.2** | **Recommended** — current; fixes power/session actions |
+| v1.1.1 | Superseded for power/session; kept for history / rollback |
+| v1.1.0 and older | Archived; see [CHANGELOG](CHANGELOG.md) |
 
 ### 🧪 Packaging (CI)
 
