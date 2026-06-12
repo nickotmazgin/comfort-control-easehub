@@ -132,9 +132,9 @@ On tag push (`v*`), GitHub Actions runs `create-release-zips.sh` and publishes:
 
 ## 🖼️ **Screenshots**
 
-*EaseHub v1.1.1 — click any image to view it full size.*
+*EaseHub v1.1.3 — click any image to view it full size.*
 
-[![EaseHub v1.1.1 collage](screenshots/collage.jpg)](screenshots/collage.jpg)
+[![EaseHub v1.1.3 collage](screenshots/collage.jpg)](screenshots/collage.jpg)
 
 <table>
   <tr>
