@@ -11,12 +11,24 @@ body:
   - type: input
     attributes:
       label: GNOME Shell version
-      placeholder: e.g., 45.4 / 46.2 (Wayland)
+      placeholder: e.g., 46.0
     validations:
       required: true
+  - type: dropdown
+    attributes:
+      label: Session type
+      options:
+        - X11 / Xorg
+        - Wayland
+        - Unknown
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: EaseHub version
+      placeholder: e.g., 1.1.3
   - type: textarea
     attributes:
       label: Logs
       description: Paste errors from Looking Glass (Alt+F2 → lg) or journalctl -b | grep gnome-shell
       render: text
-
