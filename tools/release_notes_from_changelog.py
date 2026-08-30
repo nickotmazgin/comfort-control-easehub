@@ -13,7 +13,7 @@ FOOTER = """
 ## Compatibility
 
 - **GNOME Shell 45–50** — Wayland and X11/Xorg session types supported
-- **Maintainer runtime-tested (when noted in changelog):** X11/Xorg only unless a release explicitly states otherwise
+- **Maintainer runtime-tested:** Wayland and X11/Xorg session types
 - **X11-only:** Reload GNOME Shell menu item (hidden on Wayland)
 
 ## Install
