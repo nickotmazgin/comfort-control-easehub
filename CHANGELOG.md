@@ -1,3 +1,14 @@
+## Unreleased (main)
+
+**Repository maintenance — no extension code changes since v1.1.3.**
+
+- README: X11/Xorg-validated vs Wayland-supported badges; fix stale v1.1.2 download table → v1.1.3
+- Security policy, bug template, and release-note footer aligned with session validation scope
+- CI dependency bumps (actions/checkout v7) — already on `main`
+- Docs/screenshots refresh (#58–#60) — already on `main`
+
+> **No new GitHub release required** unless extension code or metadata version bumps.
+
 ## 1.1.3 (2026-06-11)
 
 **Security hardening and safer update prompts.**

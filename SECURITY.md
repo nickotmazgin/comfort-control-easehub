@@ -8,6 +8,8 @@ drop-ins, and trigger an X11 shell reload through GNOME's own Alt+F2 path. Insta
 from official [GitHub releases](https://github.com/nickotmazgin/comfort-control-easehub/releases)
 with UUID `comfort-control@nickotmazgin`.
 
+**Platforms:** GNOME Shell **45–50** on **Wayland** (supported) and **X11/Xorg** (supported; **v1.1.3 validated** on maintainer X11 setup, including X11-only shell reload).
+
 Terminal emulator preferences are restricted to a known whitelist. Package upgrades and
 Flatpak updates require confirmation when `confirm-dangerous` is enabled (default).
 
@@ -39,7 +41,7 @@ Please include the following information in your report:
 1. **Description**: A clear description of the vulnerability
 2. **Steps to Reproduce**: Detailed steps to reproduce the issue
 3. **Impact**: What an attacker could achieve with this vulnerability
-4. **GNOME Shell Version**: Which version(s) are affected
+4. **GNOME Shell Version** and **session type** (Wayland / X11 / Xorg): Which version(s) are affected
 5. **System Information**: OS, desktop environment, and relevant system details
 6. **Proof of Concept**: If available, include screenshots or code snippets
 
