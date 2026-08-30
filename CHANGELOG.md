@@ -1,13 +1,12 @@
-## Unreleased (main)
+## 1.1.4 (2026-08-30)
 
-**Repository maintenance — no extension code changes since v1.1.3.**
+**Polish release — safer suspend + session/docs alignment.**
 
-- README: X11/Xorg-validated vs Wayland-supported badges; fix stale v1.1.2 download table → v1.1.3
-- Security policy, bug template, and release-note footer aligned with session validation scope
-- CI dependency bumps (actions/checkout v7) — already on `main`
-- Docs/screenshots refresh (#58–#60) — already on `main`
+- Confirm **Suspend** like Reboot/Power Off when dangerous-action prompts are enabled
+- Metadata and About text: **Wayland & X11/Xorg** validated
+- README, release notes, and compatibility wording aligned to v1.1.4
 
-> **No new GitHub release required** unless extension code or metadata version bumps.
+> **Recommended upgrade** from v1.1.3 and earlier.
 
 ## 1.1.3 (2026-06-11)
 

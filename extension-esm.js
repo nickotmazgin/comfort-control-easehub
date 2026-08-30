@@ -229,7 +229,7 @@ class EaseHubIndicator extends PanelMenu.Button {
         add('Log Out', 'logout', () => _confirmIfNeeded('Log out', () => this._logout(), settings), 'system-log-out-symbolic');
         add('Reboot', 'reboot', () => _confirmIfNeeded('Reboot', () => this._reboot(), settings), 'system-reboot-symbolic');
         add('Power Off', 'poweroff', () => _confirmIfNeeded('Power off', () => this._powerOff(), settings), 'system-shutdown-symbolic');
-        add('Suspend', 'suspend', () => this._suspend(), 'media-playback-pause-symbolic');
+        add('Suspend', 'suspend', () => _confirmIfNeeded('Suspend', () => this._suspend(), settings), 'media-playback-pause-symbolic');
 
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 

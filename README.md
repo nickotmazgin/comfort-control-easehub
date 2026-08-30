@@ -6,7 +6,7 @@
 [![License: MIT](https://img.shields.io/github/license/nickotmazgin/comfort-control-easehub)](LICENSE)
 [![GNOME 45–50](https://img.shields.io/badge/GNOME-45%E2%80%9350-4A86CF?logo=gnome&logoColor=white)](#compatibility)
 [![ESM](https://img.shields.io/badge/ESM-GJS%20modules-orange)](#compatibility)
-[![Wayland](https://img.shields.io/badge/Wayland-supported-0078D4)](#compatibility)
+[![Wayland](https://img.shields.io/badge/Wayland-validated-0078D4)](#compatibility)
 [![X11 / Xorg](https://img.shields.io/badge/X11%20%2F%20Xorg-validated-555555)](#compatibility)
 
 [![Issues](https://img.shields.io/github/issues/nickotmazgin/comfort-control-easehub)](https://github.com/nickotmazgin/comfort-control-easehub/issues)
@@ -16,9 +16,9 @@ A **GNOME Shell extension** that brings **comfort and control to your desktop** 
 
 > **Keywords:** GNOME panel menu · power management · screenshots · Wayland · X11 · Xorg · dark mode · DND · terminal · Flatpak · APT · Linux utilities · open source
 
-**Latest:** v1.1.3 — GNOME 45–50 ESM (**X11/Xorg validated** on Zorin OS 18.1 / GNOME Shell 46; security hardening + SystemActions power fix from v1.1.2)
+**Latest:** v1.1.4 — GNOME 45–50 ESM (**Wayland & X11/Xorg validated** on maintainer setups)
 
-> Download [v1.1.3](https://github.com/nickotmazgin/comfort-control-easehub/releases/latest). Older releases remain for history and rollback — we do not delete prior tags. **No new extension release required** for docs/CI-only updates on `main` since v1.1.3.
+> Download [v1.1.4](https://github.com/nickotmazgin/comfort-control-easehub/releases/latest). Older releases remain for history and rollback.
 
 > **GNOME Shell 42–44 is no longer supported.** EaseHub requires **GNOME 45–50**.
 
@@ -33,12 +33,10 @@ A **GNOME Shell extension** that brings **comfort and control to your desktop** 
 
 | Session | Status | Notes |
 | ------- | ------ | ----- |
-| **X11 / Xorg** | **Supported · validated** | **v1.1.3** runtime-tested on Zorin OS 18.1 / GNOME Shell 46 / X11; includes **Reload GNOME Shell (X11 only)** via `xdotool` |
-| **Wayland** | **Supported** | Native screenshot UI, power actions via SystemActions; shell reload hidden (log out/in required); not maintainer runtime-tested for v1.1.3 |
+| **Wayland** | **Supported · validated** | Power actions, screenshots, updates; shell reload hidden (log out/in) |
+| **X11 / Xorg** | **Supported · validated** | Same as Wayland, plus **Reload GNOME Shell** via `xdotool` |
 
 **Minimum requirement:** GNOME Shell **45** on a **Wayland or X11/Xorg** session.
-
-> **Validation scope (v1.1.3):** maintainer confidence is highest on **X11/Xorg** (local Zorin setup). Older release notes were not retroactively re-labeled.
 
 ---
 
@@ -121,13 +119,13 @@ gnome-extensions enable "$uuid"
 
 ### 📥 Which Zip Should I Download?
 
-Download **`comfort-control@nickotmazgin-45-50.shell-extension.zip`** from the [Releases page](https://github.com/nickotmazgin/comfort-control-easehub/releases/latest) (GNOME Shell **45–50** only). That is **v1.1.3** today.
+Download **`comfort-control@nickotmazgin-45-50.shell-extension.zip`** from the [Releases page](https://github.com/nickotmazgin/comfort-control-easehub/releases/latest) (GNOME Shell **45–50** only). That is **v1.1.4** today.
 
 | Release | Status |
 | ------- | ------ |
-| **v1.1.3** | **Recommended** — current; security hardening + safer update prompts |
-| **v1.1.2** | Superseded; kept for history / rollback (power/session SystemActions fix) |
-| v1.1.1 and older | Archived; see [CHANGELOG](CHANGELOG.md) |
+| **v1.1.4** | **Recommended** — suspend confirmation + session/docs alignment |
+| **v1.1.3** | Superseded; kept for history / rollback |
+| v1.1.2 and older | Archived; see [CHANGELOG](CHANGELOG.md) |
 
 ### 🧪 Packaging (CI)
 
@@ -139,7 +137,7 @@ On tag push (`v*`), GitHub Actions runs `create-release-zips.sh` and publishes:
 
 ## 🖼️ **Screenshots**
 
-*EaseHub v1.1.3 — click any image to view it full size.*
+*EaseHub v1.1.4 — click any image to view it full size.*
 
 [![EaseHub v1.1.3 collage](screenshots/collage.jpg)](screenshots/collage.jpg)
 

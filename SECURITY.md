@@ -8,7 +8,7 @@ drop-ins, and trigger an X11 shell reload through GNOME's own Alt+F2 path. Insta
 from official [GitHub releases](https://github.com/nickotmazgin/comfort-control-easehub/releases)
 with UUID `comfort-control@nickotmazgin`.
 
-**Platforms:** GNOME Shell **45–50** on **Wayland** (supported) and **X11/Xorg** (supported; **v1.1.3 validated** on maintainer X11 setup, including X11-only shell reload).
+**Platforms:** GNOME Shell **45–50** on **Wayland** and **X11/Xorg** (both validated on maintainer setups).
 
 Terminal emulator preferences are restricted to a known whitelist. Package upgrades and
 Flatpak updates require confirmation when `confirm-dangerous` is enabled (default).

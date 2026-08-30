@@ -164,7 +164,7 @@ export default class EaseHubPreferences extends ExtensionPreferences {
         groupInfo.add(new Adw.ActionRow({ title: 'Contact', subtitle: 'nickotmazgin.dev@gmail.com' }));
         groupInfo.add(new Adw.ActionRow({
             title: 'Description',
-            subtitle: 'Panel menu for power actions, screenshots, updates, and everyday utilities.',
+            subtitle: 'Panel menu for power, screenshots, updates & utilities. Wayland & X11/Xorg.',
         }));
         pageAbout.add(groupInfo);
 
