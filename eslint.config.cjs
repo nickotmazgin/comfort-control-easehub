@@ -15,6 +15,7 @@ module.exports = [
         logError: 'readonly',
         print: 'readonly',
         console: 'readonly',
+        ARGV: 'readonly',
         TextDecoder: 'readonly',
         TextEncoder: 'readonly',
       },

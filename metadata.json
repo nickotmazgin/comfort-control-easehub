@@ -1,9 +1,9 @@
 {
   "uuid": "comfort-control@nickotmazgin",
   "name": "Comfort Control (EaseHub)",
-  "description": "GNOME Shell 45–51 panel menu: power actions, live Do Not Disturb / Dark Mode / Night Light switches, screenshots, system & Flatpak updates, sudo timeout and utilities. Wayland & X11/Xorg. Reload Shell (X11 only).\n\nCreated by Nick Otmazgin.",
-  "version": 13,
-  "version-name": "1.2.0 45.51",
+  "description": "GNOME Shell 45–51 panel menu: power buttons, volume, quick toggles (Wi-Fi, Bluetooth, Airplane Mode, Do Not Disturb, Dark Mode, Night Light, Keep Awake), files and trash, screenshots, system and Flatpak updates, sudo timeout, and optional Files right-click actions. Wayland & X11/Xorg.\n\nCreated by Nick Otmazgin.",
+  "version": 14,
+  "version-name": "1.3.0 45.51",
   "shell-version": [
     "45",
     "46",

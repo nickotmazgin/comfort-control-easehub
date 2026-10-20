@@ -16,9 +16,9 @@ A **GNOME Shell extension** that brings **comfort and control to your desktop** 
 
 > **Keywords:** GNOME panel menu · power management · screenshots · Wayland · X11 · Xorg · dark mode · DND · terminal · Flatpak · APT · Linux utilities · open source
 
-**Latest:** v1.2.0 — GNOME 45–51 ESM (**Wayland & X11/Xorg validated** on maintainer setups)
+**Latest:** v1.3.0 — GNOME 45–51 ESM (**Wayland & X11/Xorg validated** on maintainer setups)
 
-> Download [v1.2.0](https://github.com/nickotmazgin/comfort-control-easehub/releases/latest). Older releases remain for history and rollback.
+> Download [v1.3.0](https://github.com/nickotmazgin/comfort-control-easehub/releases/latest). Older releases remain for history and rollback.
 
 > **GNOME Shell 42–44 is no longer supported.** EaseHub requires **GNOME 45–51**.
 
@@ -42,43 +42,74 @@ A **GNOME Shell extension** that brings **comfort and control to your desktop** 
 
 ## ✨ Features
 
-### 🔋 **Power Control Hub**
-* **Unified menu** with quick access to essential power actions (via GNOME Shell **SystemActions**, same path as the official power menu):
-  - 🔒 **Lock** - Secure your session instantly
-  - 👋 **Logout** - Sign out safely
-  - 💤 **Suspend** - Save power while keeping session
-  - 🔄 **Reboot** - Restart your system
-  - ⚡ **Power Off** - Shut down completely
+A compact panel menu (about 10 rows) that keeps everyday controls one click away:
 
-### 📸 **Smart Screenshots**
-* **Intelligent screenshot handling**:
-  - Opens **GNOME's built-in screenshot UI** (area, screen, window, screencast) on Wayland and X11
-  - **Automatic fallback** to `gnome-screenshot` if the built-in UI is unavailable
+```
+ 🔒  ↪  ⏸  ⟳  ⏻                     power buttons
+ 🔊  −  ━━━━━━━━●━━━  +               volume
+ [Wi-Fi] [Bluetooth] [Airplane]       quick toggles
+ [Silent] [Dark] [Night] [Awake]
+ 📁 Apps & Files            ▸
+ 📋 Clipboard & Screenshot  ▸
+ ⬆  Updates & System        ▸
+ 🛡  Sudo Timeout (60 min)   ▸
+ ⚙   ⓘ   ♥                           settings · about · donate
+```
 
-### 🛠️ **System Update Helpers**
-* **Smart package management**:
-  - **Cross-distro support**: APT, DNF, Zypper, Pacman, Flatpak
-  - **Exact install commands** shown for missing tools
-  - **Terminal integration** - updates run in your terminal for full visibility
-  - **Secure authentication** using `pkexec` for graphical password prompts
+### 🔋 Power
+Lock, Log Out, Suspend, Restart and Power Off through GNOME Shell's own **SystemActions**
+(the same path as the system menu). Everything except Lock asks first (configurable).
 
-### 🔄 **Reload GNOME Shell (X11 only)** — new in v1.1.0
-* One click triggers GNOME's own **Alt+F2 → r** restart path (via `xdotool`) — the extension never calls `Meta.restart()` itself, so it can't crash your session
-* Verifies the restart from the **Shell journal and a live D-Bus ping**, then confirms with a notification
-* Automatically hidden on Wayland (an in-place shell restart is impossible there)
-* Requires `xdotool` (`sudo apt install xdotool` or your distro's equivalent)
+### 🔊 Sound
+Mute, volume down, a slider and volume up for your current output device.
 
-### 🔐 **Sudo Timeout** — new in v1.1.0
-* Control how long `sudo` remembers your password right from the panel: status, **15/30/60/120/180 minutes**, an interactive terminal menu, and reset to system default
-* Safe by design: every change is **`visudo`-validated** before install, written to one drop-in file (`/etc/sudoers.d/99-easehub-sudo-timeout-<user>`), backed up, and **rolled back automatically** if validation fails
-* Clear SUCCESS/ERROR terminal output plus desktop notifications
+### 🎛️ Quick toggles
+**Wi-Fi**, **Bluetooth**, **Airplane Mode**, **Do Not Disturb**, **Dark Mode**, **Night Light**
+and **Keep Awake** (no screen blanking or sleep while on). Tiles show the current state every
+time you open the menu, and hide themselves when the hardware or service isn't there.
 
-### 🧩 **Configurable Actions & Terminal**
-* Enable/disable any menu item from Preferences → Actions (menu updates live)
-* Set a preferred terminal in Preferences: Ptyxis, GNOME Console, GNOME Terminal, Konsole, Tilix, Kitty, Alacritty, WezTerm, foot or `x-terminal-emulator` (or Auto)
-* Terminal windows stay open after a command finishes and show its exit code
-* **EaseHub Settings…** always available at the bottom of the panel menu
-* **Live switches** for Do Not Disturb, Dark Mode and **Night Light** that show the current state every time you open the menu
+### 📁 Apps & Files
+Open Files (your home folder), Settings, Extensions, Tweaks, a terminal, **Empty Trash** (shows
+how many items and asks first) and **Clear Recent Files** (asks first).
+
+### 📸 Clipboard & Screenshot
+Opens **GNOME's built-in screenshot tool** (area, screen, window, screencast), with a
+`gnome-screenshot` fallback. Clear the clipboard or the primary selection.
+
+### 🛠️ Updates & System
+- **Check for Updates** and **Upgrade Packages** for APT, DNF, Zypper and Pacman (Arch uses
+  `checkupdates`, never a partial `pacman -Sy`), plus **Update Flatpaks**
+- Runs in your terminal, which stays open afterwards with the exit code; `pkexec` asks for your password
+- **Reload GNOME Shell** on X11 through GNOME's own Alt+F2 → `r` path (via `xdotool`), verified
+  from the Shell journal and a D-Bus ping. Hidden on Wayland.
+
+### 🔐 Sudo Timeout
+- Set how long `sudo` remembers your password: 15, 30, 60 or 120 minutes, your own **custom**
+  value, or the system default. The menu shows the current value.
+- **Forget Password Now** (`sudo -K`).
+- Optional **one login for all terminals** (`timestamp_type=global`, off by default).
+- Every change is **`visudo`-validated** before it is installed, written to one drop-in
+  (`/etc/sudoers.d/99-easehub-sudo-timeout-<user>`), backed up, and **rolled back** if validation fails.
+
+### 🖱️ Files right-click menu (optional)
+Turn it on in **Preferences → Files** to add **Scripts ▸ EaseHub** to the Files (Nautilus)
+right-click menu:
+
+| Copy ▸ | Open ▸ | Tools ▸ |
+| ------ | ------ | ------- |
+| Name · Full Path · Path and Name · Parent Folder Path · Path from Home (~) · Quoted Path (shell-safe) · File URI | Terminal Here · Open in Editor | Size and Type · SHA-256 Checksum · Make Executable |
+
+Grouped or flat, rename the menu or any action, hide actions, notifications on or off, and
+pick your editor. Works with several files at once, symbolic links, spaces, quotes and
+non-Latin names. EaseHub only ever removes files it created.
+
+### ⚙️ Preferences
+- **General:** compact or classic layout, panel icon, position and order, a keyboard
+  shortcut to open the menu, confirmations, preferred terminal (10 supported), and
+  **Reset all settings**
+- **Menu:** show or hide every item; sudo timeout options
+- **Files:** the right-click menu
+- **About:** version, links and more extensions
 
 ---
 
@@ -119,11 +150,12 @@ gnome-extensions enable "$uuid"
 
 ### 📥 Which Zip Should I Download?
 
-Download **`comfort-control@nickotmazgin-45-51.shell-extension.zip`** from the [Releases page](https://github.com/nickotmazgin/comfort-control-easehub/releases/latest) (GNOME Shell **45–51** only). That is **v1.2.0** today.
+Download **`comfort-control@nickotmazgin-45-51.shell-extension.zip`** from the [Releases page](https://github.com/nickotmazgin/comfort-control-easehub/releases/latest) (GNOME Shell **45–51** only). That is **v1.3.0** today.
 
 | Release | Status |
 | ------- | ------ |
-| **v1.2.0** | **Recommended** — GNOME 51, live toggle switches, terminal and screenshot fixes |
+| **v1.3.0** | **Recommended** — compact menu, sound, quick toggles, files and trash, Files right-click menu |
+| v1.2.0 | Not released separately — its fixes (GNOME 51, terminals, screenshots) are part of v1.3.0 |
 | **v1.1.4** | Superseded; kept for history / rollback (GNOME 45–50) |
 | v1.1.3 | Superseded; kept for history / rollback |
 | v1.1.2 and older | Archived; see [CHANGELOG](CHANGELOG.md) |
@@ -220,7 +252,7 @@ Recent releases were built with help from AI pair-programming agents, operated u
 
 - **OpenAI Codex** — release engineering, signed-tag release workflows, packaging and validation hardening
 - **Cursor (Agent)** — code review, debugging, CI workflow hardening, documentation
-- **Claude** by Anthropic ([@claude](https://github.com/claude), via [Claude Code](https://claude.com/claude-code)) — v1.2.0 audit: terminal and screenshot fixes, live toggle switches, GNOME 51 port, nested-shell testing, CI lint checks
+- **Claude** by Anthropic ([@claude](https://github.com/claude), via [Claude Code](https://claude.com/claude-code)) — v1.2.0 audit and v1.3.0 features: compact menu, sound and quick toggles, Files right-click menu, sudo timeout options, GNOME 51 port, nested-shell and unit tests, CI checks
 
 Every AI-assisted change is human-reviewed, tested on real GNOME sessions, and approved by the maintainer before release. See [CONTRIBUTORS.md](CONTRIBUTORS.md) for the full credits.
 

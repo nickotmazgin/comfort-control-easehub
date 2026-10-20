@@ -18,13 +18,15 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libglib2.0-bin jq rsync unzip zip
+          sudo apt-get install -y libglib2.0-bin jq rsync unzip zip gjs
       - name: Validate metadata.json
         run: |
           jq . metadata.json > /dev/null
       - name: Compile GSettings schemas
         run: |
           if [ -d schemas ]; then glib-compile-schemas schemas; fi
+      - name: Test the Files right-click menu writer
+        run: gjs -m tools/tests/files-menu.test.js "$(mktemp -d)/scripts" "$PWD"
       - name: Check helper script syntax
         run: |
           for f in scripts/*.sh tools/*.sh *.sh; do bash -n "$f"; done
@@ -36,7 +38,8 @@ jobs:
           test -f "$ZIP"
           for f in extension.js prefs.js metadata.json stylesheet.css \
                    schemas/org.gnome.shell.extensions.easehub.gschema.xml \
-                   scripts/easehub-reload-shell.sh scripts/easehub-sudo-extend.sh; do
+                   scripts/easehub-reload-shell.sh scripts/easehub-sudo-extend.sh \
+                   scripts/easehub-files.sh icons/easehub-symbolic.svg lib/filesMenu.js; do
             unzip -Z1 "$ZIP" | grep -qx "$f" || { echo "missing in zip: $f"; exit 1; }
           done
           ! unzip -Z1 "$ZIP" | grep -qx schemas/gschemas.compiled

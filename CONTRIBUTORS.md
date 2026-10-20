@@ -14,7 +14,7 @@ Recent releases were developed with help from AI pair-programming agents. As the
 |-----------|------|
 | **[OpenAI Codex](https://openai.com/codex/)** | Release engineering, signed-tag release workflows, release packaging and validation hardening |
 | **[Cursor (Agent)](https://cursor.com)** | Code review, debugging, CI workflow hardening, documentation |
-| **Claude** by Anthropic ([@claude](https://github.com/claude), via [Claude Code](https://claude.com/claude-code)) | v1.2.0 audit: terminal and screenshot fixes, live toggle switches, GNOME 51 port, nested-shell testing, CI lint checks |
+| **Claude** by Anthropic ([@claude](https://github.com/claude), via [Claude Code](https://claude.com/claude-code)) | v1.2.0 audit and v1.3.0 features: compact menu, sound and quick toggles, Files right-click menu, sudo timeout options, GNOME 51 port, nested-shell and unit tests, CI checks |
 
 ## Community
 

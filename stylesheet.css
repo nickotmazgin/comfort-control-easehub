@@ -1,1 +1,26 @@
+/* Comfort Control (EaseHub). Colors come from the shell theme's own
+   icon-button and quick-toggle classes; this only sets size and spacing. */
+
 .easehub-icon { icon-size: 16px; }
+
+.easehub-row { padding: 4px 12px; }
+.easehub-row:hover, .easehub-row:focus { background-color: transparent; }
+
+.easehub-button-row { spacing: 6px; }
+.easehub-power-button { padding: 10px; }
+.easehub-power-button StIcon { icon-size: 16px; }
+.easehub-small-button { padding: 7px; }
+.easehub-small-button StIcon { icon-size: 16px; }
+
+.easehub-volume-row { spacing: 4px; }
+
+.easehub-tile-grid { spacing: 6px; }
+.easehub-tile-row { spacing: 6px; }
+.easehub-tile {
+  min-width: 84px;
+  min-height: 0;
+  padding: 8px 4px;
+  border-radius: 12px;
+}
+.easehub-tile-icon { icon-size: 16px; }
+.easehub-tile-label { font-size: 0.85em; padding-top: 4px; }

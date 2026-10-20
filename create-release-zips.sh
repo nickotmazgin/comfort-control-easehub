@@ -18,7 +18,7 @@ rm -rf "$WORK" && mkdir -p "$STAGE" "$DIST"
 cp extension-esm.js "$STAGE/extension.js"
 cp prefs-esm.js "$STAGE/prefs.js"
 cp metadata.json stylesheet.css README.md LICENSE CODE_OF_CONDUCT.md SECURITY.md CHANGELOG.md "$STAGE/"
-cp -r schemas scripts "$STAGE/"
+cp -r schemas scripts icons lib "$STAGE/"
 rm -f "$STAGE/schemas/gschemas.compiled"
 chmod +x "$STAGE"/scripts/*.sh
 
@@ -28,7 +28,7 @@ glib-compile-schemas --strict --dry-run "$STAGE/schemas"
 
 rm -f "$DIST/$NAME"
 (cd "$STAGE" && zip -qr "$ROOT_DIR/$DIST/$NAME" \
-  extension.js prefs.js metadata.json stylesheet.css schemas scripts \
+  extension.js prefs.js metadata.json stylesheet.css schemas scripts icons lib \
   README.md LICENSE CODE_OF_CONDUCT.md SECURITY.md CHANGELOG.md)
 
 echo "Created: $DIST/$NAME"

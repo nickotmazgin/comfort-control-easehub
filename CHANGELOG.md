@@ -1,3 +1,46 @@
+## 1.3.0 (2026-10-20)
+
+**A compact new menu with sound, quick toggles, files and trash, plus EaseHub actions in the Files right-click menu.**
+
+### New in the panel menu
+- **Compact layout** (default): a row of power buttons, a volume row, quick-toggle tiles,
+  four collapsible groups and a footer. About 10 rows tall instead of 23. **Classic**
+  (one row per item) is still available in Preferences.
+- **Volume**: mute, down, a slider and up for the current output device.
+- **Quick toggles**: Wi-Fi, Bluetooth, Airplane Mode, Do Not Disturb, Dark Mode, Night Light
+  and **Keep Awake** (stops the screen from blanking and the computer from sleeping while on).
+  Tiles hide themselves when the hardware or service isn't there.
+- **Apps & Files**: Open Files, Settings, Extensions, Tweaks, Terminal, **Empty Trash** (shows
+  how many items and asks first) and **Clear Recent Files** (asks first).
+- **Sudo Timeout**: the menu shows the current value (e.g. "Sudo Timeout (60 min)"), adds
+  **Forget Password Now** and a **custom minutes** entry, and can optionally share one login
+  across all terminals (`timestamp_type=global`, off by default).
+- **New panel icon** (a hub), with a choice of icons, panel position and order in Preferences.
+- **Keyboard shortcut** to open the menu (none by default).
+
+### Files right-click menu (optional, off by default)
+- Preferences → **Files** adds actions under **Scripts ▸ EaseHub** in Files (Nautilus):
+  Copy Name, Full Path, Path and Name, Parent Folder Path, Path from Home (~), Quoted Path
+  (shell-safe), File URI; Open Terminal Here, Open in Editor; Copy Size and Type, Copy
+  SHA-256 Checksum, Make Executable.
+- Grouped (Copy ▸ / Open ▸ / Tools ▸) or flat; rename the menu or any action; hide actions;
+  notifications on or off; choose the editor. Uses your EaseHub terminal.
+- Works with symbolic links (copies the path you clicked, not its target), broken links,
+  spaces, quotes and non-Latin names. Sizes are real file sizes.
+- EaseHub only removes files it created (listed in a marker file); anything you add yourself
+  is kept. Turning the option off removes the menu.
+
+### Preferences
+- New **Menu** page to show or hide every item, and a **Files** page.
+- **Reset all settings** (with confirmation) and **Show All Items** / **Restore Default Names
+  and Actions** buttons.
+- Settings from 1.2 and earlier are migrated: items you had hidden stay hidden, and new
+  items appear.
+
+### Under the hood
+- GNOME 48+ `St.BoxLayout` orientation handled for 51 (where `vertical` was removed).
+- CI runs a unit test for the Files menu writer.
+
 ## 1.2.0 (2026-10-20)
 
 **GNOME Shell 51, live toggle switches, and fixes for terminals and screenshots.**
