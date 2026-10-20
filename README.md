@@ -106,7 +106,8 @@ non-Latin names. EaseHub only ever removes files it created.
 ### ⚙️ Preferences
 - **General:** compact or classic layout, **appearance (System / Light / Dark)**, panel icon,
   position and order, a keyboard shortcut to open the menu, confirmations, preferred terminal
-  (10 supported), and **Reset all settings**
+  (10 supported), and **Reset all settings**. The same appearance control sits in the panel
+  menu footer: a palette icon for System, a sun for Light, and a moon for Dark. Click it to cycle.
 - **Menu:** show or hide every item; sudo timeout options
 - **Files:** the right-click menu
 - **About:** version, links and more extensions
@@ -172,37 +173,37 @@ Build it locally with `./create-release-zips.sh`, or `./package.sh --install` to
 
 ## 🖼️ **Screenshots**
 
-*Screenshots from EaseHub v1.1.4 (v1.2.0 shows Do Not Disturb, Dark Mode and Night Light as switches) — click any image to view it full size.*
+*Screenshots from EaseHub v1.3.0 — compact menu, quick toggles, Files right-click actions, and Appearance (System, Light, or Dark) in the tray footer and in Settings → General. Click any image to view it full size.*
 
 [![EaseHub screenshot collage](screenshots/collage.jpg)](screenshots/collage.jpg)
 
 <table>
   <tr>
     <td align="center">
-      <a href="screenshots/m1.jpg"><img src="screenshots/m1.jpg" width="260" alt="m1 — Full panel menu"></a><br>
-      <b>m1</b> — Panel menu (all actions)
+      <a href="screenshots/v1.3.0/01-panel-menu.png"><img src="screenshots/v1.3.0/01-panel-menu.png" width="260" alt="Panel menu"></a><br>
+      <b>Panel menu</b> — power, sound, and quick toggles
     </td>
     <td align="center">
-      <a href="screenshots/m2.jpg"><img src="screenshots/m2.jpg" width="260" alt="m2 — Sudo Timeout submenu"></a><br>
-      <b>m2</b> — Sudo Timeout submenu
+      <a href="screenshots/v1.3.0/03-menu-apps.png"><img src="screenshots/v1.3.0/03-menu-apps.png" width="260" alt="Apps and Files group"></a><br>
+      <b>Apps &amp; Files</b> — including the Files right-click switch
     </td>
     <td align="center">
-      <a href="screenshots/m3.jpg"><img src="screenshots/m3.jpg" width="260" alt="m3 — Preferences: General tab"></a><br>
-      <b>m3</b> — Preferences · General
+      <a href="screenshots/v1.3.0/08-appearance-light.png"><img src="screenshots/v1.3.0/08-appearance-light.png" width="260" alt="Light appearance"></a><br>
+      <b>Appearance</b> — System, Light, or Dark from the footer
     </td>
   </tr>
   <tr>
     <td align="center">
-      <a href="screenshots/m4.jpg"><img src="screenshots/m4.jpg" width="260" alt="m4 — Preferences: Actions tab (System, Toggles, Apps)"></a><br>
-      <b>m4</b> — Actions · System &amp; Toggles
+      <a href="screenshots/v1.3.0/09-files-right-click-copy.png"><img src="screenshots/v1.3.0/09-files-right-click-copy.png" width="260" alt="Files right-click Copy menu"></a><br>
+      <b>Files</b> — right-click, then Scripts ▸ EaseHub ▸ Copy
     </td>
     <td align="center">
-      <a href="screenshots/m5.jpg"><img src="screenshots/m5.jpg" width="260" alt="m5 — Preferences: Actions tab (Power Tools, Utilities, Updates)"></a><br>
-      <b>m5</b> — Actions · Power Tools &amp; Updates
+      <a href="screenshots/v1.3.0/10-settings-general-1.png"><img src="screenshots/v1.3.0/10-settings-general-1.png" width="260" alt="Settings General tab"></a><br>
+      <b>Settings · General</b> — layout, appearance, icon, shortcut
     </td>
     <td align="center">
-      <a href="screenshots/m6.jpg"><img src="screenshots/m6.jpg" width="260" alt="m6 — Preferences: About tab"></a><br>
-      <b>m6</b> — Preferences · About
+      <a href="screenshots/v1.3.0/06-menu-sudo.png"><img src="screenshots/v1.3.0/06-menu-sudo.png" width="260" alt="Sudo Timeout submenu"></a><br>
+      <b>Sudo Timeout</b> — presets, forget, and reset
     </td>
   </tr>
 </table>
