@@ -178,7 +178,7 @@ Build it locally with `./create-release-zips.sh`, or `./package.sh --install` to
 
 *A 2-minute narrated tour of EaseHub 1.3.0 ([also on YouTube](https://www.youtube.com/watch?v=8F3gWtqQ3fw); turn the sound on; [announcement](https://github.com/nickotmazgin/comfort-control-easehub/discussions/73); [DEV](https://dev.to/nickotmazgin/easehub-130-a-compact-gnome-menu-with-sound-and-files-right-click-actions-16ma)): the compact panel menu, volume, quick toggles, Apps & Files, Clipboard & Screenshot, Updates & System, Sudo Timeout, appearance (System, Light, Dark), the Files right-click actions, and every Settings tab from top to bottom.*
 
-https://github.com/user-attachments/assets/b87e3df8-b5ca-4f4a-969b-7aca322133bf
+https://github.com/user-attachments/assets/1df1c25c-485a-491a-b15a-ddc69d25ae58
 
 ---
 
