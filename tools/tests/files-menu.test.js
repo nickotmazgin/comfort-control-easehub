@@ -25,6 +25,7 @@ check('grouped: marker present', tree().includes('./EaseHub/.easehub-managed'));
 GLib.file_set_contents(`${base}/EaseHub/Copy/My Own Script`, '#!/bin/sh\n');
 vals['files-layout'] = 'flat'; vals['files-hidden-actions'] = ['make-executable']; vals['files-titles'] = { 'copy-name': 'Name/Only' };
 r = syncFilesMenu(S, ext, base);
+check('flat resync ok', r.ok);
 const t = tree();
 check('user file kept after resync', t.includes('./EaseHub/Copy/My Own Script'));
 check('flat: 11 actions at top level', t.filter(p => /^\.\/EaseHub\/[^/]+$/.test(p) && !p.endsWith('.easehub-managed') && !p.endsWith('/Copy')).length === 11);
