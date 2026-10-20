@@ -11,10 +11,11 @@
 
 [![Issues](https://img.shields.io/github/issues/nickotmazgin/comfort-control-easehub)](https://github.com/nickotmazgin/comfort-control-easehub/issues)
 [![Discussions](https://img.shields.io/github/discussions/nickotmazgin/comfort-control-easehub?label=discussions&color=8B5CF6)](https://github.com/nickotmazgin/comfort-control-easehub/discussions)
+[![Stars](https://img.shields.io/github/stars/nickotmazgin/comfort-control-easehub?style=flat&color=yellow)](https://github.com/nickotmazgin/comfort-control-easehub/stargazers)
 
 A **GNOME Shell extension** that brings **comfort and control to your desktop** — quick access to power actions, Wayland screenshots, system updates, and everyday utilities from one panel menu.
 
-> **Keywords:** GNOME panel menu · power management · screenshots · Wayland · X11 · Xorg · dark mode · DND · terminal · Flatpak · APT · Linux utilities · open source
+> **Keywords:** GNOME panel menu · GNOME Shell extension · power management · volume · quick toggles · dark mode · screenshots · Files right-click · Nautilus · Wayland · X11 · Xorg · Ubuntu · Fedora · Flatpak · open source
 
 **Latest:** v1.3.0 — GNOME 45–51 ESM (**Wayland & X11/Xorg validated** on maintainer setups)
 
@@ -173,13 +174,17 @@ Build it locally with `./create-release-zips.sh`, or `./package.sh --install` to
 
 ---
 
+## Demo video
+
+*A 2-minute narrated tour of EaseHub 1.3.0 ([also on YouTube](https://www.youtube.com/watch?v=8F3gWtqQ3fw); turn the sound on; [announcement](https://github.com/nickotmazgin/comfort-control-easehub/discussions/73); [DEV](https://dev.to/nickotmazgin/easehub-130-a-compact-gnome-menu-with-sound-and-files-right-click-actions-16ma)): the compact panel menu, volume, quick toggles, Apps & Files, Clipboard & Screenshot, Updates & System, Sudo Timeout, appearance (System, Light, Dark), the Files right-click actions, and every Settings tab from top to bottom.*
+
+https://github.com/user-attachments/assets/1df1c25c-485a-491a-b15a-ddc69d25ae58
+
+---
+
 ## 🖼️ **Screenshots**
 
 *Screenshots from EaseHub v1.3.0 — compact menu, quick toggles, Files right-click actions, and Appearance (System, Light, or Dark) in the tray footer and in Settings → General. Click any image to view it full size.*
-
-The narrated tour (2:08) opens the panel menu, each group, the Files right-click actions, and every Settings tab from top to bottom.
-
-[![EaseHub 1.3.0 narrated tour](https://img.youtube.com/vi/8F3gWtqQ3fw/hqdefault.jpg)](https://www.youtube.com/watch?v=8F3gWtqQ3fw)
 
 [![EaseHub screenshot collage](screenshots/collage.jpg)](screenshots/collage.jpg)
 
@@ -258,10 +263,10 @@ Comfort Control (EaseHub) is created, maintained, signed, and released by **[Nic
 Recent releases were built with help from AI pair-programming agents, operated under the maintainer's direction and review:
 
 - **OpenAI Codex** — release engineering, signed-tag release workflows, packaging and validation hardening
-- **Cursor (Agent)** — code review, debugging, CI workflow hardening, documentation
+- **Cursor Agent** ([@cursoragent](https://github.com/cursoragent)) — code review, debugging, CI workflow hardening, the v1.3.0 gallery, narrated tour, and documentation
 - **Claude** by Anthropic ([@claude](https://github.com/claude), via [Claude Code](https://claude.com/claude-code)) — v1.2.0 audit and v1.3.0 features: compact menu, sound and quick toggles, Files right-click menu, sudo timeout options, GNOME 51 port, nested-shell and unit tests, CI checks
 
-Every AI-assisted change is human-reviewed, tested on real GNOME sessions, and approved by the maintainer before release. See [CONTRIBUTORS.md](CONTRIBUTORS.md) for the full credits.
+Every AI-assisted change is human-reviewed, tested on real GNOME sessions, and approved by the maintainer before release. See [CONTRIBUTORS.md](CONTRIBUTORS.md) for the full credits, including the contributor table.
 
 > OpenAI and Codex are trademarks of OpenAI. Cursor is a trademark of Anysphere, Inc. Claude and Claude Code are trademarks of Anthropic, PBC. These names are used here solely for factual attribution. EaseHub is an independent project and is **not** affiliated with, sponsored, or endorsed by OpenAI, Anysphere/Cursor, or Anthropic.
 
@@ -269,9 +274,11 @@ Every AI-assisted change is human-reviewed, tested on real GNOME sessions, and a
 
 ## Find this project
 
-**GitHub topics:** `gnome-shell-extension` · `panel-menu` · `power-management` · `screenshot` · `flatpak` · `wayland` · `x11` · `xorg` · `linux` · `productivity` · `open-source`
+**GitHub topics:** `gnome` · `gnome-shell` · `gnome-shell-extension` · `gnome-extension` · `linux` · `linux-desktop` · `open-source` · `wayland` · `x11` · `xorg` · `productivity` · `gjs` · `panel-menu` · `power-management` · `screenshot` · `flatpak` · `ubuntu` · `fedora` · `nautilus` · `dark-mode`
 
-**Search for:** GNOME panel menu extension, Linux power menu, EaseHub GNOME, system utilities tray, screenshot extension GNOME
+**Search for:** EaseHub GNOME, GNOME panel menu, GNOME Shell extension, Linux power menu, volume control panel, quick toggles, Files right-click Nautilus, dark mode extension, Wayland X11
+
+**Also:** [YouTube tour](https://www.youtube.com/watch?v=8F3gWtqQ3fw) · [DEV](https://dev.to/nickotmazgin/easehub-130-a-compact-gnome-menu-with-sound-and-files-right-click-actions-16ma) · [Discussion](https://github.com/nickotmazgin/comfort-control-easehub/discussions/73)
 
 ## More GNOME extensions by Nick Otmazgin
 
