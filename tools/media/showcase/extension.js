@@ -391,6 +391,8 @@ async function tourMenu(ind, es) {
         await hover(appearance, 300);
         es.set_string('menu-style', name);                  // same as clicking the footer button
         await wait(MODE === 'video' ? 1400 : 900);
+        if (MODE !== 'video')
+            ind._tooltips?.hide();                          // it would sit cut off below the crop
         await menuShot(ind, `08-appearance-${name}`);
     }
     es.reset('menu-style');
