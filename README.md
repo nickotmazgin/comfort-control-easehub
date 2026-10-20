@@ -192,7 +192,7 @@ https://github.com/user-attachments/assets/5af64b49-7ea8-4879-9778-1d30e7d9254a
   <tr>
     <td align="center">
       <a href="screenshots/v1.3.0/01-panel-menu.png"><img src="screenshots/v1.3.0/01-panel-menu.png" width="260" alt="Panel menu"></a><br>
-      <b>Panel menu</b> — power, sound, and quick toggles
+      <b>Panel menu</b> — power, sound, and quick toggles (Wi-Fi, Bluetooth, Airplane Mode and more)
     </td>
     <td align="center">
       <a href="screenshots/v1.3.0/03-menu-apps.png"><img src="screenshots/v1.3.0/03-menu-apps.png" width="260" alt="Apps and Files group"></a><br>
