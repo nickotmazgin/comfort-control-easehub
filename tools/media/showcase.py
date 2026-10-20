@@ -21,6 +21,7 @@ import argparse
 import contextlib
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -109,11 +110,14 @@ gsettings set org.gnome.desktop.notifications show-banners false
 {sets}
 sleep 1
 [ -s "$XDG_CONFIG_HOME/dconf/user" ] || {{ echo "ISOLATION FAILED"; exit 1; }}
+# gsd-rfkill is absent on this private bus; without it the Bluetooth and Airplane tiles hide.
+python3 {MEDIA / 'showcase' / 'mock_rfkill.py'} &
+sleep 0.5
 {display} timeout {600 if mode == 'video' else 150} gnome-shell --nested --wayland || true
 ''')
     env = dict(os.environ, XDG_DATA_HOME=str(work / 'data'), XDG_CONFIG_HOME=str(work / 'config'),
                EASEHUB_SHOWCASE_OUT=str(out), EASEHUB_SHOWCASE_MODE=mode, EASEHUB_SHOWCASE_PARTS=parts, EASEHUB_SHOWCASE_SCALE=str(scale),
-               EASEHUB_SHOWCASE_DEMO_DIR=str(demo),
+               EASEHUB_SHOWCASE_DEMO_DIR=str(demo), EASEHUB_SHOWCASE_CLIENT=f'{client[0]}x{client[1]}',
                EASEHUB_SHOWCASE_DURATIONS=json.dumps(durations))
     return env
 
@@ -130,7 +134,28 @@ def _window_geom(wid: str) -> dict:
     return vals
 
 
-def nested_window(timeout=60):
+def _stage_rect(client, frame):
+    """The nested Shell's own client window inside the host frame.
+
+    The frame rectangle also covers its title bar and an invisible shadow margin,
+    and x11grab records whatever is on the desktop behind that margin.
+    """
+    if not client:
+        return None
+    cw, ch = client
+    fx, fy, fw, fh = frame
+    tree = subprocess.run(['xwininfo', '-root', '-tree'], capture_output=True, text=True).stdout
+    for line in tree.splitlines():
+        m = re.search(r'\s(\d+)x(\d+)\+-?\d+\+-?\d+\s+\+(-?\d+)\+(-?\d+)\s*$', line)
+        if not m:
+            continue
+        w, h, x, y = (int(g) for g in m.groups())
+        if (w, h) == (cw, ch) and fx <= x and fy <= y and x + w <= fx + fw + 2 and y + h <= fy + fh + 2:
+            return x, y, w - w % 2, h - h % 2
+    return None
+
+
+def nested_window(timeout=60, client=None):
     """Find the nested Shell window on the host display.
 
     Its size is often a few pixels off 1600x1000 once the frame is included, and
@@ -178,6 +203,10 @@ def nested_window(timeout=60):
                 time.sleep(0.4)
                 continue
             log(f"nested window {w}x{h} at {x1},{y1} '{v['name']}'")
+            stage = _stage_rect(client, (x1, y1, w, h))
+            if stage:
+                log(f'recording only the nested stage {stage[2]}x{stage[3]} at {stage[0]},{stage[1]}')
+                return stage
             return x1, y1, w, h
         time.sleep(0.4)
     summary = ', '.join(f"{v.get('Width')}x{v.get('Height')} {v.get('name')}" for v in seen.values()) or 'none'
@@ -192,7 +221,9 @@ def run_session(work: Path, env: dict, record: Path | None):
     rec, rec_start = None, None
     try:
         if record:
-            x, y, w, h = nested_window()
+            spec = env.get('EASEHUB_SHOWCASE_CLIENT', '')
+            client = tuple(int(n) for n in spec.split('x')) if spec else None
+            x, y, w, h = nested_window(client=client)
             rec = subprocess.Popen(
                 ['ffmpeg', '-y', '-loglevel', 'error', '-f', 'x11grab', '-draw_mouse', '0', '-framerate', '30',
                  '-video_size', f'{w}x{h}', '-i', f"{os.environ.get('DISPLAY', ':0')}+{x},{y}",
@@ -421,6 +452,10 @@ def video(args):
         log('settings: each tab from the top to the bottom')
         settings = record_settings(work / 'settings', voice)
         title = f'Comfort Control (EaseHub) {em.version()} — GNOME Shell {em.shell_range()}'
+        # Start on the title scene: before it the nested shell is still starting up.
+        first = next((s for s in scenes if s['key'] == 'title'), None)
+        t0 = max(0.0, (first['t'] - rec_start) / 1e6 - 0.3) if first else 0.0
+        rec_start += t0 * 1e6
         end_t = None
         for sc in scenes:
             if sc['key'] == 'end':
@@ -436,7 +471,7 @@ def video(args):
             if voice and sc['key'] in voice.files:
                 events.append((start, str(voice.files[sc['key']])))
         body = work / 'body.mp4'
-        render(raw, body, captions, work / 'body-caps', to=end_t)
+        render(raw, body, captions, work / 'body-caps', ss=t0, to=end_t)
         body_len = probe_len(body)
         pieces = [body]
         if settings is not None:
@@ -447,7 +482,7 @@ def video(args):
         if end_t is not None:
             end_sc = next(s for s in scenes if s['key'] == 'end')
             outro = work / 'outro.mp4'
-            render(raw, outro, [(0.3, 5.5, end_sc['caption'] or title)], work / 'outro-caps', ss=end_t)
+            render(raw, outro, [(0.3, 5.5, end_sc['caption'] or title)], work / 'outro-caps', ss=t0 + end_t)
             pieces.append(outro)
             if voice and 'end' in voice.files:
                 events.append((body_len, str(voice.files['end'])))
@@ -498,6 +533,15 @@ def record_settings(work: Path, voice):
             ps.sh('xdotool', 'windowmove', wid, str(max(0, (sw - ps.W) // 2)), '40')
             time.sleep(0.6)
             x, y, w, h = ps.geometry(wid)
+            # GTK draws a transparent shadow margin around the window; recording it
+            # would show whatever is on the desktop behind. Keep the visible window only.
+            probe = work / f'{page}-frame.png'
+            ps.sh('import', '-window', wid, str(probe))
+            from PIL import Image
+            box = Image.open(probe).convert('L').point(lambda v: 255 if v > 12 else 0).getbbox()
+            probe.unlink(missing_ok=True)
+            if box:
+                x, y, w, h = x + box[0] + 2, y + box[1] + 2, box[2] - box[0] - 4, box[3] - box[1] - 4
             w -= w % 2
             h -= h % 2
             raw = work / f'{page}.mp4'

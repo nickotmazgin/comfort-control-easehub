@@ -21,7 +21,7 @@ A **GNOME Shell extension** that brings **comfort and control to your desktop** 
 
 > Download [v1.3.0](https://github.com/nickotmazgin/comfort-control-easehub/releases/latest). Older releases remain for history and rollback.
 
-> **Tour:** [narrated demo on YouTube](https://www.youtube.com/watch?v=8F3gWtqQ3fw) · [write-up on DEV](https://dev.to/nickotmazgin/easehub-130-a-compact-gnome-menu-with-sound-and-files-right-click-actions-16ma)
+> **Tour:** [narrated demo on YouTube](https://www.youtube.com/watch?v=5A7521LUAQ8) · [write-up on DEV](https://dev.to/nickotmazgin/easehub-130-a-compact-gnome-menu-with-sound-and-files-right-click-actions-16ma)
 
 > **GNOME Shell 42–44 is no longer supported.** EaseHub requires **GNOME 45–51**.
 
@@ -176,9 +176,9 @@ Build it locally with `./create-release-zips.sh`, or `./package.sh --install` to
 
 ## Demo video
 
-*A 2-minute narrated tour of EaseHub 1.3.0 ([also on YouTube](https://www.youtube.com/watch?v=8F3gWtqQ3fw); turn the sound on; [announcement](https://github.com/nickotmazgin/comfort-control-easehub/discussions/73); [DEV](https://dev.to/nickotmazgin/easehub-130-a-compact-gnome-menu-with-sound-and-files-right-click-actions-16ma)): the compact panel menu, volume, quick toggles, Apps & Files, Clipboard & Screenshot, Updates & System, Sudo Timeout, appearance (System, Light, Dark), the Files right-click actions, and every Settings tab from top to bottom.*
+*A 2-minute narrated tour of EaseHub 1.3.0 ([also on YouTube](https://www.youtube.com/watch?v=5A7521LUAQ8); turn the sound on; [announcement](https://github.com/nickotmazgin/comfort-control-easehub/discussions/73); [DEV](https://dev.to/nickotmazgin/easehub-130-a-compact-gnome-menu-with-sound-and-files-right-click-actions-16ma)): the compact panel menu, volume, quick toggles (Wi-Fi, Bluetooth, Airplane Mode, Do Not Disturb, Dark Mode, Night Light, Keep Awake), Apps & Files, Clipboard & Screenshot, Updates & System, Sudo Timeout, appearance (System, Light, Dark), the Files right-click actions, and every Settings tab from top to bottom.*
 
-https://github.com/user-attachments/assets/1df1c25c-485a-491a-b15a-ddc69d25ae58
+https://github.com/user-attachments/assets/5af64b49-7ea8-4879-9778-1d30e7d9254a
 
 ---
 
@@ -192,7 +192,7 @@ https://github.com/user-attachments/assets/1df1c25c-485a-491a-b15a-ddc69d25ae58
   <tr>
     <td align="center">
       <a href="screenshots/v1.3.0/01-panel-menu.png"><img src="screenshots/v1.3.0/01-panel-menu.png" width="260" alt="Panel menu"></a><br>
-      <b>Panel menu</b> — power, sound, and quick toggles
+      <b>Panel menu</b> — power, sound, and quick toggles (Wi-Fi, Bluetooth, Airplane Mode and more)
     </td>
     <td align="center">
       <a href="screenshots/v1.3.0/03-menu-apps.png"><img src="screenshots/v1.3.0/03-menu-apps.png" width="260" alt="Apps and Files group"></a><br>
@@ -278,7 +278,7 @@ Every AI-assisted change is human-reviewed, tested on real GNOME sessions, and a
 
 **Search for:** EaseHub GNOME, GNOME panel menu, GNOME Shell extension, Linux power menu, volume control panel, quick toggles, Files right-click Nautilus, dark mode extension, Wayland X11
 
-**Also:** [YouTube tour](https://www.youtube.com/watch?v=8F3gWtqQ3fw) · [DEV](https://dev.to/nickotmazgin/easehub-130-a-compact-gnome-menu-with-sound-and-files-right-click-actions-16ma) · [Discussion](https://github.com/nickotmazgin/comfort-control-easehub/discussions/73)
+**Also:** [YouTube tour](https://www.youtube.com/watch?v=5A7521LUAQ8) · [DEV](https://dev.to/nickotmazgin/easehub-130-a-compact-gnome-menu-with-sound-and-files-right-click-actions-16ma) · [Discussion](https://github.com/nickotmazgin/comfort-control-easehub/discussions/73)
 
 ## More GNOME extensions by Nick Otmazgin
 

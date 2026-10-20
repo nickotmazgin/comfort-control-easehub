@@ -2,8 +2,18 @@
 
 Menu and Files shots, the collage, and the GitHub social preview are taken
 inside a nested GNOME Shell. That session has its own settings database. It is
-not isolated from NetworkManager, Bluetooth, power, or sudo: those talk to the
-real system. A pointer miss on a Wi-Fi tile turns the real radio off.
+not isolated from NetworkManager, power, or sudo: those talk to the real
+system. A pointer miss on a Wi-Fi tile turns the real radio off.
+
+GNOME's rfkill service (gsd-rfkill) is not on the nested session's private
+D-Bus, so EaseHub would hide its Bluetooth and Airplane Mode tiles.
+[`showcase/mock_rfkill.py`](showcase/mock_rfkill.py) answers that interface
+inside the nested session with in-memory values, so both tiles appear in the
+shots and the video. It never touches a real radio.
+
+Video frames hold only the nested Shell's own window and the Settings window
+without its shadow margin, so nothing else on your desktop is recorded. The
+video starts on the title scene.
 
 `video` records that nested shell in motion (the menu, each group, appearance,
 and the Files right-click walk), then scrolls every Settings tab on this
@@ -76,8 +86,8 @@ not start the next picture early.
 - Do not run `tools/media/easehub_media.py` to take shots or video. That older
   path clicks the real panel menu. `screenshots`, `video`, and `all` now refuse
   to start. `restore` and `remix` still work.
-- `video` does open a nested shell. Wi-Fi, Bluetooth, Airplane Mode, power,
-  and Sudo Timeout still talk to the real system. The v1.3.0 tour missed
+- `video` does open a nested shell. Wi-Fi, power, and Sudo Timeout still talk
+  to the real system (Bluetooth and Airplane Mode go to the mock). The v1.3.0 tour missed
   Dark Mode and switched the real Wi-Fi radio off. Do not aim the pointer at
   those tiles. Video mode does not move it; screenshot mode may hover them
   and must not click them.
