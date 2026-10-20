@@ -20,6 +20,8 @@ A **GNOME Shell extension** that brings **comfort and control to your desktop** 
 
 > Download [v1.3.0](https://github.com/nickotmazgin/comfort-control-easehub/releases/latest). Older releases remain for history and rollback.
 
+> **Tour:** [narrated demo on YouTube](https://www.youtube.com/watch?v=8F3gWtqQ3fw) · [write-up on DEV](https://dev.to/nickotmazgin/easehub-130-a-compact-gnome-menu-with-sound-and-files-right-click-actions-16ma)
+
 > **GNOME Shell 42–44 is no longer supported.** EaseHub requires **GNOME 45–51**.
 
 ---
@@ -174,6 +176,10 @@ Build it locally with `./create-release-zips.sh`, or `./package.sh --install` to
 ## 🖼️ **Screenshots**
 
 *Screenshots from EaseHub v1.3.0 — compact menu, quick toggles, Files right-click actions, and Appearance (System, Light, or Dark) in the tray footer and in Settings → General. Click any image to view it full size.*
+
+The narrated tour (2:08) opens the panel menu, each group, the Files right-click actions, and every Settings tab from top to bottom.
+
+[![EaseHub 1.3.0 narrated tour](https://img.youtube.com/vi/8F3gWtqQ3fw/hqdefault.jpg)](https://www.youtube.com/watch?v=8F3gWtqQ3fw)
 
 [![EaseHub screenshot collage](screenshots/collage.jpg)](screenshots/collage.jpg)
 

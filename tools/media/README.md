@@ -1,10 +1,15 @@
 # Screenshots and demo video
 
-Menu and Files shots, the collage, the GitHub social preview, and the narrated
-HD demo are taken inside an **isolated nested GNOME Shell**. That session has
-its own D-Bus bus, settings database, and extension folder. The real desktop,
-mouse, and keyboard are not used, and settings changed during the tour never
-reach the real session.
+Menu and Files shots, the collage, and the GitHub social preview are taken
+inside a nested GNOME Shell. That session has its own settings database. It is
+not isolated from NetworkManager, Bluetooth, power, or sudo: those talk to the
+real system. A pointer miss on a Wi-Fi tile turns the real radio off.
+
+`video` records that nested shell in motion (the menu, each group, appearance,
+and the Files right-click walk), then scrolls every Settings tab on this
+desktop. In video mode the pointer is not moved onto menu tiles. Clicks on
+Wi-Fi, Bluetooth, Airplane Mode, Dark Mode, Night Light, Keep Awake, power,
+and Sudo Timeout are refused.
 
 ```bash
 python3 tools/media/showcase.py shots    # screenshots/v<version>/, collage, social preview
@@ -62,18 +67,22 @@ curl -LO https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-fil
 curl -LO https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin
 ```
 
-Without it, the video is still made, with music and no narration. The Settings
-part of the video has to be recorded on the live desktop and joined with ffmpeg,
-because the preferences window cannot open in the nested shell.
+Without it, the video is still made, with music and no narration. Each scene
+waits until its line would have finished, so a later take with the voice does
+not start the next picture early.
 
 ## Safety
 
 - Do not run `tools/media/easehub_media.py` to take shots or video. That older
   path clicks the real panel menu. `screenshots`, `video`, and `all` now refuse
   to start. `restore` and `remix` still work.
-- Power buttons, volume, Wi-Fi, Bluetooth, Airplane Mode, and Sudo Timeout items
-  are only hovered. Clicks go through an allow-list found by label, not by
-  coordinates.
+- `video` does open a nested shell. Wi-Fi, Bluetooth, Airplane Mode, power,
+  and Sudo Timeout still talk to the real system. The v1.3.0 tour missed
+  Dark Mode and switched the real Wi-Fi radio off. Do not aim the pointer at
+  those tiles. Video mode does not move it; screenshot mode may hover them
+  and must not click them.
+- After the nested tour, `video` scrolls Settings on this desktop. The pointer
+  stays in the window's left margin. Leave the mouse alone until it finishes.
 - After a nested run, delete `/run/user/$(id -u)/gnome-shell-disable-extensions`
   if it exists. Otherwise the next real login disables every extension.
 - `showcase.py` removes that file itself when the nested shell is stopped.
