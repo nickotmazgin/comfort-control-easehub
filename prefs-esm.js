@@ -78,6 +78,7 @@ const MENU_GROUPS = [
         ['shell-reload', 'Reload GNOME Shell', 'X11 sessions only; needs xdotool'],
     ]},
     { title: 'Footer', description: 'EaseHub Settings is always shown', ids: [
+        ['appearance', 'Appearance button', 'Cycles the menu between System, Light and Dark'],
         ['about-readme', 'About and README'],
         ['donate', 'Donate'],
     ]},

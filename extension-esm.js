@@ -328,8 +328,12 @@ class EaseHubIndicator extends PanelMenu.Button {
     }
 
     _onSettingChanged(key) {
-        if (key === 'menu-style')
+        if (key === 'menu-style') {
             this._applyMenuStyle();
+            const ab = this._appearanceButton;
+            if (ab)
+                ab.button.child.gicon = _icon(ab.styles[ab.current()][1]);
+        }
         else if (key === 'files-actions-enabled')
             this._filesSwitch?.setToggleState(this._settings.get_boolean(key));
         else if (key === 'panel-icon')
@@ -848,6 +852,7 @@ class EaseHubIndicator extends PanelMenu.Button {
         this._sudoLabel = null;
         this._layoutTiles = null;
         this._filesSwitch = null;
+        this._appearanceButton = null;
 
         const hidden = new Set(this._settings.get_strv('hidden-actions'));
         const shown = id => !hidden.has(id);
@@ -1064,6 +1069,17 @@ class EaseHubIndicator extends PanelMenu.Button {
             cb();
         };
         fbox.add_child(this._iconButton('EaseHub Settings', 'preferences-system-symbolic', close(() => this._openPrefs())));
+        if (shown('appearance')) {
+            // Cycles System → Light → Dark; the menu stays open so the change is visible.
+            const styles = { system: ['System', 'applications-graphics-symbolic'], light: ['Light', 'weather-clear-symbolic'], dark: ['Dark', 'weather-clear-night-symbolic'] };
+            const current = () => (styles[settings.get_string('menu-style')] ? settings.get_string('menu-style') : 'system');
+            const b = this._iconButton('Menu appearance', styles[current()][1], () => {
+                const order = ['system', 'light', 'dark'];
+                settings.set_string('menu-style', order[(order.indexOf(current()) + 1) % order.length]);
+            }, 'easehub-small-button', () => `Menu appearance: ${styles[current()][0]} (click to change)`);
+            this._appearanceButton = { button: b, styles, current };
+            fbox.add_child(b);
+        }
         if (shown('about-readme'))
             fbox.add_child(this._iconButton('About and README', 'help-about-symbolic', close(() => _openUri(`${REPO_URL}#readme`, 'the README'))));
         if (shown('donate'))

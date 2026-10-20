@@ -109,8 +109,15 @@ async function run() {
     await wait(300);
     const powerButtons = buttons(items(ind)[0]);
     L('tooltip power[1]', await tip(powerButtons[1]), '| tile', await tip(tile('Night Light')),
-        '| slider', await tip(ind._volume.slider), '| footer', await tip(buttons(items(ind).at(-1))[2]));
-    L('tooltip removed after unhover', !Main.uiGroup.get_children().some(c => c.has_style_class_name?.('easehub-tooltip')));
+        '| slider', await tip(ind._volume.slider), '| footer', await tip(buttons(items(ind).at(-1))[3]));
+    const appearance = buttons(items(ind).at(-1))[1];
+    L('appearance button tooltip', await tip(appearance));
+    appearance.emit('clicked', 1);
+    await wait(200);
+    L('appearance after click', es.get_string('menu-style'), 'menu class', ind.menu.actor.has_style_class_name('easehub-style-light'),
+        'menu still open', ind.menu.isOpen, 'tooltip', await tip(appearance));
+    es.reset('menu-style');
+        L('tooltip removed after unhover', !Main.uiGroup.get_children().some(c => c.has_style_class_name?.('easehub-tooltip')));
     const lastRow = tile('Keep Awake').get_parent();
     L('last tile row: children', lastRow.get_n_children(), 'homogeneous', lastRow.layout_manager.homogeneous,
         'awake width', Math.round(tile('Keep Awake').width), 'dark width', Math.round(tile('Dark Mode').width));
