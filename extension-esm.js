@@ -48,17 +48,17 @@ function _spawnArgv(argv) {
         return true;
     } catch (e) {
         console.error('[EaseHub] spawn error:', e);
-        _notify(`Failed to run: ${argv[0]}`);
+        _notify(`Could not start ${argv[0]}`);
         return false;
     }
 }
 
-function _openUri(uri) {
+function _openUri(uri, what) {
     try {
         Gio.AppInfo.launch_default_for_uri(uri, global.create_app_launch_context(0, -1));
     } catch (e) {
         console.error('[EaseHub] open URI error:', e);
-        _notify('Failed to open it');
+        _notify(`Could not open ${what}`);
     }
 }
 
@@ -150,10 +150,10 @@ function _legacyScreenshot() {
         if (_which('dnf'))    cmd = 'sudo dnf install gnome-screenshot';
         if (_which('zypper')) cmd = 'sudo zypper install gnome-screenshot';
         if (_which('pacman')) cmd = 'sudo pacman -S --needed gnome-screenshot';
-        _notify(`Legacy screenshot tool is not installed. Run: ${cmd}`);
+        _notify(`Screenshots are unavailable. Install gnome-screenshot: ${cmd}`);
         return;
     }
-    _notify('Using legacy screenshot tool (gnome-screenshot)');
+    _notify('Opening the older screenshot tool (gnome-screenshot)');
     _spawnArgv(['gnome-screenshot', '-i']);
 }
 
@@ -193,6 +193,63 @@ function _sudoStateFile() {
     return Gio.File.new_for_path(GLib.build_filenamev([GLib.get_user_cache_dir(), 'easehub', 'sudo-timeout']));
 }
 
+// Hover/focus tooltips for icon-only controls, styled like the dash labels.
+class Tooltips {
+    constructor() {
+        this._label = null;
+        this._timeoutId = 0;
+    }
+
+    add(actor, text) {
+        const show = () => this._schedule(actor, text);
+        actor.connect('notify::hover', () => (actor.hover ? show() : this.hide()));
+        actor.connect('key-focus-in', show);
+        actor.connect('key-focus-out', () => this.hide());
+        actor.connect('button-press-event', () => {
+            this.hide();
+            return Clutter.EVENT_PROPAGATE;
+        });
+        actor.connect('destroy', () => this.hide());
+    }
+
+    _schedule(actor, text) {
+        this.hide();
+        this._timeoutId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 450, () => {
+            this._timeoutId = 0;
+            this._show(actor, typeof text === 'function' ? text() : text);
+            return GLib.SOURCE_REMOVE;
+        });
+    }
+
+    _show(actor, text) {
+        if (!actor.mapped || !text)
+            return;
+        this._label = new St.Label({ style_class: 'dash-label easehub-tooltip', text });
+        Main.uiGroup.add_child(this._label);
+        const [x, y] = actor.get_transformed_position();
+        const [w, h] = actor.get_transformed_size();
+        const [, lw] = this._label.get_preferred_width(-1);
+        const [, lh] = this._label.get_preferred_height(-1);
+        const monitor = Main.layoutManager.findMonitorForActor(actor) ?? Main.layoutManager.primaryMonitor;
+        const gap = 6;
+        let lx = Math.round(x + w / 2 - lw / 2);
+        lx = Math.max(monitor.x + gap, Math.min(lx, monitor.x + monitor.width - lw - gap));
+        let ly = Math.round(y + h + gap);
+        if (ly + lh > monitor.y + monitor.height)
+            ly = Math.round(y - lh - gap);
+        this._label.set_position(lx, ly);
+    }
+
+    hide() {
+        if (this._timeoutId) {
+            GLib.source_remove(this._timeoutId);
+            this._timeoutId = 0;
+        }
+        this._label?.destroy();
+        this._label = null;
+    }
+}
+
 const EaseHubIndicator = GObject.registerClass(
 class EaseHubIndicator extends PanelMenu.Button {
     _init(extension) {
@@ -207,6 +264,7 @@ class EaseHubIndicator extends PanelMenu.Button {
         this._inhibitCookie = null;
         this._sudoLabel = null;
         this._volume = null;
+        this._tooltips = new Tooltips();
 
         this._panelIcon = new St.Icon({ style_class: 'system-status-icon easehub-icon' });
         this.add_child(this._panelIcon);
@@ -216,6 +274,8 @@ class EaseHubIndicator extends PanelMenu.Button {
         this._connect(this.menu, 'open-state-changed', (_menu, open) => {
             if (open)
                 this._onMenuOpened();
+            else
+                this._tooltips.hide();
         });
 
         this._initBackends();
@@ -227,6 +287,7 @@ class EaseHubIndicator extends PanelMenu.Button {
     }
 
     destroy() {
+        this._tooltips.hide();
         this._cancellable.cancel();
         for (const [obj, id] of this._signals)
             obj.disconnect(id);
@@ -659,7 +720,7 @@ class EaseHubIndicator extends PanelMenu.Button {
             this._ext.openPreferences();
         } catch (e) {
             console.error('[EaseHub] open prefs error:', e);
-            _notify('Could not open EaseHub settings.');
+            _notify('Could not open EaseHub Settings');
         }
     }
 
@@ -675,7 +736,7 @@ class EaseHubIndicator extends PanelMenu.Button {
             fn();
         } catch (e) {
             console.error(`[EaseHub] ${label} error:`, e);
-            _notify(`Failed to ${label.toLowerCase()}`);
+            _notify(`Could not ${label.toLowerCase()}`);
         }
     }
 
@@ -722,7 +783,7 @@ class EaseHubIndicator extends PanelMenu.Button {
         });
     }
 
-    _iconButton(label, iconName, cb, styleClass = 'easehub-small-button') {
+    _iconButton(label, iconName, cb, styleClass = 'easehub-small-button', tooltip = label) {
         const b = new St.Button({
             style_class: `icon-button ${styleClass}`,
             child: new St.Icon({ gicon: _icon(iconName) }),
@@ -732,6 +793,7 @@ class EaseHubIndicator extends PanelMenu.Button {
             x_align: Clutter.ActorAlign.CENTER,
         });
         b.connect('clicked', cb);
+        this._tooltips.add(b, tooltip);
         return b;
     }
 
@@ -761,10 +823,11 @@ class EaseHubIndicator extends PanelMenu.Button {
             const row = rowItem();
             const box = _box(false, { x_expand: true, style_class: 'easehub-button-row' });
             for (const def of power) {
+                const asks = () => def.confirm && this._settings.get_boolean('confirm-dangerous');
                 box.add_child(this._iconButton(def.label, def.icon, () => {
                     this.menu.close();
                     this._runPower(def);
-                }, 'easehub-power-button'));
+                }, 'easehub-power-button', () => (asks() ? `${def.label}…` : def.label)));
             }
             row.add_child(box);
             this.menu.addMenuItem(row);
@@ -777,16 +840,22 @@ class EaseHubIndicator extends PanelMenu.Button {
         // Volume: mute, down, slider, up
         if (shown('volume')) {
             const row = new PopupMenu.PopupBaseMenuItem({ activate: false, style_class: 'easehub-row easehub-volume-row' });
-            const mute = this._iconButton('Mute', 'audio-volume-high-symbolic', () => this._toggleMute());
+            const percent = () => `${Math.round((this._volume?.slider.value ?? 0) * 100)}%`;
+            const mute = this._iconButton('Mute', 'audio-volume-high-symbolic', () => this._toggleMute(),
+                'easehub-small-button', () => (this._volume?.stream?.is_muted ? 'Unmute' : 'Mute'));
             mute.x_expand = false;
-            const down = this._iconButton('Volume down', 'list-remove-symbolic', () => this._stepVolume(-VOLUME_STEP));
+            const down = this._iconButton('Volume down', 'list-remove-symbolic', () => this._stepVolume(-VOLUME_STEP),
+                'easehub-small-button', () => `Volume down (${percent()})`);
             down.x_expand = false;
-            const up = this._iconButton('Volume up', 'list-add-symbolic', () => this._stepVolume(VOLUME_STEP));
+            const up = this._iconButton('Volume up', 'list-add-symbolic', () => this._stepVolume(VOLUME_STEP),
+                'easehub-small-button', () => `Volume up (${percent()})`);
             up.x_expand = false;
             const slider = new Slider.Slider(0);
             slider.x_expand = true;
             slider.y_align = Clutter.ActorAlign.CENTER;
             slider.accessible_name = 'Volume';
+            slider.track_hover = true;
+            this._tooltips.add(slider, () => (this._volume?.stream ? `Volume: ${percent()}` : 'No sound output'));
             for (const w of [mute, down, slider, up])
                 row.add_child(w);
             this.menu.addMenuItem(row);
@@ -800,7 +869,7 @@ class EaseHubIndicator extends PanelMenu.Button {
                 def.set(on);
             } catch (e) {
                 console.error(`[EaseHub] ${def.id} error:`, e);
-                _notify(`Failed to toggle ${def.label}`);
+                _notify(`Could not change ${def.label}`);
             }
         };
         if (toggles.length && compact) {
@@ -820,20 +889,30 @@ class EaseHubIndicator extends PanelMenu.Button {
                     accessible_name: def.label,
                 });
                 b.connect('clicked', () => setToggle(def, b.checked));
+                this._tooltips.add(b, () => `${def.label}: ${b.checked ? 'On' : 'Off'}`);
                 this._toggles.push({ ...def, widget: b });
             }
             // Three tiles per row, counting only the available ones.
             this._layoutTiles = () => {
+                const tiles = new Set(this._toggles.map(t => t.widget));
                 for (const r of grid.get_children()) {
-                    for (const c of r.get_children())
+                    for (const c of r.get_children()) {
                         r.remove_child(c);
+                        if (!tiles.has(c))
+                            c.destroy();
+                    }
                     r.destroy();
                 }
                 const visible = this._toggles.filter(t => t.widget.visible);
                 for (let i = 0; i < visible.length; i += 3) {
                     const r = _box(false, { x_expand: true, style_class: 'easehub-tile-row' });
-                    for (const t of visible.slice(i, i + 3))
+                    // Equal-width columns; empty spacers keep a short last row aligned.
+                    r.layout_manager.homogeneous = true;
+                    const slice = visible.slice(i, i + 3);
+                    for (const t of slice)
                         r.add_child(t.widget);
+                    for (let k = slice.length; k < 3; k++)
+                        r.add_child(new St.Widget({ x_expand: true }));
                     grid.add_child(r);
                 }
                 row.visible = visible.length > 0;
@@ -866,7 +945,7 @@ class EaseHubIndicator extends PanelMenu.Button {
 
         const apps = group('Apps & Files', 'folder-symbolic');
         if (shown('files'))
-            item(apps.menu, 'Open Files', 'system-file-manager-symbolic', () => _openUri(`file://${GLib.get_home_dir()}`));
+            item(apps.menu, 'Open Files', 'system-file-manager-symbolic', () => _openUri(`file://${GLib.get_home_dir()}`, 'your home folder'));
         if (shown('settings'))
             item(apps.menu, 'Settings', ['org.gnome.Settings-symbolic', 'emblem-system-symbolic'], () => _spawnArgv(['gnome-control-center']));
         if (shown('extensions') && _which('gnome-extensions-app'))
@@ -932,9 +1011,10 @@ class EaseHubIndicator extends PanelMenu.Button {
         };
         fbox.add_child(this._iconButton('EaseHub Settings', 'preferences-system-symbolic', close(() => this._openPrefs())));
         if (shown('about-readme'))
-            fbox.add_child(this._iconButton('About and README', 'help-about-symbolic', close(() => _openUri(`${REPO_URL}#readme`))));
+            fbox.add_child(this._iconButton('About and README', 'help-about-symbolic', close(() => _openUri(`${REPO_URL}#readme`, 'the README'))));
         if (shown('donate'))
-            fbox.add_child(this._iconButton('Donate', 'emblem-favorite-symbolic', close(() => _openUri(DONATE_URL))));
+            fbox.add_child(this._iconButton('Donate', 'emblem-favorite-symbolic', close(() => _openUri(DONATE_URL, 'the donation page')),
+                'easehub-small-button', 'Donate (PayPal)'));
         footer.add_child(fbox);
         this.menu.addMenuItem(footer);
 

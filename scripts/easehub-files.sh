@@ -20,16 +20,15 @@ setting() {
 }
 
 notify() {
-    # notify <body> [icon] [urgency]
-    [[ -n "${EASEHUB_FILES_DRYRUN:-}" ]] && { printf '[notify] %s\n' "$1" >&2; return 0; }
-    [[ "$(setting files-notify)" == "false" && "${3:-}" != "critical" ]] && return 0
+    # notify <title> <body> [icon] [always]: "always" shows it even with notifications off (errors).
+    [[ -n "${EASEHUB_FILES_DRYRUN:-}" ]] && { printf '[notify] %s — %s\n' "$1" "$2" >&2; return 0; }
+    [[ "$(setting files-notify)" == "false" && "${4:-}" != "always" ]] && return 0
     command -v notify-send >/dev/null 2>&1 || return 0
-    timeout 2 notify-send --app-name=EaseHub --icon="${2:-edit-copy-symbolic}" \
-        ${3:+--urgency="$3"} "EaseHub" "$1" 2>/dev/null || true
+    timeout 2 notify-send --app-name=EaseHub --icon="${3:-edit-copy-symbolic}" "$1" "$2" 2>/dev/null || true
 }
 
 fail() {
-    notify "$1" dialog-error-symbolic critical
+    notify "EaseHub" "$1" dialog-error-symbolic always
     printf 'EaseHub: %s\n' "$1" >&2
     exit 1
 }
@@ -139,9 +138,9 @@ copy_lines() {
     ((n)) || fail "Nothing to copy for this selection."
     copy_text "$out" || fail "Could not reach the clipboard. Install wl-clipboard (Wayland) or xclip (X11)."
     if ((n == 1)); then
-        notify "$label$NL$(preview "$out")" "$icon"
+        notify "$label" "$(preview "$out")" "$icon"
     else
-        notify "$label ($n items)$NL$(preview "${out%%"$NL"*}")" "$icon"
+        notify "$label ($n items)" "$(preview "${out%%"$NL"*}")…" "$icon"
     fi
 }
 
@@ -214,9 +213,9 @@ make_executable() {
     done
     ((n)) || fail "Select one or more regular files."
     if ((n == 1)); then
-        notify "Made executable$NL$(preview "$(basename -- "$last")")" application-x-executable-symbolic
+        notify "Made executable" "$(preview "$(basename -- "$last")")" application-x-executable-symbolic
     else
-        notify "Made $n files executable" application-x-executable-symbolic
+        notify "Made $n files executable" "" application-x-executable-symbolic
     fi
 }
 

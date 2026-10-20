@@ -74,6 +74,28 @@ async function run() {
     L('radio tiles visible: wifi', tile('Wi-Fi')?.visible, 'bluetooth', tile('Bluetooth')?.visible, 'airplane', tile('Airplane Mode')?.visible);
     L('volume wired', !!ind._volume, 'stream', !!ind._volume?.stream);
 
+    // Tooltips: hover shows a dash-style label with the full name and state
+    const tip = async actor => {
+        actor.hover = true;
+        await wait(700);
+        const label = Main.uiGroup.get_children().find(c => c.has_style_class_name?.('easehub-tooltip'));
+        const text = label?.text ?? null;
+        actor.hover = false;
+        await wait(100);
+        return text;
+    };
+    ind.menu.open();
+    await wait(300);
+    const powerButtons = buttons(items(ind)[0]);
+    L('tooltip power[1]', await tip(powerButtons[1]), '| tile', await tip(tile('Night Light')),
+        '| slider', await tip(ind._volume.slider), '| footer', await tip(buttons(items(ind).at(-1))[2]));
+    L('tooltip removed after unhover', !Main.uiGroup.get_children().some(c => c.has_style_class_name?.('easehub-tooltip')));
+    const lastRow = tile('Keep Awake').get_parent();
+    L('last tile row: children', lastRow.get_n_children(), 'homogeneous', lastRow.layout_manager.homogeneous,
+        'awake width', Math.round(tile('Keep Awake').width), 'dark width', Math.round(tile('Dark Mode').width));
+    ind.menu.close();
+    await wait(300);
+
     // Captured commands
     const spawned = [];
     const origNew = Gio.Subprocess.new;

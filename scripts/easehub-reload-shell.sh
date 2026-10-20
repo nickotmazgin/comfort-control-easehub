@@ -11,7 +11,7 @@
 set -u
 
 notify_error() {
-    notify-send --urgency=critical --icon=dialog-error \
+    notify-send --app-name=EaseHub --urgency=critical --icon=dialog-error-symbolic \
         "EaseHub: Shell Reload Failed" "$1" 2>/dev/null || true
     printf 'ERROR: %s\n' "$1" >&2
 }
@@ -42,15 +42,28 @@ if ! pgrep -xo gnome-shell >/dev/null; then
     exit 1
 fi
 
+if [[ "$(gsettings get org.gnome.desktop.lockdown disable-command-line 2>/dev/null)" == "true" ]]; then
+    notify_error "The Alt+F2 command dialog is turned off on this computer (org.gnome.desktop.lockdown disable-command-line). Log out and back in instead."
+    exit 1
+fi
+
 # Ignore repeated clicks while one reload attempt is in progress.
 exec 9>"${XDG_RUNTIME_DIR:-/tmp}/easehub-reload-shell.lock"
 if ! flock --nonblock 9; then
     exit 0
 fi
 
+# Most distributions run the shell as this systemd user unit; otherwise match
+# the shell's journal lines by process name.
 shell_unit="org.gnome.Shell@x11.service"
+if systemctl --user is-active --quiet "$shell_unit"; then
+    journal_match=(--unit="$shell_unit")
+else
+    shell_unit=""
+    journal_match=(_COMM=gnome-shell)
+fi
 journal_cursor="$(
-    journalctl --user --unit="$shell_unit" --lines=0 --show-cursor \
+    journalctl --user "${journal_match[@]}" --lines=0 --show-cursor \
         --no-pager 2>/dev/null |
         sed -n 's/^-- cursor: //p' |
         tail -n 1
@@ -62,9 +75,11 @@ if ! xdotool key --clearmodifiers alt+F2; then
     notify_error "Could not open the GNOME command dialog."
     exit 1
 fi
-sleep 0.8
+# Give the dialog time to open even when the shell is busy (e.g. right
+# after installing an extension); a dropped "r" would make the reload a no-op.
+sleep 1.2
 xdotool type --clearmodifiers --delay 100 r
-sleep 0.2
+sleep 0.4
 xdotool key --clearmodifiers Return
 
 # GNOME re-executes Shell in place, so a successful reload can keep the same
@@ -74,25 +89,25 @@ for _ in {1..40}; do
 
     if [[ -n "$journal_cursor" ]]; then
         new_journal="$(
-            journalctl --user --unit="$shell_unit" \
+            journalctl --user "${journal_match[@]}" \
                 --after-cursor="$journal_cursor" --no-pager -o cat \
                 2>/dev/null || true
         )"
     else
         new_journal="$(
-            journalctl --user --unit="$shell_unit" \
+            journalctl --user "${journal_match[@]}" \
                 --since="@$started_at" --no-pager -o cat \
                 2>/dev/null || true
         )"
     fi
 
     if grep -Fq "GNOME Shell started at" <<<"$new_journal" &&
-        systemctl --user is-active --quiet "$shell_unit" &&
+        { [[ -z "$shell_unit" ]] || systemctl --user is-active --quiet "$shell_unit"; } &&
         gdbus call --session --dest org.gnome.Shell \
             --object-path /org/gnome/Shell \
             --method org.freedesktop.DBus.Peer.Ping \
             >/dev/null 2>&1; then
-        notify-send --icon=view-refresh-symbolic \
+        notify-send --app-name=EaseHub --icon=view-refresh-symbolic \
             "EaseHub: Shell Reloaded" \
             "GNOME Shell restarted successfully and passed its health check." \
             2>/dev/null || true

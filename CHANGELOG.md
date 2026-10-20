@@ -30,6 +30,18 @@
 - EaseHub only removes files it created (listed in a marker file); anything you add yourself
   is kept. Turning the option off removes the menu.
 
+- **Tooltips** on every icon-only control, with the full name and current state
+  (e.g. "Do Not Disturb: Off", "Volume: 70%", "Log Out…" when it will ask first).
+- Tiles share equal widths, so a short last row lines up.
+
+### Reliability and messages
+- Reload GNOME Shell: stops with a clear message when the Alt+F2 dialog is disabled by policy,
+  waits longer for the dialog on a busy shell, and verifies the restart even where the
+  shell does not run as the `org.gnome.Shell@x11.service` user unit.
+- Notifications use consistent "Could not …" wording, name what failed to open, and all
+  helper-script notifications are labelled EaseHub. Files actions show the action as the
+  title and the file below it; errors show even when Files notifications are off.
+
 ### Preferences
 - New **Menu** page to show or hide every item, and a **Files** page.
 - **Reset all settings** (with confirmation) and **Show All Items** / **Restore Default Names

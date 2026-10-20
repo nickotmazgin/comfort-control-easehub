@@ -27,10 +27,10 @@ DROPIN="/etc/sudoers.d/99-easehub-sudo-timeout-${SAFE_ME}"
 STATE_FILE="${XDG_CACHE_HOME:-$HOME/.cache}/easehub/sudo-timeout"
 
 say()  { printf '%s\n' "$*"; }
-note() { notify-send --icon=security-high-symbolic "EaseHub: Sudo Timeout" "$1" 2>/dev/null || true; }
+note() { notify-send --app-name=EaseHub --icon=security-high-symbolic "EaseHub: Sudo Timeout" "$1" 2>/dev/null || true; }
 fail() {
     printf 'ERROR: %s\n' "$1" >&2
-    notify-send --urgency=critical --icon=dialog-error "EaseHub: Sudo Timeout" "$1" 2>/dev/null || true
+    notify-send --app-name=EaseHub --urgency=critical --icon=dialog-error-symbolic "EaseHub: Sudo Timeout" "$1" 2>/dev/null || true
     exit 1
 }
 
