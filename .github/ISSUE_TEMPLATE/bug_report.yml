@@ -26,7 +26,7 @@ body:
   - type: input
     attributes:
       label: EaseHub version
-      placeholder: e.g., 1.1.3
+      placeholder: e.g., 1.2.0 (Preferences → About → Version)
   - type: textarea
     attributes:
       label: Logs

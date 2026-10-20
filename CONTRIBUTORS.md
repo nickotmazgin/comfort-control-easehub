@@ -14,6 +14,7 @@ Recent releases were developed with help from AI pair-programming agents. As the
 |-----------|------|
 | **[OpenAI Codex](https://openai.com/codex/)** | Release engineering, signed-tag release workflows, release packaging and validation hardening |
 | **[Cursor (Agent)](https://cursor.com)** | Code review, debugging, CI workflow hardening, documentation |
+| **Claude** by Anthropic ([@claude](https://github.com/claude), via [Claude Code](https://claude.com/claude-code)) | v1.2.0 audit and v1.3.0 features: compact menu, sound and quick toggles, Files right-click menu, sudo timeout options, GNOME 51 port, nested-shell and unit tests, CI checks |
 
 ## Community
 
@@ -21,4 +22,4 @@ Recent releases were developed with help from AI pair-programming agents. As the
 
 ---
 
-*OpenAI and Codex are trademarks of OpenAI. Cursor is a trademark of Anysphere, Inc. Names are used for factual attribution only; this project is not affiliated with, sponsored, or endorsed by either company.*
+*OpenAI and Codex are trademarks of OpenAI. Cursor is a trademark of Anysphere, Inc. Claude and Claude Code are trademarks of Anthropic, PBC. Names are used for factual attribution only; this project is not affiliated with, sponsored, or endorsed by any of these companies.*

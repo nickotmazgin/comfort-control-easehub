@@ -1,0 +1,80 @@
+# Screenshots and demo video
+
+Menu and Files shots, the collage, the GitHub social preview, and the narrated
+HD demo are taken inside an **isolated nested GNOME Shell**. That session has
+its own D-Bus bus, settings database, and extension folder. The real desktop,
+mouse, and keyboard are not used, and settings changed during the tour never
+reach the real session.
+
+```bash
+python3 tools/media/showcase.py shots    # screenshots/v<version>/, collage, social preview
+python3 tools/media/showcase.py video    # dist/media/easehub-v<version>-demo.mp4
+python3 tools/media/showcase.py all
+```
+
+Settings tabs cannot open inside the nested shell. Capture them on the live
+desktop with a scroll-only helper (it never clicks):
+
+```bash
+python3 tools/media/prefs_shots.py screenshots/v1.3.0 10
+```
+
+Keep your hands off the mouse for about 40 seconds while that runs. The pointer
+stays in the window's left margin and only scrolls.
+
+`EASEHUB_SHOWCASE_ONLY=menu` or `EASEHUB_SHOWCASE_ONLY=files` reruns one pass
+and leaves the other screenshots in place. Menu shots render at 2×. Files
+shots render at 1×, because Nautilus submenu offsets are wrong at 2×.
+
+## What it captures
+
+| File | Shows |
+|---|---|
+| 01 | Panel menu |
+| 02 | Tooltip on a power button |
+| 03–06 | Apps & Files, Clipboard, Updates, Sudo Timeout, each expanded |
+| 07 | Confirm dialog (cancelled; Proceed is never pressed) |
+| 08 | Appearance: Light, then Dark |
+| 09 | Files right-click: Scripts ▸ EaseHub ▸ Copy, Open, Tools |
+| 10–19 | Settings: General, Menu, Files, About |
+
+The collage (`screenshots/collage.jpg`) and `.github/social-preview.png` are
+rebuilt at the end of `showcase.py shots`. Review every PNG before committing.
+
+## Narration and music
+
+The video gets an English voice-over and a music bed. Both are free to use:
+
+- **Voice:** [Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M) (Apache-2.0) via
+  [kokoro-onnx](https://github.com/thewh1teagle/kokoro-onnx) (MIT), run locally.
+  Edit the lines in [`narration.py`](narration.py). Each scene waits for its line
+  to finish.
+- **Music:** [`make_music.py`](make_music.py) synthesises an original track
+  (no samples, no third-party audio).
+
+One-time setup (about 350 MB, kept in `~/.cache/clipflow-pro-media-tools`,
+shared with ClipFlow Pro):
+
+```bash
+D=~/.cache/clipflow-pro-media-tools; mkdir -p "$D" && cd "$D"
+python3 -m venv venv && ./venv/bin/pip install kokoro-onnx soundfile
+curl -LO https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.onnx
+curl -LO https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin
+```
+
+Without it, the video is still made, with music and no narration. The Settings
+part of the video has to be recorded on the live desktop and joined with ffmpeg,
+because the preferences window cannot open in the nested shell.
+
+## Safety
+
+- Do not run `tools/media/easehub_media.py` to take shots or video. That older
+  path clicks the real panel menu. `screenshots`, `video`, and `all` now refuse
+  to start. `restore` and `remix` still work.
+- Power buttons, volume, Wi-Fi, Bluetooth, Airplane Mode, and Sudo Timeout items
+  are only hovered. Clicks go through an allow-list found by label, not by
+  coordinates.
+- After a nested run, delete `/run/user/$(id -u)/gnome-shell-disable-extensions`
+  if it exists. Otherwise the next real login disables every extension.
+- `showcase.py` removes that file itself when the nested shell is stopped.
+- Never `pkill -f` a pattern that also matches the shell command you are running.

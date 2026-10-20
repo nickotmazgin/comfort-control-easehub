@@ -8,10 +8,15 @@ drop-ins, and trigger an X11 shell reload through GNOME's own Alt+F2 path. Insta
 from official [GitHub releases](https://github.com/nickotmazgin/comfort-control-easehub/releases)
 with UUID `comfort-control@nickotmazgin`.
 
-**Platforms:** GNOME Shell **45–50** on **Wayland** and **X11/Xorg** (both validated on maintainer setups).
+**Platforms:** GNOME Shell **45–51** on **Wayland** and **X11/Xorg** (both validated on maintainer setups).
 
-Terminal emulator preferences are restricted to a known whitelist. Package upgrades and
-Flatpak updates require confirmation when `confirm-dangerous` is enabled (default).
+Terminal emulator preferences are restricted to a known whitelist, and every process is
+started from an argument array (`Gio.Subprocess`), never a shell-parsed command string, so
+titles and paths can't be split into extra arguments. Package upgrades and Flatpak updates
+require confirmation when `confirm-dangerous` is enabled (default).
+
+The sudo timeout helper writes one drop-in, `/etc/sudoers.d/99-easehub-sudo-timeout-<user>`,
+validates it with `visudo` before and after install, and rolls back on failure.
 
 ## Supported Versions
 
@@ -19,8 +24,8 @@ We actively support security updates for the following versions of Comfort Contr
 
 | Version | Supported          |
 | ------- | ------------------ |
-| Latest  | :white_check_mark: |
-| < 1.0   | :x:                |
+| Latest release | :white_check_mark: |
+| Older releases | :x: — please upgrade |
 
 ## Reporting a Vulnerability
 

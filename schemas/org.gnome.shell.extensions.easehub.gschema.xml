@@ -1,17 +1,113 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
   <schema id="org.gnome.shell.extensions.easehub" path="/org/gnome/shell/extensions/easehub/">
+    <!-- Safety -->
     <key name="confirm-dangerous" type="b">
       <default>true</default>
-      <summary>Ask confirmation for logout, reboot, and power off</summary>
+      <summary>Ask before log out, restart, power off, suspend, shell reload, upgrades, emptying the trash and clearing recent files</summary>
     </key>
     <key name="preferred-terminal" type="s">
       <default>''</default>
-      <summary>Preferred terminal command (kgx, gnome-terminal, tilix, etc.)</summary>
+      <summary>Preferred terminal (ptyxis, kgx, gnome-terminal, konsole, tilix, kitty, alacritty, wezterm, foot, x-terminal-emulator); empty means auto-detect</summary>
+    </key>
+
+    <!-- Panel and menu -->
+    <key name="menu-layout" type="s">
+      <choices>
+        <choice value="compact"/>
+        <choice value="classic"/>
+      </choices>
+      <default>'compact'</default>
+      <summary>Compact (button rows and toggle tiles) or classic (one row per action)</summary>
+    </key>
+    <key name="menu-style" type="s">
+      <choices>
+        <choice value="system"/>
+        <choice value="light"/>
+        <choice value="dark"/>
+      </choices>
+      <default>'system'</default>
+      <summary>Menu appearance: follow the shell theme, or always light or dark</summary>
+    </key>
+    <key name="panel-icon" type="s">
+      <default>'easehub'</default>
+      <summary>Panel icon: 'easehub' for the bundled icon, or a themed symbolic icon name</summary>
+    </key>
+    <key name="panel-position" type="s">
+      <choices>
+        <choice value="left"/>
+        <choice value="center"/>
+        <choice value="right"/>
+      </choices>
+      <default>'right'</default>
+      <summary>Panel area for the EaseHub icon</summary>
+    </key>
+    <key name="panel-index" type="i">
+      <range min="0" max="20"/>
+      <default>1</default>
+      <summary>Position of the icon inside its panel area (0 is first)</summary>
+    </key>
+    <key name="toggle-menu-shortcut" type="as">
+      <default>[]</default>
+      <summary>Keyboard shortcut that opens the EaseHub menu (none by default)</summary>
+    </key>
+    <key name="hidden-actions" type="as">
+      <default>[]</default>
+      <summary>Menu items to hide</summary>
     </key>
     <key name="enabled-actions" type="as">
       <default>['lock','logout','reboot','poweroff','suspend','dnd','darkmode','night-light','settings','extensions','tweaks','open-terminal','shell-reload','sudo-extend','clipboard-clear','clipboard-clear-primary','screenshot','apt-update','apt-upgrade','flatpak-update','about-readme','donate']</default>
-      <summary>Which actions to show in the menu</summary>
+      <summary>Deprecated (1.2 and earlier): migrated to hidden-actions on first start</summary>
+    </key>
+
+    <key name="prefs-page" type="s">
+      <default>'general'</default>
+      <summary>Preferences page shown when the window opens (the last one used)</summary>
+    </key>
+
+    <!-- Sudo timeout -->
+    <key name="sudo-custom-minutes" type="i">
+      <range min="1" max="1440"/>
+      <default>45</default>
+      <summary>Minutes used by the "Custom" entry in the Sudo Timeout menu</summary>
+    </key>
+    <key name="sudo-global-timestamp" type="b">
+      <default>false</default>
+      <summary>Share one sudo login across all terminals (timestamp_type=global)</summary>
+    </key>
+
+    <!-- Files right-click menu -->
+    <key name="files-actions-enabled" type="b">
+      <default>false</default>
+      <summary>Add EaseHub actions to the Files (Nautilus) right-click menu</summary>
+    </key>
+    <key name="files-menu-name" type="s">
+      <default>'EaseHub'</default>
+      <summary>Name of the EaseHub submenu under Scripts in the Files right-click menu</summary>
+    </key>
+    <key name="files-layout" type="s">
+      <choices>
+        <choice value="grouped"/>
+        <choice value="flat"/>
+      </choices>
+      <default>'grouped'</default>
+      <summary>Grouped (Copy, Open and Tools submenus) or flat</summary>
+    </key>
+    <key name="files-hidden-actions" type="as">
+      <default>[]</default>
+      <summary>Files right-click actions to leave out</summary>
+    </key>
+    <key name="files-titles" type="a{ss}">
+      <default>{}</default>
+      <summary>Custom titles for Files right-click actions (action id to title)</summary>
+    </key>
+    <key name="files-notify" type="b">
+      <default>true</default>
+      <summary>Show a notification after a Files action</summary>
+    </key>
+    <key name="files-editor" type="s">
+      <default>''</default>
+      <summary>Editor for "Open in Editor" (cursor, code, gnome-text-editor, gedit, kate); empty means auto-detect</summary>
     </key>
   </schema>
 </schemalist>
