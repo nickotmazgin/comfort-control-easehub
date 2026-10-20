@@ -1,16 +1,17 @@
 {
   "uuid": "comfort-control@nickotmazgin",
   "name": "Comfort Control (EaseHub)",
-  "description": "GNOME Shell 45–50 panel menu: power, DND, dark mode, screenshots, updates & utilities. Wayland & X11/Xorg validated. Reload Shell (X11 only).\n\nCreated by Nick Otmazgin.",
-  "version": 12,
-  "version-name": "1.1.4 45.50",
+  "description": "GNOME Shell 45–51 panel menu: power actions, live Do Not Disturb / Dark Mode / Night Light switches, screenshots, system & Flatpak updates, sudo timeout and utilities. Wayland & X11/Xorg. Reload Shell (X11 only).\n\nCreated by Nick Otmazgin.",
+  "version": 13,
+  "version-name": "1.2.0 45.51",
   "shell-version": [
     "45",
     "46",
     "47",
     "48",
     "49",
-    "50"
+    "50",
+    "51"
   ],
   "settings-schema": "org.gnome.shell.extensions.easehub",
   "gettext-domain": "easehub",

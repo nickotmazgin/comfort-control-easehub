@@ -1,3 +1,49 @@
+## 1.2.0 (2026-10-20)
+
+**GNOME Shell 51, live toggle switches, and fixes for terminals and screenshots.**
+
+### Fixes
+- **Terminal windows closed too early.** The "Press ENTER to close" step was split into
+  separate arguments and never ran, so the window for **Check System Updates**, upgrades,
+  Flatpak updates and **Sudo Timeout → Show Status** closed as soon as the command ended.
+  Commands now stay open and show their exit code.
+- **Screenshot opened the old tool.** The menu item called a screenshot method that doesn't
+  exist, so it always fell back to `gnome-screenshot` (or asked you to install it). It now
+  opens GNOME's built-in screenshot UI, the same way GNOME's own screenshot button does.
+- **Preferred terminal was ignored for Konsole, Alacritty, WezTerm, foot and Ptyxis.** They
+  passed the safety check but had no launch rule, so another terminal opened instead. All ten
+  supported terminals now launch correctly.
+- **Sudo Timeout had no effect for user names with a dot** (e.g. `john.doe`): sudo skips
+  `sudoers.d` files with a `.` in the name. The drop-in name now replaces such characters
+  with `_`.
+- **About → Description was blank** because the `&` in it was read as markup.
+- **About and README** and **Donate** can now be hidden in Preferences → Actions → Links.
+
+### New
+- **GNOME Shell 51** support (now 45–51). Checked against the GNOME 51 porting guide; uses the
+  new `PopupMenu.close()` parameters on 51.
+- **Do Not Disturb, Dark Mode and Night Light are switches** that show the current state and
+  update every time the menu opens. Dark Mode switches between dark and GNOME's default style.
+- **Check System Updates lists available updates** after refreshing (APT, Zypper), and uses
+  `checkupdates` on Arch instead of `pacman -Sy`, which risks a partial upgrade.
+- **Update Flatpaks** tells you if Flatpak isn't installed.
+- Preferences: modern switch and drop-down rows, search, every supported terminal in the
+  terminal list (with a note if your choice isn't installed), a **Show All Actions** button,
+  a Changelog link and a **More by Nick Otmazgin** group.
+
+### Under the hood
+- Every process starts from an argument list (`Gio.Subprocess`) instead of a parsed command
+  line.
+- Settings for DND / Dark Mode / Night Light are only opened if their schema is installed (a
+  missing schema would otherwise crash the shell).
+- An open confirmation dialog is closed when the extension is disabled.
+- Release zip is now `comfort-control@nickotmazgin-45-51.shell-extension.zip`; its name
+  follows `shell-version` in `metadata.json`. `package.sh` now includes the helper scripts.
+- CI: ESLint, ShellCheck, script syntax checks, a check that every shipped file is in the zip,
+  and a check that CHANGELOG has an entry for the version.
+
+> **Recommended upgrade** from v1.1.4 and earlier.
+
 ## 1.1.4 (2026-08-30)
 
 **Polish release — safer suspend + session/docs alignment.**

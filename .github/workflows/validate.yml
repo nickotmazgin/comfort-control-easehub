@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ main ]
 
+permissions:
+  contents: read
+
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -22,17 +25,26 @@ jobs:
       - name: Compile GSettings schemas
         run: |
           if [ -d schemas ]; then glib-compile-schemas schemas; fi
+      - name: Check helper script syntax
+        run: |
+          for f in scripts/*.sh tools/*.sh *.sh; do bash -n "$f"; done
       - name: Build and validate release zip
         run: |
           ./create-release-zips.sh
-          ZIP=dist/comfort-control@nickotmazgin-45-50.shell-extension.zip
+          RANGE=$(jq -r '.["shell-version"] | "\(first)-\(last)"' metadata.json)
+          ZIP="dist/comfort-control@nickotmazgin-${RANGE}.shell-extension.zip"
           test -f "$ZIP"
-          unzip -Z1 "$ZIP" | grep -qx metadata.json
-          unzip -Z1 "$ZIP" | grep -qx schemas/org.gnome.shell.extensions.easehub.gschema.xml
+          for f in extension.js prefs.js metadata.json stylesheet.css \
+                   schemas/org.gnome.shell.extensions.easehub.gschema.xml \
+                   scripts/easehub-reload-shell.sh scripts/easehub-sudo-extend.sh; do
+            unzip -Z1 "$ZIP" | grep -qx "$f" || { echo "missing in zip: $f"; exit 1; }
+          done
           ! unzip -Z1 "$ZIP" | grep -qx schemas/gschemas.compiled
-          test "$(unzip -p "$ZIP" metadata.json | jq -r '.["shell-version"] | join(",")')" = "45,46,47,48,49,50"
+          test "$(unzip -p "$ZIP" metadata.json | jq -c '.["shell-version"]')" = "$(jq -c '.["shell-version"]' metadata.json)"
           test "$(unzip -p "$ZIP" metadata.json | jq -r '.["version-name"]')" = "$(jq -r '.["version-name"]' metadata.json)"
-          unzip -Z1 "$ZIP" | grep -qx scripts/easehub-reload-shell.sh
-          unzip -Z1 "$ZIP" | grep -qx scripts/easehub-sudo-extend.sh
           test "$(unzip -p "$ZIP" scripts/easehub-reload-shell.sh | head -1)" = "#!/usr/bin/env bash"
           test "$(unzip -p "$ZIP" scripts/easehub-sudo-extend.sh | head -1)" = "#!/usr/bin/env bash"
+      - name: CHANGELOG has an entry for this version
+        run: |
+          VERSION=$(jq -r '.["version-name"] | split(" ")[0]' metadata.json)
+          grep -q "^## ${VERSION} " CHANGELOG.md || { echo "CHANGELOG.md has no '## ${VERSION}' entry"; exit 1; }

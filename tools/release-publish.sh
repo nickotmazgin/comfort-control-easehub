@@ -27,7 +27,8 @@ chmod +x ./create-release-zips.sh
 
 VERSION=$(python3 -c "import json; m=json.load(open('metadata.json')); print((m.get('version-name') or '').split()[0])")
 TAG="v${VERSION}"
-ZIP="dist/comfort-control@nickotmazgin-45-50.shell-extension.zip"
+RANGE=$(python3 -c "import json; v=json.load(open('metadata.json'))['shell-version']; print(f'{v[0]}-{v[-1]}')")
+ZIP="dist/comfort-control@nickotmazgin-${RANGE}.shell-extension.zip"
 
 if [[ ! -f "$ZIP" ]]; then
   echo "Missing zip: $ZIP"

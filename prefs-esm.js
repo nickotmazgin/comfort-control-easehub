@@ -1,193 +1,213 @@
+// SPDX-License-Identifier: MIT
 // Comfort Control (EaseHub) prefs — GNOME 45+ (ESM)
 import Adw from 'gi://Adw';
 import Gtk from 'gi://Gtk';
 import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
 import { ExtensionPreferences } from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
+
+const REPO_URL = 'https://github.com/nickotmazgin/comfort-control-easehub';
+
+// Keep in sync with TERMINALS in extension-esm.js; the extension ignores
+// anything else stored in 'preferred-terminal'.
+const TERMINAL_CHOICES = [
+    ['', 'Auto (detect best)'],
+    ['ptyxis', 'Ptyxis'],
+    ['kgx', 'GNOME Console (kgx)'],
+    ['gnome-terminal', 'GNOME Terminal'],
+    ['konsole', 'Konsole'],
+    ['tilix', 'Tilix'],
+    ['kitty', 'Kitty'],
+    ['alacritty', 'Alacritty'],
+    ['wezterm', 'WezTerm'],
+    ['foot', 'foot'],
+    ['x-terminal-emulator', 'x-terminal-emulator (Debian default)'],
+];
+
+const ACTION_GROUPS = [
+    { title: 'System', ids: [
+        ['lock', 'Lock Screen'],
+        ['logout', 'Log Out'],
+        ['reboot', 'Reboot'],
+        ['poweroff', 'Power Off'],
+        ['suspend', 'Suspend'],
+    ]},
+    { title: 'Toggles', description: 'Shown as switches that reflect the current state', ids: [
+        ['dnd', 'Do Not Disturb'],
+        ['darkmode', 'Dark Mode'],
+        ['night-light', 'Night Light'],
+    ]},
+    { title: 'Apps', ids: [
+        ['settings', 'Open Settings'],
+        ['extensions', 'Extensions'],
+        ['tweaks', 'Tweaks'],
+        ['open-terminal', 'Open Terminal'],
+    ]},
+    { title: 'Power Tools', ids: [
+        ['shell-reload', 'Reload GNOME Shell', 'X11 sessions only; needs xdotool'],
+        ['sudo-extend', 'Sudo Timeout submenu', 'Runs a visudo-validated helper in your terminal'],
+    ]},
+    { title: 'Utilities', ids: [
+        ['clipboard-clear', 'Clear Clipboard'],
+        ['clipboard-clear-primary', 'Clear Primary Selection'],
+        ['screenshot', 'Screenshot'],
+    ]},
+    { title: 'Updates', description: 'APT, DNF, Zypper or Pacman — detected automatically', ids: [
+        ['apt-update', 'Check System Updates'],
+        ['apt-upgrade', 'Upgrade System Packages'],
+        ['flatpak-update', 'Update Flatpaks'],
+    ]},
+    { title: 'Links', ids: [
+        ['about-readme', 'About and README'],
+        ['donate', 'Donate (PayPal)'],
+    ]},
+];
 
 export default class EaseHubPreferences extends ExtensionPreferences {
     fillPreferencesWindow(window) {
         const settings = this.getSettings();
-        const metadata = this.metadata || {};
+        window.set_default_size(640, 720);
+        window.search_enabled = true;
 
-        const pageGeneral = new Adw.PreferencesPage({ title: 'General', icon_name: 'preferences-system-symbolic' });
-        const groupGeneral = new Adw.PreferencesGroup({ title: 'Safety' });
+        window.add(this._buildGeneralPage(settings));
+        window.add(this._buildActionsPage(settings));
+        window.add(this._buildAboutPage());
+    }
 
-        const rowConfirm = new Adw.ActionRow({ title: 'Confirm dangerous actions' });
-        const swConfirm = new Gtk.Switch({
-            active: settings.get_boolean('confirm-dangerous'),
-            valign: Gtk.Align.CENTER,
+    _buildGeneralPage(settings) {
+        const page = new Adw.PreferencesPage({ title: 'General', icon_name: 'preferences-system-symbolic' });
+
+        const groupSafety = new Adw.PreferencesGroup({ title: 'Safety' });
+        const rowConfirm = new Adw.SwitchRow({
+            title: 'Confirm dangerous actions',
+            subtitle: 'Ask before log out, reboot, power off, suspend, shell reload and upgrades',
         });
-        rowConfirm.add_suffix(swConfirm);
-        rowConfirm.activatable_widget = swConfirm;
-        swConfirm.connect('notify::active', () => {
-            settings.set_boolean('confirm-dangerous', swConfirm.active);
+        settings.bind('confirm-dangerous', rowConfirm, 'active', Gio.SettingsBindFlags.DEFAULT);
+        groupSafety.add(rowConfirm);
+        page.add(groupSafety);
+
+        const groupTerminal = new Adw.PreferencesGroup({
+            title: 'Terminal',
+            description: 'Used for updates, the sudo timeout helper and Open Terminal',
         });
-        groupGeneral.add(rowConfirm);
-
-        const choices = [
-            { label: 'Auto (detect best)', value: '' },
-            { label: 'GNOME Console (kgx)', value: 'kgx' },
-            { label: 'GNOME Terminal', value: 'gnome-terminal' },
-            { label: 'Kitty', value: 'kitty' },
-            { label: 'Tilix', value: 'tilix' },
-            { label: 'x-terminal-emulator', value: 'x-terminal-emulator' },
-            { label: 'Custom…', value: '__custom__' },
-        ];
-
-        const groupTerminal = new Adw.PreferencesGroup({ title: 'Terminal' });
-        const rowTerminal = new Adw.ActionRow({ title: 'Preferred terminal' });
-        const dd = Gtk.DropDown.new_from_strings(choices.map(c => c.label));
-
-        const rowCustom = new Adw.ActionRow({ title: 'Custom terminal command' });
-        const entry = new Gtk.Entry({ placeholder_text: 'e.g., kitty, alacritty, foot, wezterm…' });
-        rowCustom.add_suffix(entry);
-        rowCustom.activatable_widget = entry;
-
-        const findIndexByValue = v => {
-            const idx = choices.findIndex(c => c.value === v);
-            return idx >= 0 ? idx : choices.length - 1;
+        const rowTerminal = new Adw.ComboRow({
+            title: 'Preferred terminal',
+            model: Gtk.StringList.new(TERMINAL_CHOICES.map(([, label]) => label)),
+        });
+        const syncFromSettings = () => {
+            const value = settings.get_string('preferred-terminal').trim();
+            const idx = TERMINAL_CHOICES.findIndex(([v]) => v === value);
+            rowTerminal.selected = idx >= 0 ? idx : 0;
+            const missing = value && !GLib.find_program_in_path(value);
+            rowTerminal.subtitle = missing ? `${value} is not installed — Auto will be used` : '';
         };
-
-        let currentPref = '';
-        try { currentPref = settings.get_string('preferred-terminal') || ''; } catch {}
-        const initIndex = findIndexByValue(currentPref);
-        dd.set_selected(initIndex);
-        if (initIndex === choices.length - 1) {
-            entry.set_text(currentPref);
-            rowCustom.set_visible(true);
-        } else {
-            rowCustom.set_visible(false);
-        }
-
-        const applySelection = () => {
-            const idx = dd.get_selected();
-            const sel = choices[idx];
-            if (!sel)
-                return;
-            if (sel.value === '__custom__') {
-                rowCustom.set_visible(true);
-                settings.set_string('preferred-terminal', entry.get_text());
-            } else {
-                rowCustom.set_visible(false);
-                settings.set_string('preferred-terminal', sel.value);
-            }
-        };
-
-        dd.connect('notify::selected', applySelection);
-        const ALLOWED_CUSTOM = new Set([
-            'gnome-terminal', 'kgx', 'tilix', 'kitty', 'konsole', 'alacritty',
-            'wezterm', 'foot', 'ptyxis', 'x-terminal-emulator',
-        ]);
-        entry.connect('changed', () => {
-            const idx = dd.get_selected();
-            const sel = choices[idx];
-            if (sel && sel.value === '__custom__') {
-                const custom = entry.get_text().trim();
-                settings.set_string(
-                    'preferred-terminal',
-                    ALLOWED_CUSTOM.has(custom) ? custom : ''
-                );
-            }
+        syncFromSettings();
+        rowTerminal.connect('notify::selected', () => {
+            const choice = TERMINAL_CHOICES[rowTerminal.selected];
+            if (choice && settings.get_string('preferred-terminal') !== choice[0])
+                settings.set_string('preferred-terminal', choice[0]);
         });
-
-        rowTerminal.add_suffix(dd);
-        rowTerminal.activatable_widget = dd;
+        const changedId = settings.connect('changed::preferred-terminal', syncFromSettings);
+        rowTerminal.connect('destroy', () => settings.disconnect(changedId));
         groupTerminal.add(rowTerminal);
-        groupTerminal.add(rowCustom);
-        pageGeneral.add(groupGeneral);
-        pageGeneral.add(groupTerminal);
+        page.add(groupTerminal);
 
-        const pageActions = new Adw.PreferencesPage({ title: 'Actions', icon_name: 'view-list-symbolic' });
-        const groups = [
-            { title: 'System', ids: [
-                ['lock', 'Lock Screen'],
-                ['logout', 'Log Out'],
-                ['reboot', 'Reboot'],
-                ['poweroff', 'Power Off'],
-                ['suspend', 'Suspend'],
-            ]},
-            { title: 'Toggles', ids: [
-                ['dnd', 'Do Not Disturb'],
-                ['darkmode', 'Dark/Light Mode'],
-                ['night-light', 'Night Light'],
-            ]},
-            { title: 'Apps', ids: [
-                ['settings', 'Open Settings'],
-                ['extensions', 'Extensions'],
-                ['tweaks', 'Tweaks'],
-                ['open-terminal', 'Open Terminal'],
-            ]},
-            { title: 'Power Tools', ids: [
-                ['shell-reload', 'Reload GNOME Shell (X11 only)'],
-                ['sudo-extend', 'Sudo Timeout submenu'],
-            ]},
-            { title: 'Utilities', ids: [
-                ['clipboard-clear', 'Clear Clipboard'],
-                ['clipboard-clear-primary', 'Clear Primary Selection'],
-                ['screenshot', 'Screenshot'],
-            ]},
-            { title: 'Updates', ids: [
-                ['apt-update', 'Check Updates (APT: update)'],
-                ['apt-upgrade', 'Upgrade Packages (APT: upgrade)'],
-                ['flatpak-update', 'Update Flatpaks'],
-            ]},
-        ];
+        return page;
+    }
 
+    _buildActionsPage(settings) {
+        const page = new Adw.PreferencesPage({ title: 'Actions', icon_name: 'view-list-symbolic' });
         const current = () => new Set(settings.get_strv('enabled-actions'));
-        const setList = set => settings.set_strv('enabled-actions', Array.from(set));
+        const rows = new Map();
 
-        for (const g of groups) {
-            const grp = new Adw.PreferencesGroup({ title: g.title });
-            for (const [id, label] of g.ids) {
-                const row = new Adw.ActionRow({ title: label });
-                const sw = new Gtk.Switch({
-                    active: current().has(id),
-                    valign: Gtk.Align.CENTER,
-                });
-                row.add_suffix(sw);
-                row.activatable_widget = sw;
-                sw.connect('notify::active', () => {
+        for (const g of ACTION_GROUPS) {
+            const grp = new Adw.PreferencesGroup({ title: g.title, description: g.description ?? '' });
+            for (const [id, title, subtitle] of g.ids) {
+                const row = new Adw.SwitchRow({ title, subtitle: subtitle ?? '', active: current().has(id), use_markup: false });
+                row.connect('notify::active', () => {
                     const set = current();
-                    if (sw.active) set.add(id); else set.delete(id);
-                    setList(set);
+                    if (row.active === set.has(id))
+                        return;
+                    if (row.active)
+                        set.add(id);
+                    else
+                        set.delete(id);
+                    settings.set_strv('enabled-actions', Array.from(set));
                 });
+                rows.set(id, row);
                 grp.add(row);
             }
-            pageActions.add(grp);
+            page.add(grp);
         }
 
-        const pageAbout = new Adw.PreferencesPage({ title: 'About', icon_name: 'help-about-symbolic' });
+        // Keep switches in sync with resets and changes made elsewhere.
+        const changedId = settings.connect('changed::enabled-actions', () => {
+            const set = current();
+            for (const [id, row] of rows)
+                row.active = set.has(id);
+        });
+        page.connect('destroy', () => settings.disconnect(changedId));
+
+        const groupReset = new Adw.PreferencesGroup();
+        const resetButton = new Gtk.Button({
+            label: 'Show All Actions',
+            halign: Gtk.Align.CENTER,
+            css_classes: ['pill'],
+        });
+        resetButton.connect('clicked', () => settings.reset('enabled-actions'));
+        groupReset.add(resetButton);
+        page.add(groupReset);
+
+        return page;
+    }
+
+    _buildAboutPage() {
+        const metadata = this.metadata || {};
+        const page = new Adw.PreferencesPage({ title: 'About', icon_name: 'help-about-symbolic' });
+
         const groupInfo = new Adw.PreferencesGroup({ title: 'Extension' });
-        groupInfo.add(new Adw.ActionRow({ title: 'Name', subtitle: metadata.name || 'EaseHub' }));
-        groupInfo.add(new Adw.ActionRow({ title: 'Version', subtitle: metadata['version-name'] || String(metadata.version ?? '') }));
-        groupInfo.add(new Adw.ActionRow({ title: 'Developer', subtitle: 'Nick Otmazgin' }));
-        groupInfo.add(new Adw.ActionRow({ title: 'Contact', subtitle: 'nickotmazgin.dev@gmail.com' }));
-        groupInfo.add(new Adw.ActionRow({
-            title: 'Description',
-            subtitle: 'Panel menu for power, screenshots, updates & utilities. Wayland & X11/Xorg.',
-        }));
-        pageAbout.add(groupInfo);
+        // use_markup: false — Adw parses subtitles as Pango markup, so a bare
+        // "&" would otherwise blank the whole row.
+        const infoRow = (title, subtitle) => new Adw.ActionRow({ title, subtitle, use_markup: false });
+        groupInfo.add(infoRow('Name', metadata.name || 'EaseHub'));
+        groupInfo.add(infoRow('Version', metadata['version-name'] || String(metadata.version ?? '')));
+        groupInfo.add(infoRow('Developer', 'Nick Otmazgin'));
+        groupInfo.add(infoRow('Contact', 'nickotmazgin.dev@gmail.com'));
+        groupInfo.add(infoRow('Description',
+            'Panel menu for power, toggles, screenshots, updates & utilities. Wayland & X11/Xorg.'));
+        page.add(groupInfo);
+
+        const linkRow = (title, subtitle, uri) => {
+            const row = new Adw.ActionRow({ title, subtitle, activatable: true, use_markup: false });
+            row.add_suffix(new Gtk.Image({ icon_name: 'adw-external-link-symbolic' }));
+            row.connect('activated', () => {
+                try {
+                    Gio.AppInfo.launch_default_for_uri(uri, null);
+                } catch (e) {
+                    console.error('[EaseHub] open link error:', e);
+                }
+            });
+            return row;
+        };
 
         const groupLinks = new Adw.PreferencesGroup({ title: 'Links' });
-        const addLinkRow = (title, uri) => {
-            const row = new Adw.ActionRow({ title });
-            row.activatable = true;
-            row.connect('activated', () => {
-                Gio.AppInfo.launch_default_for_uri(uri, null);
-            });
-            groupLinks.add(row);
-        };
-        addLinkRow('GitHub repository', 'https://github.com/nickotmazgin/comfort-control-easehub');
-        addLinkRow('README and documentation', 'https://github.com/nickotmazgin/comfort-control-easehub#readme');
-        addLinkRow('Credits and contributors', 'https://github.com/nickotmazgin/comfort-control-easehub/blob/main/CONTRIBUTORS.md');
-        addLinkRow('Report an issue', 'https://github.com/nickotmazgin/comfort-control-easehub/issues');
-        addLinkRow('Latest release', 'https://github.com/nickotmazgin/comfort-control-easehub/releases/latest');
-        addLinkRow('Donate via PayPal', 'https://www.paypal.com/donate/?hosted_button_id=4HM44VH47LSMW');
-        addLinkRow('Email: nickotmazgin.dev@gmail.com', 'mailto:nickotmazgin.dev@gmail.com');
-        pageAbout.add(groupLinks);
+        groupLinks.add(linkRow('GitHub repository', '', REPO_URL));
+        groupLinks.add(linkRow('README and documentation', '', `${REPO_URL}#readme`));
+        groupLinks.add(linkRow('Changelog', '', `${REPO_URL}/blob/main/CHANGELOG.md`));
+        groupLinks.add(linkRow('Credits and contributors', '', `${REPO_URL}/blob/main/CONTRIBUTORS.md`));
+        groupLinks.add(linkRow('Report an issue', '', `${REPO_URL}/issues`));
+        groupLinks.add(linkRow('Latest release', '', `${REPO_URL}/releases/latest`));
+        groupLinks.add(linkRow('Donate via PayPal', '', 'https://www.paypal.com/donate/?hosted_button_id=4HM44VH47LSMW'));
+        groupLinks.add(linkRow('Email: nickotmazgin.dev@gmail.com', '', 'mailto:nickotmazgin.dev@gmail.com'));
+        page.add(groupLinks);
 
-        window.add(pageGeneral);
-        window.add(pageActions);
-        window.add(pageAbout);
+        const groupMore = new Adw.PreferencesGroup({ title: 'More by Nick Otmazgin' });
+        groupMore.add(linkRow('ClipFlow Pro', 'Clipboard history manager for GNOME Shell',
+            'https://github.com/nickotmazgin/clipflow-pro'));
+        groupMore.add(linkRow('Numeric Clock', 'DD/MM/YYYY 24-hour top-bar clock',
+            'https://github.com/nickotmazgin/Linux-Numeric-Date-And-Clock'));
+        page.add(groupMore);
+
+        return page;
     }
 }

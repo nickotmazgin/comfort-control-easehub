@@ -32,7 +32,9 @@ jobs:
         run: |
           VERSION=$(python3 -c "import json; m=json.load(open('metadata.json')); print((m.get('version-name') or '').split()[0])")
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
-          echo "zip=dist/comfort-control@nickotmazgin-45-50.shell-extension.zip" >> "$GITHUB_OUTPUT"
+          RANGE=$(python3 -c "import json; v=json.load(open('metadata.json'))['shell-version']; print(f'{v[0]}-{v[-1]}')")
+          echo "range=${RANGE}" >> "$GITHUB_OUTPUT"
+          echo "zip=dist/comfort-control@nickotmazgin-${RANGE}.shell-extension.zip" >> "$GITHUB_OUTPUT"
 
       - name: Build release notes from CHANGELOG
         run: |
@@ -45,7 +47,8 @@ jobs:
           TAG="${GITHUB_REF_NAME}"
           ZIP="${{ steps.meta.outputs.zip }}"
           VERSION="${{ steps.meta.outputs.version }}"
-          TITLE="EaseHub ${VERSION} — GNOME 45–50"
+          RANGE="${{ steps.meta.outputs.range }}"
+          TITLE="EaseHub ${VERSION} — GNOME ${RANGE/-/–}"
 
           if gh release view "$TAG" >/dev/null 2>&1; then
             gh release upload "$TAG" "$ZIP" --clobber

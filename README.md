@@ -4,7 +4,7 @@
 [![CI](https://img.shields.io/github/actions/workflow/status/nickotmazgin/comfort-control-easehub/validate.yml?branch=main&label=CI)](https://github.com/nickotmazgin/comfort-control-easehub/actions)
 [![Downloads](https://img.shields.io/github/downloads/nickotmazgin/comfort-control-easehub/total?label=downloads&color=success)](https://github.com/nickotmazgin/comfort-control-easehub/releases)
 [![License: MIT](https://img.shields.io/github/license/nickotmazgin/comfort-control-easehub)](LICENSE)
-[![GNOME 45–50](https://img.shields.io/badge/GNOME-45%E2%80%9350-4A86CF?logo=gnome&logoColor=white)](#compatibility)
+[![GNOME 45–51](https://img.shields.io/badge/GNOME-45%E2%80%9351-4A86CF?logo=gnome&logoColor=white)](#compatibility)
 [![ESM](https://img.shields.io/badge/ESM-GJS%20modules-orange)](#compatibility)
 [![Wayland](https://img.shields.io/badge/Wayland-validated-0078D4)](#compatibility)
 [![X11 / Xorg](https://img.shields.io/badge/X11%20%2F%20Xorg-validated-555555)](#compatibility)
@@ -16,11 +16,11 @@ A **GNOME Shell extension** that brings **comfort and control to your desktop** 
 
 > **Keywords:** GNOME panel menu · power management · screenshots · Wayland · X11 · Xorg · dark mode · DND · terminal · Flatpak · APT · Linux utilities · open source
 
-**Latest:** v1.1.4 — GNOME 45–50 ESM (**Wayland & X11/Xorg validated** on maintainer setups)
+**Latest:** v1.2.0 — GNOME 45–51 ESM (**Wayland & X11/Xorg validated** on maintainer setups)
 
-> Download [v1.1.4](https://github.com/nickotmazgin/comfort-control-easehub/releases/latest). Older releases remain for history and rollback.
+> Download [v1.2.0](https://github.com/nickotmazgin/comfort-control-easehub/releases/latest). Older releases remain for history and rollback.
 
-> **GNOME Shell 42–44 is no longer supported.** EaseHub requires **GNOME 45–50**.
+> **GNOME Shell 42–44 is no longer supported.** EaseHub requires **GNOME 45–51**.
 
 ---
 
@@ -28,7 +28,7 @@ A **GNOME Shell extension** that brings **comfort and control to your desktop** 
 
 | GNOME | Status | Notes |
 | ----- | ------ | ----- |
-| **45–50** | **Supported** | ESM build; zip `comfort-control@nickotmazgin-45-50` |
+| **45–51** | **Supported** | ESM build; zip `comfort-control@nickotmazgin-45-51` |
 | **42–44** | **Discontinued** | No longer built or maintained |
 
 | Session | Status | Notes |
@@ -52,9 +52,8 @@ A **GNOME Shell extension** that brings **comfort and control to your desktop** 
 
 ### 📸 **Smart Screenshots**
 * **Intelligent screenshot handling**:
-  - Uses **GNOME's native Wayland** screenshot UI when available
-  - **Automatic fallback** to `gnome-screenshot` on Xorg or legacy setups
-  - **Seamless experience** across different display protocols
+  - Opens **GNOME's built-in screenshot UI** (area, screen, window, screencast) on Wayland and X11
+  - **Automatic fallback** to `gnome-screenshot` if the built-in UI is unavailable
 
 ### 🛠️ **System Update Helpers**
 * **Smart package management**:
@@ -76,9 +75,10 @@ A **GNOME Shell extension** that brings **comfort and control to your desktop** 
 
 ### 🧩 **Configurable Actions & Terminal**
 * Enable/disable any menu item from Preferences → Actions (menu updates live)
-* Set a preferred terminal (kgx, gnome-terminal, tilix, etc.) in Preferences
+* Set a preferred terminal in Preferences: Ptyxis, GNOME Console, GNOME Terminal, Konsole, Tilix, Kitty, Alacritty, WezTerm, foot or `x-terminal-emulator` (or Auto)
+* Terminal windows stay open after a command finishes and show its exit code
 * **EaseHub Settings…** always available at the bottom of the panel menu
-* Quick toggles: Do Not Disturb, Dark/Light Mode, and **Night Light**
+* **Live switches** for Do Not Disturb, Dark Mode and **Night Light** that show the current state every time you open the menu
 
 ---
 
@@ -90,7 +90,7 @@ A **GNOME Shell extension** that brings **comfort and control to your desktop** 
 
 2. **Install** via GNOME Extensions app or terminal:
    ```bash
-   gnome-extensions install --force comfort-control@nickotmazgin-45-50.shell-extension.zip
+   gnome-extensions install --force comfort-control@nickotmazgin-45-51.shell-extension.zip
    gnome-extensions enable comfort-control@nickotmazgin
    ```
 
@@ -119,27 +119,30 @@ gnome-extensions enable "$uuid"
 
 ### 📥 Which Zip Should I Download?
 
-Download **`comfort-control@nickotmazgin-45-50.shell-extension.zip`** from the [Releases page](https://github.com/nickotmazgin/comfort-control-easehub/releases/latest) (GNOME Shell **45–50** only). That is **v1.1.4** today.
+Download **`comfort-control@nickotmazgin-45-51.shell-extension.zip`** from the [Releases page](https://github.com/nickotmazgin/comfort-control-easehub/releases/latest) (GNOME Shell **45–51** only). That is **v1.2.0** today.
 
 | Release | Status |
 | ------- | ------ |
-| **v1.1.4** | **Recommended** — suspend confirmation + session/docs alignment |
-| **v1.1.3** | Superseded; kept for history / rollback |
+| **v1.2.0** | **Recommended** — GNOME 51, live toggle switches, terminal and screenshot fixes |
+| **v1.1.4** | Superseded; kept for history / rollback (GNOME 45–50) |
+| v1.1.3 | Superseded; kept for history / rollback |
 | v1.1.2 and older | Archived; see [CHANGELOG](CHANGELOG.md) |
 
 ### 🧪 Packaging (CI)
 
 On tag push (`v*`), GitHub Actions runs `create-release-zips.sh` and publishes:
 
-- `comfort-control@nickotmazgin-45-50.shell-extension.zip`
+- `comfort-control@nickotmazgin-45-51.shell-extension.zip` (the GNOME range in the name follows `shell-version` in `metadata.json`)
+
+Build it locally with `./create-release-zips.sh`, or `./package.sh --install` to build and install it for your user.
 
 ---
 
 ## 🖼️ **Screenshots**
 
-*EaseHub v1.1.4 — click any image to view it full size.*
+*Screenshots from EaseHub v1.1.4 (v1.2.0 shows Do Not Disturb, Dark Mode and Night Light as switches) — click any image to view it full size.*
 
-[![EaseHub v1.1.3 collage](screenshots/collage.jpg)](screenshots/collage.jpg)
+[![EaseHub screenshot collage](screenshots/collage.jpg)](screenshots/collage.jpg)
 
 <table>
   <tr>
@@ -178,7 +181,7 @@ We welcome contributions! Please feel free to:
 - 🔧 **Submit pull requests** with enhancements
 - 🌐 **Help with translations**
 
-See CHANGELOG.md for notable changes.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the development loop and [CHANGELOG.md](CHANGELOG.md) for notable changes.
 
 ---
 
@@ -211,15 +214,17 @@ Comfort Control (EaseHub) is created, maintained, signed, and released by **[Nic
 
 [![AI assisted — OpenAI Codex](https://img.shields.io/badge/AI%20assisted-OpenAI%20Codex-10A37F)](https://openai.com/codex/)
 [![AI assisted — Cursor Agent](https://img.shields.io/badge/AI%20assisted-Cursor%20Agent-1A1A1A)](https://cursor.com)
+[![AI assisted — Claude Code](https://img.shields.io/badge/AI%20assisted-Claude%20Code-D97757)](https://claude.com/claude-code)
 
 Recent releases were built with help from AI pair-programming agents, operated under the maintainer's direction and review:
 
 - **OpenAI Codex** — release engineering, signed-tag release workflows, packaging and validation hardening
 - **Cursor (Agent)** — code review, debugging, CI workflow hardening, documentation
+- **Claude** by Anthropic ([@claude](https://github.com/claude), via [Claude Code](https://claude.com/claude-code)) — v1.2.0 audit: terminal and screenshot fixes, live toggle switches, GNOME 51 port, nested-shell testing, CI lint checks
 
 Every AI-assisted change is human-reviewed, tested on real GNOME sessions, and approved by the maintainer before release. See [CONTRIBUTORS.md](CONTRIBUTORS.md) for the full credits.
 
-> OpenAI and Codex are trademarks of OpenAI. Cursor is a trademark of Anysphere, Inc. These names are used here solely for factual attribution. EaseHub is an independent project and is **not** affiliated with, sponsored, or endorsed by OpenAI or Anysphere/Cursor.
+> OpenAI and Codex are trademarks of OpenAI. Cursor is a trademark of Anysphere, Inc. Claude and Claude Code are trademarks of Anthropic, PBC. These names are used here solely for factual attribution. EaseHub is an independent project and is **not** affiliated with, sponsored, or endorsed by OpenAI, Anysphere/Cursor, or Anthropic.
 
 ---
 
@@ -233,6 +238,8 @@ Every AI-assisted change is human-reviewed, tested on real GNOME sessions, and a
 
 - [ClipFlow Pro](https://github.com/nickotmazgin/clipflow-pro) — clipboard history manager with pins, stars & privacy
 - [Numeric Clock](https://github.com/nickotmazgin/Linux-Numeric-Date-And-Clock) — DD/MM/YYYY 24-hour top-bar clock with seconds
+
+Also by Nick Otmazgin: [FluentVoice Pro](https://github.com/nickotmazgin/fluentvoice-pro) — system-wide text-to-speech app for Windows 11 and 10
 
 ---
 

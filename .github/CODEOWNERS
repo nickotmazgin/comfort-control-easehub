@@ -3,8 +3,9 @@
 
 * @nickotmazgin
 
-/extension.js @nickotmazgin
-/prefs.js @nickotmazgin
+/extension-esm.js @nickotmazgin
+/prefs-esm.js @nickotmazgin
+/scripts/** @nickotmazgin
 /metadata.json @nickotmazgin
 /schemas/** @nickotmazgin
 /.github/workflows/** @nickotmazgin

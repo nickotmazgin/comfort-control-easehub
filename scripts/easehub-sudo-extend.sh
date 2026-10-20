@@ -2,7 +2,8 @@
 # EaseHub — Sudo Timeout helper.
 #
 # Manages how long sudo remembers your password (timestamp_timeout) through a
-# single drop-in file: /etc/sudoers.d/99-easehub-sudo-timeout-<user>.
+# single drop-in file: /etc/sudoers.d/99-easehub-sudo-timeout-<user>
+# (characters other than letters, digits, _ and - in <user> become _).
 # Every change is syntax-checked with visudo before it is installed, and the
 # previous file is backed up, so a typo can never lock sudo.
 #
@@ -13,8 +14,11 @@
 #   easehub-sudo-extend.sh menu           Interactive menu
 set -u
 
-ME="${USER:-$(id -un)}"
-DROPIN="/etc/sudoers.d/99-easehub-sudo-timeout-${ME}"
+ME="$(id -un)"
+# sudo silently skips sudoers.d files whose names contain "." or end in "~",
+# so map anything outside [A-Za-z0-9_-] to "_" (e.g. john.doe -> john_doe).
+SAFE_ME="$(printf '%s' "$ME" | tr -c 'A-Za-z0-9_-' '_')"
+DROPIN="/etc/sudoers.d/99-easehub-sudo-timeout-${SAFE_ME}"
 
 say()  { printf '%s\n' "$*"; }
 note() { notify-send --icon=security-high-symbolic "EaseHub: Sudo Timeout" "$1" 2>/dev/null || true; }
