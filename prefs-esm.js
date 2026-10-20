@@ -64,6 +64,7 @@ const MENU_GROUPS = [
         ['open-terminal', 'Terminal'],
         ['empty-trash', 'Empty Trash', 'Shows how many items will be deleted and asks first'],
         ['clear-recent', 'Clear Recent Files', 'Wipes the "Recent" list in Files and apps; asks first'],
+        ['files-menu', 'Files Right-Click Actions switch', 'Turn the Files right-click menu on or off from the panel'],
     ]},
     { title: 'Clipboard & Screenshot', ids: [
         ['screenshot', 'Screenshot'],
@@ -197,6 +198,15 @@ export default class EaseHubPreferences extends ExtensionPreferences {
         window.add(this._menuPage(settings));
         window.add(this._filesPage(settings));
         window.add(this._aboutPage());
+
+        // Reopen on the page used last time.
+        const last = settings.get_string('prefs-page');
+        if (['general', 'menu', 'files', 'about'].includes(last))
+            window.visible_page_name = last;
+        window.connect('notify::visible-page-name', () => {
+            if (window.visible_page_name)
+                settings.set_string('prefs-page', window.visible_page_name);
+        });
     }
 
     _toast(title) {
@@ -204,7 +214,7 @@ export default class EaseHubPreferences extends ExtensionPreferences {
     }
 
     _generalPage(settings) {
-        const page = new Adw.PreferencesPage({ title: 'General', icon_name: 'preferences-system-symbolic' });
+        const page = new Adw.PreferencesPage({ name: 'general', title: 'General', icon_name: 'preferences-system-symbolic' });
 
         const panel = new Adw.PreferencesGroup({ title: 'Panel' });
         panel.add(comboRow(settings, 'menu-layout', 'Menu layout',
@@ -326,7 +336,7 @@ export default class EaseHubPreferences extends ExtensionPreferences {
     }
 
     _menuPage(settings) {
-        const page = new Adw.PreferencesPage({ title: 'Menu', icon_name: 'view-list-symbolic' });
+        const page = new Adw.PreferencesPage({ name: 'menu', title: 'Menu', icon_name: 'view-list-symbolic' });
         for (const g of MENU_GROUPS) {
             const grp = new Adw.PreferencesGroup({ title: g.title, description: g.description ?? '' });
             hiddenListRows(settings, 'hidden-actions', grp, g.ids);
@@ -353,7 +363,7 @@ export default class EaseHubPreferences extends ExtensionPreferences {
     }
 
     _filesPage(settings) {
-        const page = new Adw.PreferencesPage({ title: 'Files', icon_name: 'system-file-manager-symbolic' });
+        const page = new Adw.PreferencesPage({ name: 'files', title: 'Files', icon_name: 'system-file-manager-symbolic' });
 
         let pending = 0;
         const resync = (announce = true) => {
@@ -487,7 +497,7 @@ export default class EaseHubPreferences extends ExtensionPreferences {
 
     _aboutPage() {
         const metadata = this.metadata || {};
-        const page = new Adw.PreferencesPage({ title: 'About', icon_name: 'help-about-symbolic' });
+        const page = new Adw.PreferencesPage({ name: 'about', title: 'About', icon_name: 'help-about-symbolic' });
 
         const info = new Adw.PreferencesGroup({ title: 'Extension' });
         // use_markup: false — Adw parses subtitles as Pango markup, so a bare

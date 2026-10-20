@@ -51,6 +51,11 @@
       <summary>Deprecated (1.2 and earlier): migrated to hidden-actions on first start</summary>
     </key>
 
+    <key name="prefs-page" type="s">
+      <default>'general'</default>
+      <summary>Preferences page shown when the window opens (the last one used)</summary>
+    </key>
+
     <!-- Sudo timeout -->
     <key name="sudo-custom-minutes" type="i">
       <range min="1" max="1440"/>

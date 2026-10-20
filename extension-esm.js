@@ -19,6 +19,7 @@ import { PopupAnimation } from 'resource:///org/gnome/shell/ui/boxpointer.js';
 import * as SystemActions from 'resource:///org/gnome/shell/misc/systemActions.js';
 import { PACKAGE_VERSION } from 'resource:///org/gnome/shell/misc/config.js';
 import { Extension } from 'resource:///org/gnome/shell/extensions/extension.js';
+import { syncFilesMenu } from './lib/filesMenu.js';
 
 const REPO_URL = 'https://github.com/nickotmazgin/comfort-control-easehub';
 const DONATE_URL = 'https://www.paypal.com/donate/?hosted_button_id=4HM44VH47LSMW';
@@ -278,6 +279,18 @@ class EaseHubIndicator extends PanelMenu.Button {
                 this._tooltips.hide();
         });
 
+        // Desktop settings behind the DND / Dark Mode / Night Light tiles, watched
+        // so the tiles stay right even if they change while the menu is open.
+        this._gs = {
+            notif: _settingsFor('org.gnome.desktop.notifications'),
+            iface: _settingsFor('org.gnome.desktop.interface'),
+            color: _settingsFor('org.gnome.settings-daemon.plugins.color'),
+        };
+        for (const [obj, key] of [[this._gs.notif, 'show-banners'], [this._gs.iface, 'color-scheme'], [this._gs.color, 'night-light-enabled']]) {
+            if (obj)
+                this._connect(obj, `changed::${key}`, () => this._syncToggles());
+        }
+
         this._initBackends();
         this._buildMenu();
     }
@@ -301,7 +314,9 @@ class EaseHubIndicator extends PanelMenu.Button {
     }
 
     _onSettingChanged(key) {
-        if (key === 'panel-icon')
+        if (key === 'files-actions-enabled')
+            this._filesSwitch?.setToggleState(this._settings.get_boolean(key));
+        else if (key === 'panel-icon')
             this._updatePanelIcon();
         else if (['menu-layout', 'hidden-actions', 'sudo-custom-minutes'].includes(key))
             this._buildMenu();
@@ -415,9 +430,7 @@ class EaseHubIndicator extends PanelMenu.Button {
 
     // Quick toggles: id, label, icon, and how to detect/read/write them.
     _toggleDefs() {
-        const notif = _settingsFor('org.gnome.desktop.notifications');
-        const iface = _settingsFor('org.gnome.desktop.interface');
-        const color = _settingsFor('org.gnome.settings-daemon.plugins.color');
+        const { notif, iface, color } = this._gs;
         return [
             {
                 id: 'wifi', label: 'Wi-Fi', icon: ['network-wireless-symbolic'],
@@ -688,6 +701,18 @@ class EaseHubIndicator extends PanelMenu.Button {
         });
     }
 
+    // Turns the Files (Nautilus) right-click actions on or off right away.
+    _setFilesMenu(on) {
+        this._settings.set_boolean('files-actions-enabled', on);
+        try {
+            const result = syncFilesMenu(this._settings, this._ext.path);
+            _notify(result.ok ? (on ? `${result.message} (right-click in Files)` : 'Files right-click actions removed') : result.message);
+        } catch (e) {
+            console.error('[EaseHub] Files menu error:', e);
+            _notify('Could not update the Files right-click menu');
+        }
+    }
+
     _clearClipboard(type, label) {
         try {
             St.Clipboard.get_default().set_text(type, '');
@@ -803,6 +828,7 @@ class EaseHubIndicator extends PanelMenu.Button {
         this._toggles = [];
         this._sudoLabel = null;
         this._layoutTiles = null;
+        this._filesSwitch = null;
 
         const hidden = new Set(this._settings.get_strv('hidden-actions'));
         const shown = id => !hidden.has(id);
@@ -958,6 +984,14 @@ class EaseHubIndicator extends PanelMenu.Button {
             item(apps.menu, 'Empty Trash…', 'user-trash-symbolic', () => this._emptyTrash());
         if (shown('clear-recent'))
             item(apps.menu, 'Clear Recent Files…', 'document-open-recent-symbolic', () => this._clearRecent());
+        if (shown('files-menu')) {
+            const it = new PopupMenu.PopupSwitchMenuItem('Files Right-Click Actions',
+                settings.get_boolean('files-actions-enabled'));
+            it.insert_child_at_index(new St.Icon({ gicon: _icon('document-properties-symbolic'), style_class: 'popup-menu-icon' }), 0);
+            it.connect('toggled', (_i, on) => this._setFilesMenu(on));
+            this._filesSwitch = it;
+            apps.menu.addMenuItem(it);
+        }
         addGroup(apps);
 
         const clip = group('Clipboard & Screenshot', 'edit-paste-symbolic');

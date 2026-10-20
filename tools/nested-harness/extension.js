@@ -74,6 +74,27 @@ async function run() {
     L('radio tiles visible: wifi', tile('Wi-Fi')?.visible, 'bluetooth', tile('Bluetooth')?.visible, 'airplane', tile('Airplane Mode')?.visible);
     L('volume wired', !!ind._volume, 'stream', !!ind._volume?.stream);
 
+    // Live sync: a change made elsewhere updates the open menu's tile
+    ind.menu.open();
+    await wait(300);
+    iface.set_string('color-scheme', 'prefer-dark');
+    await wait(200);
+    const liveOn = tile('Dark Mode').checked;
+    iface.set_string('color-scheme', 'default');
+    await wait(200);
+    L('live sync while open: dark on', liveOn, '-> off', !tile('Dark Mode').checked);
+    ind.menu.close();
+
+    // Files right-click switch (writes under this test's private data dir)
+    const scripts = Gio.File.new_for_path(`${GLib.get_user_data_dir()}/nautilus/scripts/EaseHub`);
+    ind._filesSwitch.toggle();
+    await wait(300);
+    const created = scripts.get_child('Copy').get_child('Copy Full Path').query_exists(null);
+    ind._filesSwitch.toggle();
+    await wait(300);
+    L('files switch: created', created, 'removed', !scripts.query_exists(null),
+        'setting', es.get_boolean('files-actions-enabled'), 'dir', GLib.get_user_data_dir().includes('easehub-nested'));
+
     // Tooltips: hover shows a dash-style label with the full name and state
     const tip = async actor => {
         actor.hover = true;
