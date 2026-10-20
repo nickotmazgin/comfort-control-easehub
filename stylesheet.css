@@ -26,3 +26,71 @@
 .easehub-tile-label { font-size: 0.85em; padding-top: 4px; }
 
 .easehub-tooltip { font-size: 0.9em; }
+
+/* The stock shell theme gives quick toggles a fixed 12em width; keep EaseHub's
+   tiles compact on every theme. */
+.quick-toggle.easehub-tile { min-width: 84px; max-width: 160px; min-height: 0; border-radius: 12px; }
+
+/* ---- Appearance: Light ---- */
+.easehub-style-light.popup-menu { color: #2e3436; }
+.easehub-style-light .popup-menu-content {
+  background-color: #fafafb;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  color: #2e3436;
+}
+.easehub-style-light .popup-menu-item { color: #2e3436; }
+.easehub-style-light .popup-menu-item:hover,
+.easehub-style-light .popup-menu-item:focus { background-color: rgba(0, 0, 0, 0.08); color: #2e3436; }
+.easehub-style-light .popup-menu-item:active { background-color: rgba(0, 0, 0, 0.12); color: #2e3436; }
+.easehub-style-light .popup-sub-menu { background-color: rgba(0, 0, 0, 0.04); }
+.easehub-style-light .popup-sub-menu .popup-menu-item:hover,
+.easehub-style-light .popup-sub-menu .popup-menu-item:focus { background-color: rgba(0, 0, 0, 0.08); }
+.easehub-style-light .popup-separator-menu-item-separator { background-color: rgba(0, 0, 0, 0.1); }
+.easehub-style-light .easehub-row:hover,
+.easehub-style-light .easehub-row:focus { background-color: transparent; }
+.easehub-style-light .icon-button,
+.easehub-style-light .quick-toggle { background-color: rgba(0, 0, 0, 0.07); color: #2e3436; }
+.easehub-style-light .icon-button:hover,
+.easehub-style-light .quick-toggle:hover { background-color: rgba(0, 0, 0, 0.12); }
+.easehub-style-light .quick-toggle:checked { background-color: #3584e4; color: #ffffff; }
+.easehub-style-light .quick-toggle:checked:hover { background-color: #4a90e2; }
+.easehub-style-light .slider {
+  -barlevel-background-color: rgba(0, 0, 0, 0.15);
+  -barlevel-active-background-color: #3584e4;
+  color: #ffffff;
+}
+.easehub-style-light .popup-menu-ornament,
+.easehub-style-light .popup-menu-arrow { color: #2e3436; }
+.easehub-tooltip-light { background-color: #fafafb; color: #2e3436; border: 1px solid rgba(0, 0, 0, 0.15); }
+
+/* ---- Appearance: Dark ---- */
+.easehub-style-dark.popup-menu { color: #ffffff; }
+.easehub-style-dark .popup-menu-content {
+  background-color: #2b2b2e;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+.easehub-style-dark .popup-menu-item { color: #ffffff; }
+.easehub-style-dark .popup-menu-item:hover,
+.easehub-style-dark .popup-menu-item:focus { background-color: rgba(255, 255, 255, 0.1); color: #ffffff; }
+.easehub-style-dark .popup-menu-item:active { background-color: rgba(255, 255, 255, 0.15); color: #ffffff; }
+.easehub-style-dark .popup-sub-menu { background-color: rgba(255, 255, 255, 0.04); }
+.easehub-style-dark .popup-sub-menu .popup-menu-item:hover,
+.easehub-style-dark .popup-sub-menu .popup-menu-item:focus { background-color: rgba(255, 255, 255, 0.1); }
+.easehub-style-dark .popup-separator-menu-item-separator { background-color: rgba(255, 255, 255, 0.1); }
+.easehub-style-dark .easehub-row:hover,
+.easehub-style-dark .easehub-row:focus { background-color: transparent; }
+.easehub-style-dark .icon-button,
+.easehub-style-dark .quick-toggle { background-color: rgba(255, 255, 255, 0.1); color: #ffffff; }
+.easehub-style-dark .icon-button:hover,
+.easehub-style-dark .quick-toggle:hover { background-color: rgba(255, 255, 255, 0.16); }
+.easehub-style-dark .quick-toggle:checked { background-color: #3584e4; color: #ffffff; }
+.easehub-style-dark .quick-toggle:checked:hover { background-color: #4a90e2; }
+.easehub-style-dark .slider {
+  -barlevel-background-color: rgba(255, 255, 255, 0.2);
+  -barlevel-active-background-color: #3584e4;
+  color: #ffffff;
+}
+.easehub-style-dark .popup-menu-ornament,
+.easehub-style-dark .popup-menu-arrow { color: #ffffff; }
+.easehub-tooltip-dark { background-color: #1e1e20; color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.12); }

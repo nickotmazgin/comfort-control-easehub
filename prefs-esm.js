@@ -218,14 +218,21 @@ export default class EaseHubPreferences extends ExtensionPreferences {
 
         const panel = new Adw.PreferencesGroup({ title: 'Panel' });
         panel.add(comboRow(settings, 'menu-layout', 'Menu layout',
-            [['compact', 'Compact — button rows and toggle tiles'], ['classic', 'Classic — one row per item']]));
+            [['compact', 'Compact'], ['classic', 'Classic']],
+            'Compact: button rows and toggle tiles. Classic: one row per item'));
+
+        panel.add(comboRow(settings, 'menu-style', 'Appearance',
+            [['system', 'System'], ['light', 'Light'], ['dark', 'Dark']],
+            'System follows your shell theme; Light and Dark always use those colors'));
 
         const iconRow = comboRow(settings, 'panel-icon', 'Panel icon', ICON_CHOICES);
         const preview = new Gtk.Image({ pixel_size: 16 });
         const syncPreview = () => {
             const name = settings.get_string('panel-icon');
             if (!name || name === 'easehub')
-                preview.set_from_file(GLib.build_filenamev([this.path, 'icons', 'easehub-symbolic.svg']));
+                // As a GIcon so GTK recolors the symbolic icon for light and dark themes.
+                preview.set_from_gicon(Gio.FileIcon.new(Gio.File.new_for_path(
+                    GLib.build_filenamev([this.path, 'icons', 'easehub-symbolic.svg']))));
             else
                 preview.icon_name = name;
         };
@@ -413,7 +420,7 @@ export default class EaseHubPreferences extends ExtensionPreferences {
         nameRow.connect('destroy', () => settings.disconnect(nameId));
         main.add(nameRow);
         main.add(comboRow(settings, 'files-layout', 'Layout',
-            [['grouped', 'Grouped — Copy ▸, Open ▸ and Tools ▸ submenus'], ['flat', 'Flat — every action in one list']]));
+            [['grouped', 'Grouped'], ['flat', 'Flat']], 'Grouped: Copy ▸, Open ▸ and Tools ▸ submenus. Flat: one list'));
         main.add(switchRow(settings, 'files-notify', 'Show notifications', 'A short confirmation after each action'));
         main.add(comboRow(settings, 'files-editor', 'Editor for "Open in Editor"', EDITOR_CHOICES));
 

@@ -199,6 +199,7 @@ class Tooltips {
     constructor() {
         this._label = null;
         this._timeoutId = 0;
+        this.styleClass = '';
     }
 
     add(actor, text) {
@@ -225,7 +226,7 @@ class Tooltips {
     _show(actor, text) {
         if (!actor.mapped || !text)
             return;
-        this._label = new St.Label({ style_class: 'dash-label easehub-tooltip', text });
+        this._label = new St.Label({ style_class: `dash-label easehub-tooltip ${this.styleClass}`, text });
         Main.uiGroup.add_child(this._label);
         const [x, y] = actor.get_transformed_position();
         const [w, h] = actor.get_transformed_size();
@@ -291,8 +292,21 @@ class EaseHubIndicator extends PanelMenu.Button {
                 this._connect(obj, `changed::${key}`, () => this._syncToggles());
         }
 
+        this.menu.actor.add_style_class_name('easehub-menu');
+        this._applyMenuStyle();
+
         this._initBackends();
         this._buildMenu();
+    }
+
+    // System follows the shell theme; Light and Dark use EaseHub's own colors.
+    _applyMenuStyle() {
+        const style = this._settings.get_string('menu-style');
+        for (const s of ['light', 'dark'])
+            this.menu.actor.remove_style_class_name(`easehub-style-${s}`);
+        if (style === 'light' || style === 'dark')
+            this.menu.actor.add_style_class_name(`easehub-style-${style}`);
+        this._tooltips.styleClass = style === 'light' || style === 'dark' ? `easehub-tooltip-${style}` : '';
     }
 
     _connect(obj, signal, cb) {
@@ -314,7 +328,9 @@ class EaseHubIndicator extends PanelMenu.Button {
     }
 
     _onSettingChanged(key) {
-        if (key === 'files-actions-enabled')
+        if (key === 'menu-style')
+            this._applyMenuStyle();
+        else if (key === 'files-actions-enabled')
             this._filesSwitch?.setToggleState(this._settings.get_boolean(key));
         else if (key === 'panel-icon')
             this._updatePanelIcon();
@@ -740,8 +756,11 @@ class EaseHubIndicator extends PanelMenu.Button {
         });
     }
 
-    _openPrefs() {
+    _openPrefs(page = null) {
         try {
+            // Preferences open on the page stored here (see prefs-esm.js).
+            if (page)
+                this._settings.set_string('prefs-page', page);
             this._ext.openPreferences();
         } catch (e) {
             console.error('[EaseHub] open prefs error:', e);
@@ -991,6 +1010,7 @@ class EaseHubIndicator extends PanelMenu.Button {
             it.connect('toggled', (_i, on) => this._setFilesMenu(on));
             this._filesSwitch = it;
             apps.menu.addMenuItem(it);
+            item(apps.menu, 'Files Right-Click Settings…', 'emblem-system-symbolic', () => this._openPrefs('files'));
         }
         addGroup(apps);
 

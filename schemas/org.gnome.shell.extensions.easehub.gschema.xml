@@ -20,6 +20,15 @@
       <default>'compact'</default>
       <summary>Compact (button rows and toggle tiles) or classic (one row per action)</summary>
     </key>
+    <key name="menu-style" type="s">
+      <choices>
+        <choice value="system"/>
+        <choice value="light"/>
+        <choice value="dark"/>
+      </choices>
+      <default>'system'</default>
+      <summary>Menu appearance: follow the shell theme, or always light or dark</summary>
+    </key>
     <key name="panel-icon" type="s">
       <default>'easehub'</default>
       <summary>Panel icon: 'easehub' for the bundled icon, or a themed symbolic icon name</summary>

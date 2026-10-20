@@ -89,7 +89,7 @@ async function run() {
     const scripts = Gio.File.new_for_path(`${GLib.get_user_data_dir()}/nautilus/scripts/EaseHub`);
     ind._filesSwitch.toggle();
     await wait(300);
-    const created = scripts.get_child('Copy').get_child('Copy Full Path').query_exists(null);
+    const created = scripts.get_child('Copy').get_child('Full Path').query_exists(null);
     ind._filesSwitch.toggle();
     await wait(300);
     L('files switch: created', created, 'removed', !scripts.query_exists(null),

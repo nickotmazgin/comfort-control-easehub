@@ -92,7 +92,7 @@ Opens **GNOME's built-in screenshot tool** (area, screen, window, screencast), w
   (`/etc/sudoers.d/99-easehub-sudo-timeout-<user>`), backed up, and **rolled back** if validation fails.
 
 ### 🖱️ Files right-click menu (optional)
-Turn it on in **Preferences → Files** to add **Scripts ▸ EaseHub** to the Files (Nautilus)
+Turn it on from **Apps & Files ▸ Files Right-Click Actions** in the menu (or **Preferences → Files**) to add **Scripts ▸ EaseHub** to the Files (Nautilus)
 right-click menu:
 
 | Copy ▸ | Open ▸ | Tools ▸ |
@@ -104,9 +104,9 @@ pick your editor. Works with several files at once, symbolic links, spaces, quot
 non-Latin names. EaseHub only ever removes files it created.
 
 ### ⚙️ Preferences
-- **General:** compact or classic layout, panel icon, position and order, a keyboard
-  shortcut to open the menu, confirmations, preferred terminal (10 supported), and
-  **Reset all settings**
+- **General:** compact or classic layout, **appearance (System / Light / Dark)**, panel icon,
+  position and order, a keyboard shortcut to open the menu, confirmations, preferred terminal
+  (10 supported), and **Reset all settings**
 - **Menu:** show or hide every item; sudo timeout options
 - **Files:** the right-click menu
 - **About:** version, links and more extensions

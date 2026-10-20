@@ -38,7 +38,7 @@ check('collision refused', !r.ok && /already exists/.test(r.message));
 check('collision left user folder alone', tree().includes('./Mine'));
 vals['files-menu-name'] = 'Tools Hub';
 r = syncFilesMenu(S, ext, base);
-check('rename moves menu', r.ok && tree().includes('./Tools Hub/.easehub-managed'));
+check('rename moves menu', r.ok && tree().includes('./Tools Hub/.easehub-managed') && tree().includes('./Tools Hub/Copy Full Path'));
 // disable removes everything EaseHub added
 vals['files-actions-enabled'] = false;
 r = syncFilesMenu(S, ext, base);
@@ -46,6 +46,7 @@ check('disable removes managed folder', !tree().some(p => p.startsWith('./Tools 
 check('disable keeps the user folder with own file', tree().includes('./EaseHub/Copy/My Own Script') && tree().includes('./Mine'));
 vals['files-actions-enabled'] = true; vals['files-menu-name'] = 'EaseHub2'; vals['files-layout'] = 'grouped';
 syncFilesMenu(S, ext, base);
+check('grouped: Copy submenu drops the "Copy" prefix', tree().includes('./EaseHub2/Copy/Full Path') && tree().includes('./EaseHub2/Tools/Copy SHA-256 Checksum'));
 if (failures)
     throw new Error(`${failures} check(s) failed`);
 print('ALL PASSED');

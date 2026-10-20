@@ -16,6 +16,12 @@
   **Forget Password Now** and a **custom minutes** entry, and can optionally share one login
   across all terminals (`timestamp_type=global`, off by default).
 - **New panel icon** (a hub), with a choice of icons, panel position and order in Preferences.
+- **Appearance**: System (follows your shell theme), Light or Dark for the EaseHub menu and
+  its tooltips, so it fits any theme.
+- **Files Right-Click Actions** switch and a **Files Right-Click Settings…** shortcut right in
+  the Apps & Files group.
+- Tiles update live if Dark Mode, Do Not Disturb or Night Light change elsewhere while the
+  menu is open.
 - **Keyboard shortcut** to open the menu (none by default).
 
 ### Files right-click menu (optional, off by default)
@@ -23,7 +29,8 @@
   Copy Name, Full Path, Path and Name, Parent Folder Path, Path from Home (~), Quoted Path
   (shell-safe), File URI; Open Terminal Here, Open in Editor; Copy Size and Type, Copy
   SHA-256 Checksum, Make Executable.
-- Grouped (Copy ▸ / Open ▸ / Tools ▸) or flat; rename the menu or any action; hide actions;
+- Grouped (Copy ▸ / Open ▸ / Tools ▸, with short names like "Full Path" inside Copy) or flat;
+  rename the menu or any action; hide actions;
   notifications on or off; choose the editor. Uses your EaseHub terminal.
 - Works with symbolic links (copies the path you clicked, not its target), broken links,
   spaces, quotes and non-Latin names. Sizes are real file sizes.
@@ -43,7 +50,8 @@
   title and the file below it; errors show even when Files notifications are off.
 
 ### Preferences
-- New **Menu** page to show or hide every item, and a **Files** page.
+- New **Menu** page to show or hide every item, and a **Files** page. Preferences reopen on
+  the page you used last.
 - **Reset all settings** (with confirmation) and **Show All Items** / **Restore Default Names
   and Actions** buttons.
 - Settings from 1.2 and earlier are migrated: items you had hidden stay hidden, and new
@@ -51,6 +59,7 @@
 
 ### Under the hood
 - GNOME 48+ `St.BoxLayout` orientation handled for 51 (where `vertical` was removed).
+- Tiles keep a compact size on the stock GNOME theme (which gives quick toggles a fixed width).
 - CI runs a unit test for the Files menu writer.
 
 ## 1.2.0 (2026-10-20)
