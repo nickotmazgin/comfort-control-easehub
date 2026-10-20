@@ -19,14 +19,33 @@ import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import { Extension } from 'resource:///org/gnome/shell/extensions/extension.js';
 
 const UUID = 'comfort-control@nickotmazgin';
-const OUT = GLib.getenv('EASEHUB_SHOWCASE_OUT');
-const MODE = GLib.getenv('EASEHUB_SHOWCASE_MODE') ?? 'shots';
-const DEMO_DIR = GLib.getenv('EASEHUB_SHOWCASE_DEMO_DIR');
-const SCALE = Number(GLib.getenv('EASEHUB_SHOWCASE_SCALE') ?? '1');
-const DEBUG = GLib.getenv('EASEHUB_SHOWCASE_DEBUG') === '1';
+
+function readRunFile() {
+    try {
+        const names = ['easehub-showcase@local', 'comfort-control@nickotmazgin'];
+        for (const name of names) {
+            const path = GLib.build_filenamev([
+                GLib.get_user_data_dir(), 'gnome-shell', 'extensions', name, 'run.json']);
+            const [ok, bytes] = GLib.file_get_contents(path);
+            if (ok)
+                return JSON.parse(new TextDecoder().decode(bytes));
+        }
+    } catch (e) {}
+    return null;
+}
+
+// The live shell does not inherit the recorder's environment, so a local run
+// reads run.json. Nested screenshot runs still use the environment.
+const FILE = readRunFile();
+const OUT = FILE?.out ?? GLib.getenv('EASEHUB_SHOWCASE_OUT');
+const MODE = FILE?.mode ?? GLib.getenv('EASEHUB_SHOWCASE_MODE') ?? 'shots';
+const DEMO_DIR = FILE?.demo ?? GLib.getenv('EASEHUB_SHOWCASE_DEMO_DIR');
+const SCALE = Number(FILE?.scale ?? GLib.getenv('EASEHUB_SHOWCASE_SCALE') ?? '1');
+const DEBUG = FILE?.debug === true || GLib.getenv('EASEHUB_SHOWCASE_DEBUG') === '1';
+const LOCAL = FILE?.local === true;
 const ALLOWED_CLICKS = new Set([
     'Apps & Files', 'Clipboard & Screenshot', 'Updates & System', 'Sudo Timeout',  // group headers
-    'Screenshot', 'Upgrade Packages…', 'Dark Mode', 'EaseHub Settings', 'Menu appearance',
+    'Screenshot', 'Upgrade Packages…', 'EaseHub Settings', 'Menu appearance',
 ]);
 
 const log = (...a) => console.log('EHSHOW', ...a);
@@ -68,6 +87,12 @@ function centerOf(actor) {
 
 let hovered = null;
 async function hover(actor, pause = 700, tip = null) {
+    if (MODE === 'video') {
+        // Do not move the pointer. A miss in the nested window clicked the real
+        // Wi-Fi radio. The open menu is enough; tooltip bubbles are optional.
+        await wait(Math.min(pause, 200));
+        return;
+    }
     if (SCALE === 2) {
         // At 2× the virtual pointer does not land where we aim. Setting
         // actor.hover is not enough: the shell clears it before the tooltip
@@ -102,7 +127,8 @@ async function pressButton(button = Clutter.BUTTON_PRIMARY) {
 }
 
 async function clickActor(actor, name) {
-    if (!ALLOWED_CLICKS.has(name))
+    const label = `${name} ${actor?.label?.text ?? ''} ${actor?.accessible_name ?? ''}`;
+    if (!ALLOWED_CLICKS.has(name) || /wi-?fi|bluetooth|airplane|dark mode|night light|keep awake|lock|log out|suspend|restart|power off|forget password|reset to system/i.test(label))
         throw new Error(`refusing to click "${name}"`);
     await hover(actor, MODE === 'video' ? 450 : 250);
     await pressButton();
@@ -201,10 +227,6 @@ function rowButtons(ind, index) {
     return out;
 }
 
-function tile(ind, label) {
-    return ind._toggles.find(t => t.label === label)?.widget;
-}
-
 async function openMenu(ind) {
     if (!ind.menu.isOpen)
         ind.menu.open();
@@ -220,17 +242,23 @@ async function closeMenu(ind) {
 
 // Narration lengths (seconds) from the driver: a scene starts only after the
 // previous line has been spoken, so voices never overlap.
-const DURATIONS = JSON.parse(GLib.getenv('EASEHUB_SHOWCASE_DURATIONS') || '{}');
+const DURATIONS = FILE?.durations ?? JSON.parse(GLib.getenv('EASEHUB_SHOWCASE_DURATIONS') || '{}');
 let voiceEnd = 0;
 
 async function scene(key, caption) {
-    if (MODE === 'video') {
-        const waitMs = (voiceEnd - now()) / 1000 + 300;
-        if (waitMs > 0)
-            await wait(waitMs);
-        voiceEnd = now() + (DURATIONS[key] ?? 0) * 1e6;
-    }
+    if (MODE === 'video')
+        voiceEnd = now() + (DURATIONS[key] ?? 2.8) * 1e6;
     log('SCENE', JSON.stringify({ key, caption, t: GLib.get_real_time() }));
+}
+
+// Keep the current picture up until this line has finished, so the next
+// sentence never starts on top of it.
+async function holdVoice() {
+    if (MODE !== 'video')
+        return;
+    const waitMs = (voiceEnd - now()) / 1000 + 200;
+    if (waitMs > 40)
+        await wait(waitMs);
 }
 
 async function findWindow(match, timeoutMs = 20000) {
@@ -274,10 +302,11 @@ function spawnNestedApp(argv) {
 
 async function tourMenu(ind, es) {
     await scene('title', null);
-    await wait(MODE === 'video' ? 4000 : 0);
+    await wait(MODE === 'video' ? 700 : 0);
 
     await openMenu(ind);
     await menuShot(ind, '01-panel-menu');
+    await holdVoice();
 
     await scene('power', 'Power: lock, log out, suspend, restart, power off');
     for (const b of rowButtons(ind, 0))
@@ -289,14 +318,17 @@ async function tourMenu(ind, es) {
     if (hovered)
         hovered.hover = false;
     hovered = null;
+    await holdVoice();
 
     await scene('sound', 'Sound: mute, volume down and up');
     for (const b of rowButtons(ind, 1))
         await hover(b, MODE === 'video' ? 800 : 0);         // hover only (real audio)
+    await holdVoice();
 
     await scene('toggles', 'Quick toggles show their state — hover for details');
     for (const t of ind._toggles.filter(x => x.widget.visible))
         await hover(t.widget, MODE === 'video' ? 650 : 0);
+    await holdVoice();
 
     // Groups are expanded in code: the cursor is not recorded, and a synthetic
     // click must never land on a real action.
@@ -317,7 +349,7 @@ async function tourMenu(ind, es) {
         }
         await hover(g, 300);
         await menuShot(ind, `0${3 + i}-menu-${key}`);
-        if (key === 'clip' && MODE === 'video') {
+        if (key === 'clip' && MODE === 'video' && !LOCAL) {
             const item = g.menu._getMenuItems().find(x => x.label?.text === 'Screenshot');
             await hover(item, 400);
             item.activate(Clutter.get_current_event());     // GNOME's screenshot UI
@@ -325,6 +357,7 @@ async function tourMenu(ind, es) {
             await key_(Clutter.KEY_Escape);
             await wait(800);
             await openMenu(ind);
+            await holdVoice();
             continue;
         }
         if (key === 'sys') {
@@ -342,8 +375,10 @@ async function tourMenu(ind, es) {
             }
             await wait(600);
             await openMenu(ind);
+            await holdVoice();
             continue;
         }
+        await holdVoice();
         g.setSubmenuShown(false);
         await wait(300);
     }
@@ -360,15 +395,37 @@ async function tourMenu(ind, es) {
     }
     es.reset('menu-style');
     await wait(500);
+    await holdVoice();
+    if (MODE === 'video') {
+        // Show the toggle row. Do not click it: Dark Mode sits beside Wi-Fi,
+        // and a pointer miss turns the real radio off.
+        await scene('darkmode', 'Dark Mode from the panel — apps follow instantly');
+        await openMenu(ind);
+        await wait(800);
+        await holdVoice();
+    }
     await closeMenu(ind);
 }
 
+function demoFilesWindow() {
+    return global.get_window_actors().map(a => a.meta_window).find(w =>
+        w.get_wm_class() === 'org.gnome.Nautilus' && w.get_title()?.includes('EaseHub Demo'));
+}
+
 async function tourFiles() {
-    await scene('files', 'Files right-click menu: Scripts ▸ EaseHub ▸ Copy, Open, Tools');
-    spawnNestedApp(['nautilus', '--new-window', DEMO_DIR]);
-    const win = await findWindow(w => w.get_wm_class() === 'org.gnome.Nautilus' && w.get_title()?.includes('EaseHub Demo'), 60000);
-    await wait(1200);
+    // Nautilus is started during the menu tour so its portal delay is not a
+    // frozen gap at the start of this scene.
+    let win = demoFilesWindow();
+    if (!win) {
+        if (LOCAL)
+            spawn(['nautilus', '--new-window', DEMO_DIR]);
+        else
+            spawnNestedApp(['nautilus', '--new-window', DEMO_DIR]);
+        win = await findWindow(w => w.get_wm_class() === 'org.gnome.Nautilus' && w.get_title()?.includes('EaseHub Demo'), 60000);
+    }
+    await wait(600);
     const r = await placeWindow(win, 1000, 640);
+    await scene('files', 'Files right-click menu: Scripts ▸ EaseHub ▸ Copy, Open, Tools');
     // Keyboard only after one click that focuses the file view. Right opens a
     // submenu (Return does not). Escape closes the whole stack, so each group
     // is opened from a fresh context menu. The pointer is parked in the corner
@@ -415,6 +472,7 @@ async function tourFiles() {
         await keys(Clutter.KEY_Escape, 3);
         await wait(200);
     }
+    await holdVoice();
     win.delete(global.get_current_time());
     await wait(800);
 }
@@ -435,13 +493,9 @@ async function tourPrefs(ind, es) {
 
     if (MODE === 'video') {
         await scene('darkmode', 'Dark Mode from the panel — apps follow instantly');
-        for (let i = 0; i < 2; i++) {
-            await openMenu(ind);
-            await clickActor(tile(ind, 'Dark Mode'), 'Dark Mode');
-            await wait(2200);
-            ind.menu.close();
-            await wait(500);
-        }
+        await openMenu(ind);
+        await wait(800);
+        await closeMenu(ind);
         Main.activateWindow(win);
         await wait(600);
     }
@@ -496,20 +550,38 @@ async function run() {
     const { syncFilesMenu } = await import(`file://${ext.path}/lib/filesMenu.js`);
     es.set_boolean('files-actions-enabled', true);
     syncFilesMenu(es, ext.path);
-    await moveTo(700, 400);
+    if (MODE !== 'video')
+        await moveTo(700, 400);
     await wait(1500);
 
     log('START', GLib.get_real_time());
-    const parts = (GLib.getenv('EASEHUB_SHOWCASE_PARTS') ?? 'menu,files,prefs').split(',');
-    if (parts.includes('menu'))
-        await tourMenu(ind, es);
-    if (parts.includes('files'))
-        await tourFiles();
-    if (parts.includes('prefs'))
-        await tourPrefs(ind, es);
-    await scene('end', 'Free & open source · github.com/nickotmazgin/comfort-control-easehub');
-    await wait(MODE === 'video' ? Math.max(5000, (voiceEnd - now()) / 1000 + 1500) : 0);
-    log('DONE');
+    const parts = (FILE?.parts ?? GLib.getenv('EASEHUB_SHOWCASE_PARTS') ?? 'menu,files,prefs').split(',');
+    if (parts.includes('files')) {
+        if (LOCAL)
+            spawn(['nautilus', '--new-window', DEMO_DIR]);
+        else
+            spawnNestedApp(['nautilus', '--new-window', DEMO_DIR]);
+    }
+    try {
+        if (parts.includes('menu'))
+            await tourMenu(ind, es);
+        if (parts.includes('files'))
+            await tourFiles();
+        if (parts.includes('prefs'))
+            await tourPrefs(ind, es);
+        await scene('end', 'Free & open source · github.com/nickotmazgin/comfort-control-easehub');
+        await holdVoice();
+        log('DONE');
+    } finally {
+        try {
+            es.reset('menu-style');
+            ind.menu.close();
+        } catch (e) {}
+    }
+}
+
+export function startLive() {
+    return run();
 }
 
 export default class Showcase extends Extension {
