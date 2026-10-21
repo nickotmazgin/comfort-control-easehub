@@ -12,6 +12,7 @@
 [![Issues](https://img.shields.io/github/issues/nickotmazgin/comfort-control-easehub)](https://github.com/nickotmazgin/comfort-control-easehub/issues)
 [![Discussions](https://img.shields.io/github/discussions/nickotmazgin/comfort-control-easehub?label=discussions&color=8B5CF6)](https://github.com/nickotmazgin/comfort-control-easehub/discussions)
 [![Stars](https://img.shields.io/github/stars/nickotmazgin/comfort-control-easehub?style=flat&color=yellow)](https://github.com/nickotmazgin/comfort-control-easehub/stargazers)
+[![AlternativeTo](https://img.shields.io/badge/AlternativeTo-EaseHub-1A73E8)](https://alternativeto.net/software/comfort-control-easehub/about/)
 
 A **GNOME Shell extension** that brings **comfort and control to your desktop** — quick access to power actions, Wayland screenshots, system updates, and everyday utilities from one panel menu.
 
@@ -329,7 +330,9 @@ Every AI-assisted change is human-reviewed, tested on real GNOME sessions, and a
 
 **Search for:** EaseHub GNOME, GNOME panel menu, GNOME Shell extension, Linux power menu, volume control panel, quick toggles, Files right-click Nautilus, dark mode extension, Wayland X11
 
-**Also:** [YouTube tour](https://www.youtube.com/watch?v=5A7521LUAQ8) · [DEV](https://dev.to/nickotmazgin/easehub-130-a-compact-gnome-menu-with-sound-and-files-right-click-actions-16ma) · [Discussion](https://github.com/nickotmazgin/comfort-control-easehub/discussions/73)
+**Also:** [YouTube tour](https://www.youtube.com/watch?v=5A7521LUAQ8) · [DEV](https://dev.to/nickotmazgin/easehub-130-a-compact-gnome-menu-with-sound-and-files-right-click-actions-16ma) · [Discussion](https://github.com/nickotmazgin/comfort-control-easehub/discussions/73) · [AlternativeTo](https://alternativeto.net/software/comfort-control-easehub/about/)
+
+<a href="https://alternativeto.net/software/comfort-control-easehub/about/?utm_source=badge&utm_medium=referral" target="_blank"><img src="https://alternativeto.net/static/badges/badge-compact-color.svg" alt="Comfort Control EaseHub | AlternativeTo" width="244" height="79" /></a>
 
 ## More GNOME extensions by Nick Otmazgin
 
