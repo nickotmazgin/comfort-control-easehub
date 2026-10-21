@@ -258,7 +258,6 @@ Your support helps maintain and improve this extension for the entire GNOME comm
 Comfort Control (EaseHub) is created, maintained, signed, and released by **[Nick Otmazgin](https://github.com/nickotmazgin)** — the project's sole administrator and solo developer, who authors and reviews all code that ships.
 
 [![AI assisted — OpenAI Codex](https://img.shields.io/badge/AI%20assisted-OpenAI%20Codex-10A37F)](https://openai.com/codex/)
-[![AI assisted — Cursor Agent](https://img.shields.io/badge/AI%20assisted-Cursor%20Agent-1A1A1A)](https://cursor.com)
 [![AI assisted — Claude Code](https://img.shields.io/badge/AI%20assisted-Claude%20Code-D97757)](https://claude.com/claude-code)
 
 <table>
@@ -274,17 +273,6 @@ Comfort Control (EaseHub) is created, maintained, signed, and released by **[Nic
         <sub>Creator &amp; Solo Maintainer</sub>
         <br />
         <sub>💻 🎨 📦 🚀 📖</sub>
-      </td>
-      <td align="center" valign="top" width="25%">
-        <a href="https://github.com/cursoragent">
-          <img src="https://avatars.githubusercontent.com/u/199161495?v=4" width="80px" height="80px" style="border-radius: 50%;" alt="Cursor Agent"/>
-          <br />
-          <sub><b>Cursor Agent</b></sub>
-        </a>
-        <br />
-        <sub>AI Pair-Programming Co-Pilot</sub>
-        <br />
-        <sub>💻 🐛 🧪 📖</sub>
       </td>
       <td align="center" valign="top" width="25%">
         <a href="https://github.com/claude">
@@ -315,7 +303,7 @@ Comfort Control (EaseHub) is created, maintained, signed, and released by **[Nic
 Recent releases were built with help from AI pair-programming agents, operated under the maintainer's direction and review:
 
 - **OpenAI Codex** — release engineering, signed-tag release workflows, packaging and validation hardening
-- **Cursor Agent** ([@cursoragent](https://github.com/cursoragent)) — code review, debugging, CI workflow hardening, the v1.3.0 gallery, narrated tour, and documentation
+- **Cursor Agent** — code review, debugging, CI workflow hardening, the v1.3.0 gallery, narrated tour, and documentation
 - **Claude** by Anthropic ([@claude](https://github.com/claude), via [Claude Code](https://claude.com/claude-code)) — v1.2.0 audit and v1.3.0 features: compact menu, sound and quick toggles, Files right-click menu, sudo timeout options, GNOME 51 port, nested-shell and unit tests, CI checks
 
 Every AI-assisted change is human-reviewed, tested on real GNOME sessions, and approved by the maintainer before release. See [CONTRIBUTORS.md](CONTRIBUTORS.md) for the full credits, including the contributor table.
