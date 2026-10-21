@@ -260,6 +260,57 @@ Comfort Control (EaseHub) is created, maintained, signed, and released by **[Nic
 [![AI assisted — Cursor Agent](https://img.shields.io/badge/AI%20assisted-Cursor%20Agent-1A1A1A)](https://cursor.com)
 [![AI assisted — Claude Code](https://img.shields.io/badge/AI%20assisted-Claude%20Code-D97757)](https://claude.com/claude-code)
 
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="25%">
+        <a href="https://github.com/nickotmazgin">
+          <img src="https://avatars.githubusercontent.com/u/227995249?v=4" width="80px" height="80px" style="border-radius: 50%;" alt="Nick Otmazgin"/>
+          <br />
+          <sub><b>Nick Otmazgin</b></sub>
+        </a>
+        <br />
+        <sub>Creator &amp; Solo Maintainer</sub>
+        <br />
+        <sub>💻 🎨 📦 🚀 📖</sub>
+      </td>
+      <td align="center" valign="top" width="25%">
+        <a href="https://github.com/cursoragent">
+          <img src="https://avatars.githubusercontent.com/u/199161495?v=4" width="80px" height="80px" style="border-radius: 50%;" alt="Cursor Agent"/>
+          <br />
+          <sub><b>Cursor Agent</b></sub>
+        </a>
+        <br />
+        <sub>AI Pair-Programming Co-Pilot</sub>
+        <br />
+        <sub>💻 🐛 🧪 📖</sub>
+      </td>
+      <td align="center" valign="top" width="25%">
+        <a href="https://github.com/claude">
+          <img src="https://avatars.githubusercontent.com/u/81847?v=4" width="80px" height="80px" style="border-radius: 50%;" alt="Claude"/>
+          <br />
+          <sub><b>Claude (Anthropic)</b></sub>
+        </a>
+        <br />
+        <sub>AI Coding Agent · Claude Code</sub>
+        <br />
+        <sub>💻 🐛 🛡️ 🚀</sub>
+      </td>
+      <td align="center" valign="top" width="25%">
+        <a href="https://openai.com/codex/">
+          <img src="https://avatars.githubusercontent.com/u/14957082?v=4" width="80px" height="80px" style="border-radius: 50%;" alt="OpenAI Codex"/>
+          <br />
+          <sub><b>OpenAI Codex</b></sub>
+        </a>
+        <br />
+        <sub>AI Coding Agent</sub>
+        <br />
+        <sub>⚡ 💻 🚀</sub>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
 Recent releases were built with help from AI pair-programming agents, operated under the maintainer's direction and review:
 
 - **OpenAI Codex** — release engineering, signed-tag release workflows, packaging and validation hardening
