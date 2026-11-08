@@ -26,6 +26,8 @@ A **GNOME Shell extension** that brings **comfort and control to your desktop** 
 
 > **GNOME Shell 42–44 is no longer supported.** EaseHub requires **GNOME 45–51**.
 
+> **Not on extensions.gnome.org.** The listings there are old, unmaintained builds that I no longer control, so please don't install them. GitHub is the only current source.
+
 ---
 
 ## Compatibility
