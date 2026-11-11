@@ -28,6 +28,9 @@ A **GNOME Shell extension** that brings **comfort and control to your desktop** 
 
 > **Not on extensions.gnome.org.** The listings there are old, unmaintained builds that I no longer control, so please don't install them. GitHub is the only current source.
 
+> **Ownership statement, 11 November 2026, 12:46 Israel time (UTC+2):** I, Nick Otmazgin ([@nickotmazgin](https://github.com/nickotmazgin)), am the original author of this extension. It was published on extensions.gnome.org as [#8603](https://extensions.gnome.org/extension/8603/comfort-control-easehub/) (UUID `comfort-control@nickotmazgin`) from my former account `nickotmazgin`, which I deleted in December 2025; that listing now shows "MaintainerWanted".
+> I have asked GNOME, through the extensions.gnome.org issue tracker and the GNOME Foundation, to deactivate those old builds or transfer them back to me. Until then, this repository is the only version I publish or support.
+
 ---
 
 ## Compatibility
